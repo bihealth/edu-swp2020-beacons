@@ -1,4 +1,4 @@
-import pytest
+import pytest  # noqa
 
 from the_module import sub
 
