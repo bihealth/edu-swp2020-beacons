@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html><head>
+    <link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'main.css') }}">
+
+    {% if title %} 
+    <title> Beacon - {{ title }} </title>
+    {% else %} 
+        <title> Beacon </title>
+    {% endif %} 
+</head>
+<body>
+    {% block contennt %} {% endblock %} 
+</body>
+</html>
