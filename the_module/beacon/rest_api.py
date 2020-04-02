@@ -24,3 +24,4 @@ class Api:
 @app.route("/api/<var_str>",methods =['GET'])
 def get_api(var_str) :
 	pass
+
