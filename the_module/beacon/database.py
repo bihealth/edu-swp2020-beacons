@@ -24,18 +24,20 @@ class ConnectDatabase:
 
     def connect(database):
         """Input: path_to_db
-        Output: con
-        function provides connection to given database """
+           Output: con
+           function provides connection to given database """
         pass
 
 
     def parse_statement(sql_str):
         """ Input: sql_string
-        Output: cursor_ouput, AnnotatedVariant
-        function creates cursor object and requests database, gives “answer” back """
+            Output: cursor_ouput, AnnotatedVariant
+            function creates cursor object and requests database, gives “answer” back """
         pass
 
 
     def disconnect(connection):
-        """closes connection and commits and connection con.comm and con.close """
+        """Input: connection object
+           Output: 
+           closes connection and commits and connection con.comm and con.close """
         pass
