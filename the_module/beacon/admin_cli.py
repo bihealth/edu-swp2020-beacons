@@ -74,8 +74,9 @@ class OperateDatabase:
         function deletes given Variant in db and gives bool if succeeded back"""
         pass
     
-#def _main_(args):
-""" interacts with admin and connects function """
+def _main_(args):
+    """ interacts with admin and connects function """
+    pass
  
 #nct: def export_db()
 print("hier angekommen")
