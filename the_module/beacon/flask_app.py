@@ -1,6 +1,7 @@
 import beacon.common
 import beacon.database
-from flask import Flask, render_template, url_for, request
+import beacon.user_cli
+from flask import Flask, render_template, url_for, request, jsonify
 
 app = Flask(__name__)
 
@@ -23,3 +24,7 @@ string into Variant object and uses form database imported function
 “handle_variant” and uses from common function var_str to convert AnnotatedVariant to string
     """
     pass
+
+@app.route("/api/<var_str>",methods =['GET'])
+def get_api(var_str) :
+	pass
