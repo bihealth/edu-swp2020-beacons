@@ -1,7 +1,7 @@
 import common
-import database
-import user_cli
-import rest_api
+#import database
+#import user_cli
+#import rest_api
 from flask import Flask, render_template, url_for, request, jsonify
 
 app = Flask(__name__)
@@ -26,10 +26,10 @@ string into Variant object and uses form database imported function
     """
     req = request.form
     inp = req["var"]     
-    var = beacon.common.variantStringParser(inp)
-    ann_var = database.handle_variant(var)
-    unann_var = common.parse_var(ann_var)
-    occ = ann_var.occ
+    var = common.parse_var(inp)
+    #ann_var = database.handle_variant(var)
+    unann_var = common.parse_var(var) #common.parse_var(ann_var)
+    occ = True #ann_var.occ
     return render_template("output.html", title='Results', **locals()) 
 """
 @app.route("/api/<var_str>",methods =['GET']) 
