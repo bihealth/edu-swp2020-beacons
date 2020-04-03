@@ -12,19 +12,14 @@ class AnnotatedVariant():
         self.var = var
         self.occ = occ
         
-class VariantStringParser:
-    """ variant object parses an input string to a variant object or variant 
-        objectto string """
-    def __init__(self, var_str):
-        self.var_str = var
-    def parse_var(self, inp):
+def parse_var(inp):
         """Input: variant string 
         Output: variant objec(t parses an input string to a variant object or variant 
         objectto string"""
-        if isinstance(inp, basestring):
-            strin_spli = inp.split()
-            new_var = Variant(strin_spli[0],strin_spli[1], strin_spli[2], strin_spli[3])
-        else:
-            var_list = inp.__dict__.keys()
-            new_var = ','.join(var_list)
-        return new_var
+    if isinstance(inp, basestring):
+        strin_spli = inp.split()
+        new_var = Variant(strin_spli[0],strin_spli[1], strin_spli[2], strin_spli[3])
+    else:
+        var_list = inp.__dict__.keys()
+        new_var = ','.join(var_list)
+    return new_var
