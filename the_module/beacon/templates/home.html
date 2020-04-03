@@ -1,15 +1,10 @@
 {% extends "layout.html" %} 
 {% block contennt %}
     <h1>SWP</h1>
-    <br>
-    <br>
     <form action = "{{ url_for('handle') }}" method = "POST">
         <label for="var">Search:
           <input type="text" id="var" name="var" pattern = "(([3-9]|([1][0-9]?)|([2][0-2]?)|[XY]),\d+,[ACGT]+,[ACGT]+)" placeholder="chr,pos,ref,alt" autofocus>
         </label>
-        <button type="submit">submit</button>
-    </form>
-    <!--<hr>
-    <div>Go to: <a href="/Manual">Manual</a></div>-->
-        
+        <button type="submit">Submit</button>
+    </form> 
 {% endblock %}

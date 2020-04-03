@@ -1,1 +1,47 @@
+html{
+    font-family: Arial;
+}
 
+h1 {
+    background-color: Silver;
+    padding: 40px;
+    text-align: center;
+    font-size: 60px;
+    color: white;
+    margin: 0px;
+}
+
+body {
+    margin: 0px;
+    padding: 0px;
+}
+
+form{
+    margin: 60px;
+    padding: 0px;
+}
+
+label {
+    margin: 0px;
+    padding: 0px;
+}
+
+input{
+    margin: 10px;
+    padding: 6px;
+    width: 200px;
+    font-size: 16px;
+}
+
+button{
+    margin: 60px;
+    padding: 8px;
+    width: 100px;
+    font-size: 16px
+}
+
+p{
+    margin: 60px;
+    padding: 5px;
+    border: silver;
+}
