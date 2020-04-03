@@ -1,9 +1,11 @@
 {% extends "layout.html" %} 
 {% block contennt %}
     <h1>Results</h1>
-    <p>Your variant was found: {{ann_Var}}</p>
-	<br>
-	<br>
+    {% if occ %}
+        <p>Your variant {{unann_var}} was found</p>
+    {% else %}
+        <p>Your variant {{unann_var}} was not found</p>
+    {% endif %}
     <hr>
     <div>Go to: <a href="/home">Home</a></div>
 {% endblock %}
