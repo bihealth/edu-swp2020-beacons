@@ -14,4 +14,6 @@ def _check_input(var_str):
     Output: check_bool
     function checks if input has correct input format
     """
+    #it checks inputs with common id here
+    logincheck = cur.execute(loadname, login)
     pass
