@@ -28,16 +28,17 @@ string into Variant object and uses form database imported function
     inp = req["var"]     
     var = common.parse_var(inp)
     #ann_var = database.handle_variant(var)
-    unann_var = common.parse_var(var) #common.parse_var(ann_var)
-    occ = True #ann_var.occ
+    #unann_var = common.parse_var(ann_var)
+    occ = database.handle_variant(var)
     return render_template("output.html", title='Results', **locals()) 
-"""
+
+
 @app.route("/api/<var_str>",methods =['GET']) 
 def get_api(var_str) :
     var = beacon.common.variantStringParser(var_str)
     ann_var = database.handle_variant(var)
     return jsonify(beacon.rest_api.annVar_ls(ann_var))
-"""  
+  
 
 
 if __name__== "__main__":
