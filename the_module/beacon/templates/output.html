@@ -2,10 +2,9 @@
 {% block contennt %}
     <h1>Results</h1>
     {% if occ %}
-        <p>Your variant {{unann_var}} was found</p>
+        <p>Your variant {{unann_var}} was found.</p>
     {% else %}
-        <p>Your variant {{unann_var}} was not found</p>
+        <p>Your variant {{unann_var}} was not found.</p>
     {% endif %}
-    <hr>
-    <div>Go to: <a href="/home">Home</a></div>
+    <button type="button"><a href="/home">go Home</a></button>
 {% endblock %}

@@ -1,14 +1,16 @@
 <!DOCTYPE html>
-<html><head>
-    <link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'main.css') }}">
+<html>
+    <head>
 
-    {% if title %} 
-    <title> Beacon - {{ title }} </title>
-    {% else %} 
-        <title> Beacon </title>
-    {% endif %} 
-</head>
-<body>
-    {% block contennt %} {% endblock %} 
-</body>
+        <link rel = "stylesheet" type = "text/css" href = "{{ url_for('static', filename = 'main.css') }}">
+        
+        {% if title %} 
+            <title> SWP - {{ title }} </title>
+        {% else %} 
+            <title> SWP </title>
+        {% endif %} 
+    </head>
+    <body>
+        {% block contennt %} {% endblock %} 
+    </body>
 </html>
