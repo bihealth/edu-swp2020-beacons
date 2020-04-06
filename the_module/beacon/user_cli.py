@@ -16,7 +16,7 @@ def _check_input(var_str):
     """
     #it checks inputs with common id here
     logincheck = cur.execute(loadname, login)
-    pass
+
 
 def _help_():
     #mit argsparse
@@ -34,10 +34,4 @@ def _help_():
 
     print(args.target)
     print(args.user)    
-
-class Annotatedvariant():
-    pass
-
-class Variant():
-    pass
 
