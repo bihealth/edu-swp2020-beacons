@@ -2,9 +2,17 @@ import common
 #import database
 #import user_cli
 #import rest_api
+import sys
 from flask import Flask, render_template, url_for, request, jsonify
 
 app = Flask(__name__)
+
+# Windows:
+# # set PATH_DATABASE=XXX.sqlite3
+# # python beacon/flask_app.py
+# Mac/Linux
+# # PATH_DABASE=XXX.sqlite3 python beacon/flask_app.py
+db_connection = DatabaseConnection(path=sys.environ.get("PATH_DABASE"))
 
 @app.route("/")
 def home():
