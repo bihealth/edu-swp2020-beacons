@@ -1,6 +1,6 @@
 import argparse
 import sys
-import beacon.common
+#import beacon.common
 
 def main(args):
     """ var_str = user input
@@ -25,7 +25,15 @@ def _help_():
     2) how and where to type in
     3) how to change search types
     """
-    pass
+    parser = argparse.ArgumentParser(description='TEST TEST ')
+    #here define argment
+    parser.add_argument('--target',required=True, help='target variant')
+    parser.add_argument('--user',required=False,default='admin',help='choose user')
+    #here save typed argument
+    args= parser.parse_args()
+
+    print(args.target)
+    print(args.user)    
 
 class Annotatedvariant():
     pass
@@ -33,6 +41,3 @@ class Annotatedvariant():
 class Variant():
     pass
 
-class VariantStringParser:
-    def parse_var:
-        pass
