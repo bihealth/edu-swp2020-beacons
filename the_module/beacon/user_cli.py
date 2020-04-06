@@ -8,7 +8,14 @@ def main(args):
     the function receives some command parameters like the Variant    string or help
     host$ python beacon.user_cli.py var_str
     """
-    pass
+    parser = argparse.ArgumentParser(description='Precess some variant')
+    parser.add_argument('Varaints',metavar='N',type=str,nargs='+',
+                        help='an string for the input')
+    parser.add_argument
+
+    args= parser.parse_args()
+    print (args.accumulate(args.Varaints))
+    
 def _check_input(var_str):
     """Input: variant_str
     Output: check_bool
