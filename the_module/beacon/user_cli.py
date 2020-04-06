@@ -19,6 +19,7 @@ def _check_input(var_str):
     pass
 
 def _help_():
+    #mit argsparse
     """with click button (html) can see following instructions
     1) what to input(varianble type: no special letters)
     2) how and where to type in
