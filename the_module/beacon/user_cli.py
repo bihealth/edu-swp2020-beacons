@@ -25,3 +25,13 @@ def _help_():
     3) how to change search types
     """
     pass
+
+class Annotatedvariant():
+    pass
+
+class Variant():
+    pass
+
+class VariantStringParser:
+    def parse_var:
+        pass
