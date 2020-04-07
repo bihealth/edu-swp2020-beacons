@@ -1,7 +1,7 @@
 ## module beacon.database
 
 import sqlite3
-import common as cm
+from . import common as cm
 
 class ConnectDatabase:
 
