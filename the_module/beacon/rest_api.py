@@ -1,4 +1,7 @@
 from flask import Flask
+import common
+from flask.ext import restful
+
 """import beacon.database
 import beacon.common
 """
@@ -19,7 +22,7 @@ class Api:
                    	        function transformes AnnotatedVariant to ls
                    	        api =[{“chr”:str,“pos”:int,“res”:chr,“alt”:chr,“occ”:bool}]"""
         def checker():
-            #check first whether our amied Variants in our Databank 
+        #check first whether our amied Variants in our Databank 
          while True:
               return False
         
