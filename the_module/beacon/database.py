@@ -15,25 +15,27 @@ class ConnectDatabase:
         function creates cursor object and requests database, gives “answer” back """
         try:
             c = self.connection.cursor()
-            c.execute(sql_str)
-            output = c.fetchall()
+            print(sql_str)
+            c.execute(sql_str[0], sql_str[1])
             self.connection.commit()
+            output = c.fetchall()
             if annV_bool:
                 if len(output) != 0:
                     return True
+                else:
+                    return False
             else:
                 return output
         except sqlite3.Error as e:
-            return e
+            return False
 
-    def handle_variant(self, variant):
+    def handle_variant(self,variant):
         """Input: Variant Object
       	   Output: AnnotatedVariant(bool)
      	   Gets an variant object from flask handle and parses request to database and gets an  Annotated as an output """
         try:
-            sql_str = "select id from variants where chr = '" + cm.Variant.chr + "', pos = '" + str(
-                cm.Variant.pos) + "' , res = '" + cm.Variant.res + "' , alt = '" + cm.Variant.alt
-            occ = ConnectDatabase.parse_statement(sql_str, self.connection, True)
+            sql_str = "SELECT id FROM variants WHERE chr = (?) AND pos = (?)AND res = (?)AND alt = (?);", (variant.chr,variant.pos, variant.res, variant.alt)
+            occ = self.parse_statement(sql_str, True)
             return occ
         except sqlite3.Error as e:
             return e
