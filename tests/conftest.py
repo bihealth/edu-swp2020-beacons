@@ -21,7 +21,7 @@ VALUES (?, ?, ?, ?);
 
 @pytest.fixture
 def demo_db_path(tmpdir):
-    path_db = tmpdir.join("test.sqlite3")
+    path_db = str(tmpdir.join("test.sqlite3"))
     conn = sqlite3.connect(path_db)
 
     with conn:

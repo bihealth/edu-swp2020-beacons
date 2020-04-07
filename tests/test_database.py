@@ -4,7 +4,7 @@ from the_module.beacon import database
 
 
 def test_connect_empty(tmpdir):
-    path_db = tmpdir.join("test.sqlite3")
+    path_db = str(tmpdir.join("test.sqlite3"))
     conn = database.ConnectDatabase(path_db)
     assert conn.connection is not None
 
