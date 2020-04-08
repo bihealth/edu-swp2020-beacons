@@ -16,7 +16,7 @@ def __main__():
     """
     path = os.path.dirname(os.path.realpath(__file__))
     print(path)
-    server = subprocess.call(['python', 'rest_api.py'], cwd = path )
+    server = subprocess.call(['python', 'rest_api.py'], cwd = patht  )
     #first input and user communication
     print("Welcome to our project beacon software!\n" )
     cont = True
@@ -63,47 +63,62 @@ def _check_input(var_str):  #maybe better to check each input seperately
     else:
         return True
 
-#def _help_():
-#    #mit argsparse
-#    """with click button (html) can see following instructions
-#    1) what to input(varianble type: no special letters)
-#    2) how and where to type in
-#    3) how to change search types
-#    """
-#    parser = argparse.ArgumentParser(
-#                    add_help=True,
-#                    formatter_class=argparse.RawDescriptionHelpFormatter,
-#                    description="""
-#                        Please type var_str in some way
-#                        
-#                        """,
-#                    epilog="""
-#                        epilog should be here written
-#                        
-#                        """,
-#                        )
-#
-#    parser.add_argument(
-#        '-a', action="store_true",
-#        help="""argument
-#            help is
-#            wrapped
-#            """,
-#    )
-#
-#parser.print_help()
-#    
-#     #here define argment
-#    parser.add_argument("--input",type=str ,default= ' ',help="please type in blablabla valid input format")
-#    parser.add_argument("--variant",help="variant should be given in format chr-pos-res-alt")
-#    parser.add_argument("--result",help="result will be given in yes or no form from beacon")
-#    parser.add_argument("--info",help="variant should be given in chr,pos,res,alt")
-#    
-#    #here save typed argument
-#    args= parser.parse_args()
-#    input = args.input
-#    variant = args.variant
-#    result = arg.result
-#
-if __name__ == __main__():
-    __main__()    
+
+def _help_(help_var):
+    const = True
+    while const:
+        if help_var == "chr":
+            print ("information about chr \n")
+        elif help_var == "pos":
+            print ("information about pos \n")
+        elif help_var == "res":
+            print ("information about res \n")
+        elif help_var == "alt":
+            print ("information about alt \n")
+
+        inp = input("any other question? y/n : \n")
+        if inp == "n":
+            const = False
+            break
+        else:
+            inp_extra = input("what do you want to type in ? : \n")
+            _help_(inp_extra)
+
+    
+#--help with different options
+def _help_for_admin():
+    print ("what kind of help do you need?")
+    h_inp= input("please select your help type\n")
+
+    parser = argparse.ArgumentParser( add_help=True,               formatter_class=argparse.RawDescriptionHelpFormatter,
+                    description="""
+                        Please type var_str in some way
+                        """,
+                    epilog="""
+                        epilog should be here written
+                        
+                        """,
+                        )
+
+    parser.add_argument('-a', action="store_true",help=
+    """ argument
+            help is
+            wrapped
+            """,
+    )
+    parser.print_help()
+     #here define argment
+    parser.add_argument("--input",type=str ,default= ' ',help="please type in blablabla valid input format")
+    parser.add_argument("--variant",help="variant should be given in format chr-pos-res-alt")
+    parser.add_argument("--result",help="result will be given in yes or no form from beacon")
+    parser.add_argument("--info",help="variant should be given in chr,pos,res,alt")
+    
+    #here save typed argument
+    args= parser.parse_args()
+    input = args.input
+    variant = args.variant
+    result = arg.result
+
+ if __name__ == __main__():
+     __main__()   
+    
