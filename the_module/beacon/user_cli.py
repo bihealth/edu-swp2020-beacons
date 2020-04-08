@@ -1,5 +1,7 @@
 import argparse
-import sys
+import os
+import re
+import textwrap
 #import beacon.common
 
 
@@ -13,12 +15,14 @@ def __main__():
     print("Welcome to our project beacon software!\n" )
     cont = True
     while cont:
-        inp = input("Please enter your variant (chr-pos-res-alt):\n" )
+        inp = input("Please enter your variant (chr-pos-res-alt): \n" )
         # if input is valid - communication to database and send answer
+        
         if _check_input(inp):
             try:
+                print("test 1")
             except: 
-            inp = input("If you like to continue: Press [c]\n If you like to quit: Press [q]")
+                inp = input("If you like to continue: Press [c]\n If you like to quit: Press [q]")
             if inp == c: 
                 cont = True
             elif inp == q:
@@ -26,9 +30,16 @@ def __main__():
             else: 
                 print("You did not choose an understandible input. Your session is quited now.")
                 cont = False
+        elif inp == "--help":
+            helpinp = input("please type your needed help (chr-pos-res-alt)")
+            _help_(helpinp)
+            break
+        elif inp == "exit" :
+            break
         else:
             print("Your input has the wrong format. For futher information tipp --help.")
             #call help function
+
     print("Thank you for using our tool.")
 
     
@@ -49,19 +60,35 @@ def _check_input(var_str):  #maybe better to check each input seperately
         return True
 
 
-def _help_():
-    #mit argsparse
-    """with click button (html) can see following instructions
-    1) what to input(varianble type: no special letters)
-    2) how and where to type in
-    3) how to change search types
-    """
-    parser = argparse.ArgumentParser(
-                    add_help=True,
-                    formatter_class=argparse.RawDescriptionHelpFormatter,
+def _help_(help_var):
+    const = True
+    while const:
+        if help_var == "chr":
+            print ("information about chr \n")
+        elif help_var == "pos":
+            print ("information about pos \n")
+        elif help_var == "res":
+            print ("information about res \n")
+        elif help_var == "alt":
+            print ("information about alt \n")
+
+        inp = input("any other question? y/n : \n")
+        if inp == "n":
+            const = False
+            break
+        else:
+            inp_extra = input("what do you want to type in ? : \n")
+            _help_(inp_extra)
+
+    
+#--help with different options
+def _help_for_admin():
+    print ("what kind of help do you need?")
+    h_inp= input("please select your help type\n")
+
+    parser = argparse.ArgumentParser( add_help=True,               formatter_class=argparse.RawDescriptionHelpFormatter,
                     description="""
                         Please type var_str in some way
-                        
                         """,
                     epilog="""
                         epilog should be here written
@@ -69,16 +96,13 @@ def _help_():
                         """,
                         )
 
-    parser.add_argument(
-        '-a', action="store_true",
-        help="""argument
+    parser.add_argument('-a', action="store_true",help=
+    """ argument
             help is
             wrapped
             """,
     )
-
-parser.print_help()
-    
+    parser.print_help()
      #here define argment
     parser.add_argument("--input",type=str ,default= ' ',help="please type in blablabla valid input format")
     parser.add_argument("--variant",help="variant should be given in format chr-pos-res-alt")
