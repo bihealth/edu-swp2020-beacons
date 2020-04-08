@@ -1,8 +1,7 @@
+from the_module.beacon import database  
+
+
 import pytest  # noqa
-
-from the_module.beacon import database
-
-
 def test_connect_empty(tmpdir):
     path_db = str(tmpdir.join("test.sqlite3"))
     conn = database.ConnectDatabase(path_db)
