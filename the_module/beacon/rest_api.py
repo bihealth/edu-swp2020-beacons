@@ -1,40 +1,28 @@
-from flask import Flask
+from flask import Flask,jsonify
 import common
-from flask.ext import restful
+import settings 
+import database
 
-"""import beacon.database
-import beacon.common
-"""
+connectDb = database.ConnectDatabase(settings.PATH_DATABASE)
+
 app = Flask(__name__)
 
-class Api:
-    def __init__(self):
-        #API input
-        self.chr = chr
-        self.pos=pos
-        self.res = res
-        self.alt = alt
-        pass
+def annVar_ls(var, occ):
+    """Input: common.AnnotatedVariant
+    Output: ls with api values and AnnotatedVariant class  variables
+    function transformes AnnotatedVariant to ls
+    api =[{“chr”:str,“pos”:int,“res”:chr,“alt”:chr,“occ”:bool}]"""
+    var_ls = list(var.__dict__.values())
+    var_ls.append(str(occ))
+    return var_ls
 
-    def annVar_ls():
-        """Input: common.AnnotatedVariant
-                   	        Output: ls with api values and AnnotatedVariant class  variables
-                   	        function transformes AnnotatedVariant to ls
-                   	        api =[{“chr”:str,“pos”:int,“res”:chr,“alt”:chr,“occ”:bool}]"""
-        def checker():
-        #check first whether our amied Variants in our Databank 
-         while True:
-              return False
-        
-        pass
-    class AnnotatedVariant():
-    """
-    Output true or false"""
-    def __init__(self, var, occ):
-        self.var = var
-        self.occ = occ
 
-    def checker():
-         while True:
-              return False
 
+@app.route("/api/<var_str>",methods =['GET'])
+def get_api(var_str) :
+    var = common.parse_var(var_str)
+    occ = connectDb.handle_variant(var)
+    return jsonify(results=annVar_ls(var,occ))
+
+if __name__=="__main__":
+    app.run(debug=True)

@@ -5,7 +5,7 @@ import os
 import re
 import requests
 import subprocess
-
+import json
 
 def __main__():
     """ 
@@ -14,10 +14,6 @@ def __main__():
     the function receives some command parameters like the Variant    
     string or help host$ python beacon.user_cli.py var_str
     """
-    path = os.path.dirname(os.path.realpath(__file__))
-    print(path)
-    server = subprocess.call(['python', 'rest_api.py'], cwd = patht  )
-    #first input and user communication
     print("Welcome to our project beacon software!\n" )
     cont = True
     while cont:
@@ -27,11 +23,11 @@ def __main__():
             #try:
 
             rep = requests.get('http://localhost:5000/api/'+inp)
-            res = " - ".join(rep.json())
+            res = " - ".join(rep.json()["results"])
             print("The result of your request is:")
             print(res, "\n")
             #except:
-             #   print("error")
+                #print("\nWe have troubles reaching the server, please ask your local administrator or start 'rest_apy.py' in a seperate terminal.")
 
             inp = input("If you like to continue: Press [c]\nIf you like to quit: Press [q]\n")
             if inp == "c": 
@@ -45,7 +41,6 @@ def __main__():
             print("Your input has the wrong format. For futher information tipp --help.")
             #call help function
     print("Thank you for using our tool.")
-    server.kill()
     
     
    
@@ -119,6 +114,6 @@ def _help_for_admin():
     variant = args.variant
     result = arg.result
 
- if __name__ == __main__():
-     __main__()   
+if __name__ == __main__():
+    __main__()   
     
