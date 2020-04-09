@@ -43,13 +43,7 @@ def handle():
     occ = connectDb.handle_variant(var)
     return render_template("output.html", title='Results', **locals()) 
 
-
-@app.route("/api/<var_str>",methods =['GET']) 
-def get_api(var_str) :
-    var = beacon.common.variantStringParser(var_str)
-    ann_var = database.handle_variant(var)
-    return jsonify(beacon.rest_api.annVar_ls(ann_var))
-  
+ 
 """
 @app.teardown_appcontext
 def close_connection():
