@@ -31,7 +31,7 @@ class ConnectDatabase:
         """Input: Variant Object
       	   Output: bool or Error Object
      	   Gets an variant object from flask handle/rest_api and parses request to database and gets an bool or Error as an output """
-        sql_str = "SELECT id FROM variants WHERE chr = '"+variant.chr+"' AND pos = "+str(variant.pos)+" AND ref = '"+variant.res+"' AND alt = '"+variant.alt+"';"
+        sql_str = "SELECT id FROM variants WHERE chr = '"+variant.chr+"' AND pos = "+str(variant.pos)+" AND ref = '"+variant.ref+"' AND alt = '"+variant.alt+"';"
         occ = self.parse_statement(sql_str, True)
         return occ
         
