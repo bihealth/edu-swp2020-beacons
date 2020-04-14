@@ -1,13 +1,13 @@
 import sqlite3
 from sqlite3 import Error
 #import beacon.common
-import database
+from . import database
 import vcf
 import os
 
 #db_connection = DatabaseConnection(path=os.environ.get("/database.db"))
 #wann wollen wir datenbank path festlegen? bei jeder neuen datenbank automatisch oder separiert durch den admint?
-#error handling
+#error handling -> if type(output) != str/bool: raise Exception(output.args[0])
 
 def parse_vcf(infile, con):
     vcf_reader = vcf.Reader(infile)
@@ -16,10 +16,10 @@ def parse_vcf(infile, con):
             """give to datenbank (sql_str)"""
             chr = variant.CHROM
             pos = str(variant.POS)
-            res = variant.REF
+            ref = variant.REF
             alt = "".join(str(i or '') for i in variant.ALT)
             #print(alt)
-            sql_str = "INSERT INTO variants (chr,pos,ref,alt) VALUES ("+chr+","+pos+",'"+res+"','"+alt+"');"
+            sql_str = "INSERT INTO variants (chr,pos,ref,alt) VALUES ("+chr+","+pos+",'"+ref+"','"+alt+"');"
             #print(sql_str)
             con.parse_statement(sql_str)
         return True
@@ -97,10 +97,10 @@ class OperateDatabase:
         try:
             chr = variants[0]
             pos = str(variants[1])
-            res = variants[2]
+            ref = variants[2]
             alt = "".join(str(i or '') for i in variants[3]) 
             id = variants[4]  
-            sql_str = "UPDATE variants SET chr = "+chr+", pos = "+pos+" , ref = '"+res+"' , alt = '"+alt+"' WHERE id = "+id+""                         
+            sql_str = "UPDATE variants SET chr = "+chr+", pos = "+pos+" , ref = '"+ref+"' , alt = '"+alt+"' WHERE id = "+id+""                         
             output = con.parse_statement(sql_str)
             #print_db(con)
             return "rufe -p auf, um die Änderung zu sehen"

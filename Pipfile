@@ -9,6 +9,8 @@ verify_ssl = true
 pytest = "*"
 flake8 = "*"
 black = "==19.10b0"
+pyvcf = "*"
+requests = "*"
 
 [requires]
 python_version = "3"
