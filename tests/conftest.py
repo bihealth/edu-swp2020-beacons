@@ -1,5 +1,5 @@
 import sqlite3
-
+import vcf
 import pytest
 
 
@@ -35,3 +35,12 @@ def demo_db_path(tmpdir):
             )
 
     return path_db
+
+@pytest.fixture
+def demo_vcf_file(tmpdir):
+#create and write vcf file
+    vcf_file = tmpdir.join("demo.vcf")
+    vcf_writer = vcf.Writer(open(vcf_file, 'w'))
+    vcf_writer.write_record(Record(CHROM=20, POS=14370, REF=G, ALT=[A]))
+    return vcf_file
+    
