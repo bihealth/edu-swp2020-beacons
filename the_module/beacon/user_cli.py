@@ -1,6 +1,6 @@
 import argparse
 import sys
-import common
+from . import common
 import os
 import re
 import requests
@@ -20,14 +20,17 @@ def __main__():
         inp = input("Please enter your variant (chr-pos-res-alt):\n" )
         # if input is valid - communication to database and send answer
         if _check_input(inp):
-            #try:
+            try:
 
-            rep = requests.get('http://localhost:5000/api/'+inp)
-            res = " - ".join(rep.json()["results"])
-            print("The result of your request is:")
-            print(res, "\n")
-            #except:
-                #print("\nWe have troubles reaching the server, please ask your local administrator or start 'rest_apy.py' in a seperate terminal.")
+                rep = requests.get('http://localhost:5000/api/'+inp)
+                res = " - ".join(rep.json()["results"])
+                if isinstance(rep.json()["results"][4],bool):
+                    print("The result of your request is:")
+                    print(res, "\n")
+                else:
+                    print("\nWe have troubles with the database, please ask your admin for help.\n")
+            except:
+                print("\nWe have troubles reaching the server, please ask your local administrator or start 'rest_apy.py' in a seperate terminal.")
 
             inp = input("If you like to continue: Press [c]\nIf you like to quit: Press [q]\n")
             if inp == "c": 
