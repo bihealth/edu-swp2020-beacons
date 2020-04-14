@@ -4,10 +4,11 @@ import common
 import os
 import re
 import requests
+import sys
 import subprocess
 import json
 
-def __main__():
+def main():
     """ 
     var_str = user input
     Output (print): Annotated Variant
@@ -114,6 +115,6 @@ def _help_for_admin():
     variant = args.variant
     result = arg.result
 
-if __name__ == __main__():
-    __main__()   
-    
+
+if __name__ == "__main__":
+    sys.exit(main())
