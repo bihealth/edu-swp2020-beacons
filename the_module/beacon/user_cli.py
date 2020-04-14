@@ -7,7 +7,7 @@ import requests
 import subprocess
 import json
 
-def __main__():
+def main():
     """ 
     var_str = user input
     Output (print): Annotated Variant
@@ -117,6 +117,9 @@ def _help_for_admin():
     variant = args.variant
     result = arg.result
 
-if __name__ == __main__():
-    __main__()   
+def init():
+    if __name__ == "__main__":
+        sys.exit(main())
+
+init()
     
