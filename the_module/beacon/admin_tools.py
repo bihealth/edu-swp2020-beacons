@@ -1,6 +1,7 @@
 import sqlite3
 from sqlite3 import Error
 #import beacon.common
+#import database
 from . import database
 import vcf
 import os
@@ -21,10 +22,12 @@ def parse_vcf(infile, con):
             #print(alt)
             sql_str = "INSERT INTO variants (chr,pos,ref,alt) VALUES ("+chr+","+pos+",'"+ref+"','"+alt+"');"
             #print(sql_str)
-            con.parse_statement(sql_str)
+            output = con.parse_statement(sql_str)
+            if type(output)  == sqlite3.Error: 
+                raise Exception(output)
         return True
-    except sqlite3.Error as e:
-        return e
+    except IOError:
+        print("kann datei nicht lesen")
     infile.close()   
 
 class CreateDbCommand:
@@ -44,9 +47,11 @@ class CreateDbCommand:
                                         alt text NOT NULL
                                     ); """        
             output = con.parse_statement(sql_create_db_table) 
+            if type(output)  == sqlite3.Error: 
+                raise Exception(output)
             return True
         except sqlite3.Error as e:
-            return e
+            return e 
         
 class SearchDuplicatesCommand:
     def __init__(self):
@@ -60,6 +65,8 @@ class SearchDuplicatesCommand:
             #sql_find_dup = "SELECT DISTINCT chr, pos, ref, alt FROM variants ORDER BY chr;"  
             sql_find_dup = "SELECT id, chr, pos, COUNT(*) FROM variants GROUP BY chr, pos, ref, alt HAVING COUNT(*) > 1;"
             output = con.parse_statement(sql_find_dup)
+            if type(output) == sqlite3.Error: 
+               raise Exception(output)
             for out in output:
                 print(out)
             return ""
@@ -75,6 +82,8 @@ class OperateDatabase:
         try:
             sql_print = "SELECT id, chr, pos, ref, alt FROM variants GROUP BY id, chr, pos, ref, alt"                         
             output = con.parse_statement(sql_print)
+            if type(output) == sqlite3.Error: 
+                raise Exception(output)
             for out in output:
                 print(out)
             return ""
@@ -86,6 +95,8 @@ class OperateDatabase:
         try:
             sql_count_var = "SELECT COUNT(*) FROM variants"                         
             output = con.parse_statement(sql_count_var)
+            if type(output) == sqlite3.Error: 
+                raise Exception(output)
             return (int(output[0][0]))
         except sqlite3.Error as e:
             return e
@@ -95,15 +106,18 @@ class OperateDatabase:
         Output:bool
         function access the database using connect() and updates."""
         try:
-            chr = variants[0]
+            chr = str(variants[0])
             pos = str(variants[1])
             ref = variants[2]
             alt = "".join(str(i or '') for i in variants[3]) 
-            id = variants[4]  
+            id = str(variants[4])
             sql_str = "UPDATE variants SET chr = "+chr+", pos = "+pos+" , ref = '"+ref+"' , alt = '"+alt+"' WHERE id = "+id+""                         
             output = con.parse_statement(sql_str)
+            if type(output) == sqlite3.Error: 
+                raise Exception(output)
             #print_db(con)
-            return "rufe -p auf, um die Änderung zu sehen"
+            print("rufe -p auf, um die Änderung zu sehen")
+            return True
         except sqlite3.Error as e:
             return e
 
@@ -112,10 +126,13 @@ class OperateDatabase:
         Output: bool
         function deletes given Variant in db and gives bool if succeeded back"""
         try: 
-            id = id[0]
+            id = str(id)
             sql_str = "DELETE FROM variants WHERE id= "+id+""
             output = con.parse_statement(sql_str)
-            return "rufe -p auf, um die Änderung zu sehen"
+            if type(output) == sqlite3.Error: 
+                raise Exception(output)
+            print("rufe -p auf, um die Änderung zu sehen")
+            return True
         except sqlite3.Error as e:
             return e
  
