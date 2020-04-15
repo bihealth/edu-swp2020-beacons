@@ -1,2 +1,6 @@
-PATH_DATABASE =  "~/edu-swp2020-beacons/the_module/beacon/data.db"
+import os
+
+path = os.path.dirname(__file__)
+
+PATH_DATABASE =  os.path.join(path, "data.db")
 
