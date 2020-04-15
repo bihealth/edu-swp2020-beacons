@@ -12,7 +12,10 @@ def annVar_ls(var, occ):
     function transformes AnnotatedVariant to ls
     api =[{“chr”:str,“pos”:int,“res”:chr,“alt”:chr,“occ”:bool}]"""
     var_ls = list(var.__dict__.values())
-    var_ls.append(str(occ))
+    if isinstance(occ, bool):
+        var_ls.append(occ)
+    else:
+        var_ls.append(occ.args[0])
     return var_ls
 
 

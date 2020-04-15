@@ -30,6 +30,7 @@ def main():
                     print(res, "\n")
                 else:
                     print("\nWe have troubles with the database, please ask your admin for help.\n")
+                    print("The occuring error is: '", rep.json()["results"][4], "'\n")
             except:
                 print("\nWe have troubles reaching the server, please ask your local administrator or start 'rest_apy.py' in a seperate terminal.")
 
