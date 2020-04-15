@@ -25,7 +25,7 @@ def main():
 
                 rep = requests.get('http://localhost:5000/api/'+inp)
                 res = " - ".join(rep.json()["results"])
-                if isinstance(rep.json()["results"][4],bool):
+                if rep.json()["results"][4] == 'True' or rep.json()["results"][4] == 'False':
                     print("The result of your request is:")
                     print(res, "\n")
                 else:
