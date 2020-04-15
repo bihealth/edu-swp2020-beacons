@@ -12,6 +12,7 @@ black = "==19.10b0"
 pyvcf = "*"
 requests = "*"
 flask = "*"
+requests-mock = "*"
 
 [requires]
 python_version = "3"
