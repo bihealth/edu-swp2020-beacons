@@ -1,7 +1,9 @@
 import sqlite3
 import vcf
 import pytest
-
+import os
+import tempfile
+import requests
 
 SQL_CREATE = r"""
 CREATE TABLE IF NOT EXISTS variants (
@@ -65,11 +67,4 @@ def demo_vcf_file(tmpdir):
     vcf_file.write("20     1230237  .          T     .      47    PASS    NS=3;DP=13;AA=T                   GT:GQ:DP:HQ  0|0:54:7:56,60  0|0:48:4:51,51   0/0:61:2\n")
     vcf_file.write("20     1234567  microsat1  GTC   G,GTCT 50    PASS    NS=3;DP=9;AA=G                    GT:GQ:DP     0/1:35:4        0/2:17:2         1/1:40:3")
     return vcf_file
-
-#@pytest.fixture
-#def empty_vcf_file(tmpdir):
-#    #create empty vcf file
-#    vcf_empty = tmpdir.join("empty.vcf")
-#    vcf_empty.write("")
-#    return vcf_empty
 
