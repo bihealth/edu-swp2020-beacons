@@ -19,7 +19,7 @@ def testserver():
 #@pytest.mark.parametrize("
 def test_init(monkeypatch, capsys):
     monkeypatch.setattr('cli._check_input', labda x: True)
-    monkeypatch.setattr('requests.get', lambda x: jsonify(results='
+    monkeypatch.setattr('requests.get', lambda x: jsonify(results= [x.split('-')[1],x.split('-')[2],x.split('-')[3],x.split('-')[4], True]
     monkeypatch.setattr('builtins.input', lambda x: 19)
     cli.main()
     print("blubblub")
