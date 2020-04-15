@@ -1,6 +1,5 @@
 import sqlite3
 from sqlite3 import Error
-#import beacon.common
 #import database
 from . import database
 import vcf

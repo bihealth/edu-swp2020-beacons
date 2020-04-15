@@ -1,40 +1,35 @@
 from the_module.beacon import admin_cli
 import pytest
+import argparse
+import sys
 
+def test_path():
+    admin_cli.input = lambda input: 'demo_db_path'
+    out = admin_cli.path()
+    assert out is not None
+    assert out == admin_cli.input('')
 
+def test_parser(demo_vcf_file):
+    parser = admin_cli.parse_args(['-ct','-vcf',str(demo_vcf_file),'-fd','-p','-c','-u','1','1','A','A','1','-d','1'])
+    
+    ct = parser.create_table
+    vcf = parser.insert_data
+    fd = parser.find_dup
+    p = parser.print_db
+    c = parser.count_variants
+    u = parser.update
+    d = parser.delete  
 
-def test_main_create_table(parse):
-    main = admin_cli.main(parse.create_table)
-    assert main is True
-
-def test_insert_data():
-    main = admin_cli.main('-vcf')
-    assert main is True
-
-def test_main_find_dup():
-    main = admin_cli.main('-fd')
-    assert main is ""
-
-def test_print():
-    main = admin_cli.main('-p')
-    assert main is ""
-
-def test_main_count_variants():
-    main = admin_cli.main('-c')
-    assert main == 3
-
-def test_update():
-    main = admin_cli.main('-u')
-    assert main is True
-
-def test_delete():
-    main= admin_cli.main('delete') 
-    assert main is True
-
-   
-# assert admin_cli.main == 
-
-#assert "hello" == "Hai" is an assertion failure.
-#assert x == y,"test failed because x=" + str(x) + " y=" + str(y)#
-
-#https://stackoverflow.com/questions/18160078/how-do-you-write-tests-for-the-argparse-portion-of-a-python-module
+    assert ct is True
+    assert vcf is not None 
+    assert fd is True
+    assert p is True
+    assert c is True 
+    assert u is not None
+    assert d is not None
+    
+def test_main(demo_db_path,demo_vcf_file):
+    parser = admin_cli.parse_args(['-ct','-vcf',str(demo_vcf_file),'-fd','-p','-c','-u','1','1','A','A','1','-d','1'])
+    out = admin_cli.main(demo_db_path, parser)
+    assert out is not None
+    assert out is True
