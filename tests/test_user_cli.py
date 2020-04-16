@@ -3,13 +3,15 @@ from the_module.beacon import user_cli
 import requests_mock
 
 inputs = [("1-1-A-A",True), ("3-4-X-T",False),("1.1.A.T.",False)]
-inputs2 = [("1-1-A-A","q"),("3-4-X-T","q"),("1.1.A.T.","x")]
+inputs2 = [("1-1-A-A","q",['Welcome to our project beacon software!', '', 'The result of your request is:', '1 - 1 - A - A - True ', '', 'Thank you for using our tool.', '']
+),("3-4-X-T","q",['Welcome to our project beacon software!', '', 'Your input has the wrong format. For futher information tipp --help.', 'Thank you for using our tool.', '']
+),("1.1.A.T.","x",['Welcome to our project beacon software!', '', 'Your input has the wrong format. For futher information tipp --help.', 'You did not choose an understandible input. Your session is quited now.', 'Thank you for using our tool.', ''])]
 
 
 
-@pytest.mark.parametrize("var,sig", inputs2)
+@pytest.mark.parametrize("var,sig,output", inputs2)
 @requests_mock.Mocker(kw='mock')
-def test_init(var,sig, monkeypatch, capsys, **kwargs):
+def test_init(var,sig, output , monkeypatch, capsys, **kwargs):
     kwargs['mock'].get('http://localhost:5000/api/1-1-A-A', json = {'results':['1','1','A','A','True']})
     #monkeypatch.setattr(user_cli, '_check_input', lambda x: True)
     def mock_input(x):
@@ -21,9 +23,14 @@ def test_init(var,sig, monkeypatch, capsys, **kwargs):
     monkeypatch.setattr('builtins.input', mock_input)
     user_cli.main()
 
-    captured = capsys.readouterr()
+    captured = capsys.readouterr().out.split("\n")
+    for i in range(len(output)):
+        print("hier")
+        assert captured[i] == output[i]
+    cap = capsys.readouterr().out
+
     with capsys.disabled():
-        print(captured.out)
+        print(cap)
 
 @pytest.mark.parametrize("inp,val",inputs)
 def test__check_input(inp,val):
