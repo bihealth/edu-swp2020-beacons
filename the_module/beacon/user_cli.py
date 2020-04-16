@@ -18,14 +18,14 @@ def main():
     print("Welcome to our project beacon software!\n" )
     cont = True
     while cont:
-        inp = input("Please enter your variant (chr-pos-res-alt):\n" )
+        inp = input("Please enter your variant (chr-pos-ref-alt):\n" )
         # if input is valid - communication to database and send answer
         if _check_input(inp):
             try:
 
                 rep = requests.get('http://localhost:5000/api/'+inp)
                 res = " - ".join(rep.json()["results"])
-                if isinstance(rep.json()["results"][4],bool):
+                if rep.json()["results"][4] == 'True' or rep.json()["results"][4] == 'False':
                     print("The result of your request is:")
                     print(res, "\n")
                 else:
@@ -34,17 +34,18 @@ def main():
             except:
                 print("\nWe have troubles reaching the server, please ask your local administrator or start 'rest_apy.py' in a seperate terminal.")
 
-            inp = input("If you like to continue: Press [c]\nIf you like to quit: Press [q]\n")
-            if inp == "c": 
-                 cont = True
-            elif inp == "q":
-                cont = False 
-            else: 
-                print("You did not choose an understandible input. Your session is quited now.")
-                cont = False
         else:
             print("Your input has the wrong format. For futher information tipp --help.")
             #call help function
+ 
+        inp = input("If you like to continue: Press [c]\nIf you like to quit: Press [q]\n")
+        if inp == "c": 
+            cont = True
+        elif inp == "q":
+            cont = False 
+        else: 
+            print("You did not choose an understandible input. Your session is quited now.")
+            cont = False           
     print("Thank you for using our tool.")
     
     
@@ -86,39 +87,39 @@ def _help_(help_var):
 
     
 #--help with different options
-def _help_for_admin():
-    print ("what kind of help do you need?")
-    h_inp= input("please select your help type\n")
-
-    parser = argparse.ArgumentParser( add_help=True,               formatter_class=argparse.RawDescriptionHelpFormatter,
-                    description="""
-                        Please type var_str in some way
-                        """,
-                    epilog="""
-                        epilog should be here written
-                        
-                        """,
-                        )
-
-    parser.add_argument('-a', action="store_true",help=
-    """ argument
-            help is
-            wrapped
-            """,
-    )
-    parser.print_help()
-     #here define argment
-    parser.add_argument("--input",type=str ,default= ' ',help="please type in blablabla valid input format")
-    parser.add_argument("--variant",help="variant should be given in format chr-pos-res-alt")
-    parser.add_argument("--result",help="result will be given in yes or no form from beacon")
-    parser.add_argument("--info",help="variant should be given in chr,pos,res,alt")
-    
-    #here save typed argument
-    args= parser.parse_args()
-    input = args.input
-    variant = args.variant
-    result = arg.result
-
+#def _help_for_admin():
+#    print ("what kind of help do you need?")
+#    h_inp= input("please select your help type\n")
+#
+#    parser = argparse.ArgumentParser( add_help=True,               formatter_class=argparse.RawDescriptionHelpFormatter,
+#                    description="""
+#                        Please type var_str in some way
+#                        """,
+#                    epilog="""
+#                        epilog should be here written
+#                        
+#                        """,
+#                        )
+#
+#    parser.add_argument('-a', action="store_true",help=
+#    """ argument
+#            help is
+#            wrapped
+#            """,
+#    )
+#    parser.print_help()
+#     #here define argment
+#    parser.add_argument("--input",type=str ,default= ' ',help="please type in blablabla valid input format")
+#    parser.add_argument("--variant",help="variant should be given in format chr-pos-res-alt")
+#    parser.add_argument("--result",help="result will be given in yes or no form from beacon")
+#    parser.add_argument("--info",help="variant should be given in chr,pos,res,alt")
+#    
+#    #here save typed argument
+#    args= parser.parse_args()
+#    input = args.input
+#    variant = args.variant
+#    result = arg.result
+#
 def init():
     if __name__ == "__main__":
         sys.exit(main())
