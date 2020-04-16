@@ -35,18 +35,13 @@ def handle():
     “handle_variant” and uses from common function var_str to convert AnnotatedVariant to string
     """
     connectDb = database.ConnectDatabase(settings.PATH_DATABASE)
-
     req = request.form
     inp = req["var"]     
     var = common.parse_var(inp)
-    #ann_var = database.handle_variant(var)
-    #unann_var = common.parse_var(ann_var)
     occ = connectDb.handle_variant(var)
-    print(occ)
     if isinstance(occ, bool):
         return render_template("output.html", title='Results', **locals()) 
     else:
-        occ = False
         return render_template("output.html", title='Results', **locals())
 
  

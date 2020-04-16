@@ -4,6 +4,8 @@ import pytest
 import os
 import tempfile
 import requests
+import flask
+from the_module.beacon import flask_app
 
 SQL_CREATE = r"""
 CREATE TABLE IF NOT EXISTS variants (
@@ -68,3 +70,7 @@ def demo_vcf_file(tmpdir):
     vcf_file.write("20     1234567  microsat1  GTC   G,GTCT 50    PASS    NS=3;DP=9;AA=G                    GT:GQ:DP     0/1:35:4        0/2:17:2         1/1:40:3")
     return vcf_file
 
+@pytest.fixture
+def client():
+   # flask_app.app.config['TESTING'] = True
+    return flask_app.app.test_client() 
