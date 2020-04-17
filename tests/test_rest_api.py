@@ -1,7 +1,7 @@
 import pytest
 
-from the_module.beacon import rest_api
-from the_module.beacon import common
+from beacon import rest_api
+from beacon import common
 import json
 
 def test_annVar_ls():

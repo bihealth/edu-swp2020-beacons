@@ -1,5 +1,5 @@
 import pytest
-from the_module.beacon import common
+from beacon import common
 
 def test_parse_var():
     input_str = "X-1-A-A"

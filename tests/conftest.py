@@ -5,7 +5,7 @@ import os
 import tempfile
 import requests
 import flask
-from the_module.beacon import flask_app
+from beacon import flask_app
 
 SQL_CREATE = r"""
 CREATE TABLE IF NOT EXISTS variants (

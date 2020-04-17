@@ -1,5 +1,5 @@
-from the_module.beacon import admin_tools
-from the_module.beacon import database
+from beacon import admin_tools
+from beacon import database
 import pytest
 import sqlite3
 

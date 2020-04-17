@@ -1,5 +1,5 @@
-from the_module.beacon import database
-from the_module.beacon import common
+from beacon import database
+from beacon import common
 import pytest  # noqa
 
 def test_connect_empty(tmpdir):

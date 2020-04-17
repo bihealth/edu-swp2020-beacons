@@ -1,5 +1,5 @@
 import pytest
-from the_module.beacon import flask_app
+from beacon import flask_app
 import re
 
 

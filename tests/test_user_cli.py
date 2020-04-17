@@ -1,5 +1,5 @@
 import pytest
-from the_module.beacon import user_cli
+from beacon import user_cli
 import requests_mock
 
 inputs = [("1-1-A-A",True), ("3-4-X-T",False),("1.1.A.T.",False)]

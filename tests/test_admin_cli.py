@@ -1,4 +1,4 @@
-from the_module.beacon import admin_cli
+from beacon import admin_cli
 import pytest
 import argparse
 import sys
