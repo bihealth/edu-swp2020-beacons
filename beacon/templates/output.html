@@ -1,11 +1,12 @@
 {% extends "layout.html" %} 
 {% block contennt %}
     <h1>Results</h1>
-    {% if occ == True%}
-        <p>Your variant {{inp}} was found.</p>
-    {% endif %}
-    {% if occ == False %}
-        <p>Your variant {{inp}} was not found.</p>
+    {% if occ == True or occ == False%}
+        {%if occ == True%}
+            <p>Your variant {{inp}} was found.</p>
+        {% else %}
+            <p>Your variant {{inp}} was not found.</p>
+        {% endif %}
     {% else %}
         <p>An Error has occured: {{occ}}</p>
     {% endif %}
