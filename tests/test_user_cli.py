@@ -25,12 +25,9 @@ def test_init(var,sig, output , monkeypatch, capsys, **kwargs):
 
     captured = capsys.readouterr().out.split("\n")
     for i in range(len(output)):
-        print("hier")
         assert captured[i] == output[i]
     cap = capsys.readouterr().out
 
-    with capsys.disabled():
-        print(cap)
 
 @pytest.mark.parametrize("inp,val",inputs)
 def test__check_input(inp,val):
