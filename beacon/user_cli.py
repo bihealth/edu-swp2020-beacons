@@ -25,10 +25,9 @@ def main():
             try:
 
                 rep = requests.get("http://localhost:5000/api/" + inp)
-                res = " - ".join(rep.json()["results"])
+                res = " - ".join(map(str,rep.json()["results"]))
                 if (
-                    rep.json()["results"][4] == "True"
-                    or rep.json()["results"][4] == "False"
+                    isinstance(rep.json()["results"][4],bool)
                 ):
                     print("The result of your request is:")
                     print(res, "\n")
@@ -37,10 +36,12 @@ def main():
                         "\nWe have troubles with the database, please ask your admin for help.\n"
                     )
                     print("The occuring error is: '", rep.json()["results"][4], "'\n")
-            except:
-                print(
-                    "\nWe have troubles reaching the server, please ask your local administrator or start 'rest_apy.py' in a seperate terminal."
-                )
+            except Exception as e:
+                print(e)
+
+                #print(
+                 #   "\nWe have troubles reaching the server, please ask your local administrator or start 'rest_apy.py' in a seperate terminal."
+                #)
 
         else:
             print(
