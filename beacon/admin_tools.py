@@ -22,20 +22,9 @@ def parse_vcf(infile, con):
             pos = str(variant.POS)
             ref = variant.REF
             alt = "".join(str(i or "") for i in variant.ALT)
-            # print(alt)
-            sql_str = (
-                "INSERT INTO variants (chr,pos,ref,alt) VALUES ("
-                + chr
-                + ","
-                + pos
-                + ",'"
-                + ref
-                + "','"
-                + alt
-                + "');"
-            )
-            # print(sql_str)
-            output = con.parse_statement(sql_str)
+            sql_str = "INSERT INTO variants (chr,pos,ref,alt) VALUES (?,?,?,?);"
+            parameters = (chr, pos, ref, alt)
+            output = con.parse_statement(sql_str, parameters)
             if type(output) == sqlite3.Error:
                 raise Exception(output)
         return True
@@ -53,14 +42,19 @@ class CreateDbCommand:
        Output: bool
        creates variant table in database """
         try:
-            sql_create_db_table = """ CREATE TABLE IF NOT EXISTS variants (
-                                        id integer PRIMARY KEY AUTOINCREMENT,
-                                        chr text NOT NULL,
-                                        pos integer NOT NULL,
-                                        ref text NOT NULL,
-                                        alt text NOT NULL
-                                    ); """
-            output = con.parse_statement(sql_create_db_table)
+            sql_create_db_table = "CREATE TABLE IF NOT EXISTS variants ( id integer ?, chr text ?, pos integer ?, ref text ?, alt text ?;)"
+            # pos integer NOT NULL,
+            # ref text NOT NULL,
+            # alt text NOT NULL
+            # );'
+            parameters = (
+                "PRIMARY KEY AUTOINCREMENT",
+                "NOT NULL",
+                "NOT NULL",
+                "NOT NULL",
+                "NOT NULL",
+            )
+            output = con.parse_statement(sql_create_db_table, parameters)
             if type(output) == sqlite3.Error:
                 raise Exception(output)
             return True
@@ -79,7 +73,7 @@ class SearchDuplicatesCommand:
         try:
             # sql_find_dup = "SELECT DISTINCT chr, pos, ref, alt FROM variants ORDER BY chr;"
             sql_find_dup = "SELECT id, chr, pos, COUNT(*) FROM variants GROUP BY chr, pos, ref, alt HAVING COUNT(*) > 1;"
-            output = con.parse_statement(sql_find_dup)
+            output = con.parse_statement(sql_find_dup, ())
             if type(output) == sqlite3.Error:
                 raise Exception(output)
             for out in output:
@@ -97,7 +91,7 @@ class OperateDatabase:
         """prints whole Database"""
         try:
             sql_print = "SELECT id, chr, pos, ref, alt FROM variants GROUP BY id, chr, pos, ref, alt"
-            output = con.parse_statement(sql_print)
+            output = con.parse_statement(sql_print, ())
             if type(output) == sqlite3.Error:
                 raise Exception(output)
             for out in output:
@@ -110,7 +104,7 @@ class OperateDatabase:
         """ counts the existing number of (all) Variants """
         try:
             sql_count_var = "SELECT COUNT(*) FROM variants"
-            output = con.parse_statement(sql_count_var)
+            output = con.parse_statement(sql_count_var, ())
             if type(output) == sqlite3.Error:
                 raise Exception(output)
             return int(output[0][0])
@@ -128,19 +122,10 @@ class OperateDatabase:
             alt = "".join(str(i or "") for i in variants[3])
             id = str(variants[4])
             sql_str = (
-                "UPDATE variants SET chr = "
-                + chr
-                + ", pos = "
-                + pos
-                + " , ref = '"
-                + ref
-                + "' , alt = '"
-                + alt
-                + "' WHERE id = "
-                + id
-                + ""
+                "UPDATE variants SET chr = ?, pos = ?, ref = ?, alt = ? WHERE id = ? ;"
             )
-            output = con.parse_statement(sql_str)
+            parameters = (chr, pos, ref, alt, id)
+            output = con.parse_statement(sql_str, parameters)
             if type(output) == sqlite3.Error:
                 raise Exception(output)
             # print_db(con)
@@ -154,9 +139,9 @@ class OperateDatabase:
         Output: bool
         function deletes given Variant in db and gives bool if succeeded back"""
         try:
-            id = str(id)
-            sql_str = "DELETE FROM variants WHERE id= " + id + ""
-            output = con.parse_statement(sql_str)
+            sql_str = "DELETE FROM variants WHERE id= ?;"
+            parameters = id
+            output = con.parse_statement(sql_str, parameters)
             if type(output) == sqlite3.Error:
                 raise Exception(output)
             print("rufe -p auf, um die Änderung zu sehen")

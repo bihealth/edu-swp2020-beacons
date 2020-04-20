@@ -25,10 +25,8 @@ def main():
             try:
 
                 rep = requests.get("http://localhost:5000/api/" + inp)
-                res = " - ".join(map(str,rep.json()["results"]))
-                if (
-                    isinstance(rep.json()["results"][4],bool)
-                ):
+                res = " - ".join(map(str, rep.json()["results"]))
+                if isinstance(rep.json()["results"][4], bool):
                     print("The result of your request is:")
                     print(res, "\n")
                 else:
@@ -39,9 +37,9 @@ def main():
             except Exception as e:
                 print(e)
 
-                #print(
-                 #   "\nWe have troubles reaching the server, please ask your local administrator or start 'rest_apy.py' in a seperate terminal."
-                #)
+                # print(
+                #   "\nWe have troubles reaching the server, please ask your local administrator or start 'rest_apy.py' in a seperate terminal."
+                # )
 
         else:
             print(

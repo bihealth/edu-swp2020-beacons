@@ -21,23 +21,27 @@ def test_connect_demoXXX(demo_db_path):
 
 def test_parse_statement_none(demo_db_path):
     conn = database.ConnectDatabase(demo_db_path)
-    output = conn.parse_statement("")
+    output = conn.parse_statement("", ())
     assert output is not bool
 
 
 def test_parse_statement_admin(demo_db_path):
     conn = database.ConnectDatabase(demo_db_path)
-    output = conn.parse_statement("SELECT chr, pos, ref, alt FROM variants;")
+    output = conn.parse_statement("SELECT chr, pos, ref, alt FROM variants;", ())
     assert output is not None
 
 
 def test_parse_statement_user(demo_db_path):
     conn = database.ConnectDatabase(demo_db_path)
+    parameters0 = ("1", 1000000, "C", "G")
     output0 = conn.parse_statement(
-        "SELECT chr, pos, ref, alt FROM variants WHERE chr = '1' AND pos = 10000000 AND ref = 'C' AND pos = 'G';"
+        "SELECT chr, pos, ref, alt FROM variants WHERE chr = ? AND pos = ? AND ref = ? AND pos = ?;",
+        parameters0,
     )
+    parameters1 = ("X", 10000000, "C", "G")
     output1 = conn.parse_statement(
-        "SELECT chr, pos, ref, alt FROM variants WHERE chr = 'X' AND pos = 10000000 AND ref = 'C' AND pos = 'G';"
+        "SELECT chr, pos, ref, alt FROM variants WHERE chr = ? AND pos = ? AND ref = ? AND pos = ?;",
+        parameters1,
     )
     assert output0 is not None
     assert len(output1) is 0
