@@ -48,7 +48,7 @@ inputs2 = [
 def test_init(var, sig, output, monkeypatch, capsys, **kwargs):
     kwargs["mock"].get(
         "http://localhost:5000/api/1-1-A-A",
-        json={"results": ["1", "1", "A", "A", "True"]},
+        json={"results": ["1", "1", "A", "A", True]},
     )
     # monkeypatch.setattr(user_cli, '_check_input', lambda x: True)
     def mock_input(x):
