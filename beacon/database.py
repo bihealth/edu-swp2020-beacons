@@ -7,13 +7,13 @@ class ConnectDatabase:
     def __init__(self, database):
         self.connection = sqlite3.connect(database)
 
-    def parse_statement(self, sql_str, parameters = None, annV_bool=False):
+    def parse_statement(self, sql_str, parameters=None, annV_bool=False):
         """ Input: sql_string
         Output: cursor_ouput or Error
         function creates cursor object and requests database, gives “answer” back """
         try:
             c = self.connection.cursor()
-            c.execute(sql_str,parameters)
+            c.execute(sql_str, parameters)
             self.connection.commit()
             output = c.fetchall()
             if annV_bool:
@@ -30,7 +30,7 @@ class ConnectDatabase:
         """Input: Variant Object
       	   Output: bool or Error Object
      	   Gets an variant object from flask handle/rest_api and parses request to database and gets an bool or Error as an output """
-        sql_str = 'SELECT id FROM variants WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;'
+        sql_str = "SELECT id FROM variants WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
         parameters = (variant.chr, variant.pos, variant.ref, variant.alt)
         occ = self.parse_statement(sql_str, parameters, True)
         return occ
