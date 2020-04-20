@@ -1,7 +1,9 @@
+"""
+...that maintain the database
+"""
+
 import sqlite3
 from sqlite3 import Error
-
-# import database
 from . import database
 import vcf
 import os
