@@ -1,12 +1,14 @@
 from . import common
 from . import database
-#import user_cli
-#import rest_api
+
+# import user_cli
+# import rest_api
 import webbrowser
 import os
 from flask import Flask, render_template, url_for, request, jsonify
 from threading import Timer
 from . import settings
+
 app = Flask(__name__)
 
 # Windows:
@@ -25,7 +27,8 @@ def home():
     """
     return render_template("home.html")
 
-@app.route("/results", methods=['POST']) #possible with GET??
+
+@app.route("/results", methods=["POST"])  # possible with GET??
 def handle():
     """
     Input: request.form Object
@@ -36,21 +39,21 @@ def handle():
     """
     connectDb = database.ConnectDatabase(settings.PATH_DATABASE)
     req = request.form
-    inp = req["var"]     
+    inp = req["var"]
     var = common.parse_var(inp)
     occ = connectDb.handle_variant(var)
     if isinstance(occ, bool):
-        return render_template("output.html", title='Results', **locals()) 
+        return render_template("output.html", title="Results", **locals())
     else:
-        return render_template("output.html", title='Results', **locals())
+        return render_template("output.html", title="Results", **locals())
 
- 
+
 """
 @app.teardown_appcontext
 def close_connection():
     connectDb.connection.close()
 """
 
-if __name__== "__main__":
-    webbrowser.open_new('http://localhost:5000/')
+if __name__ == "__main__":
+    webbrowser.open_new("http://localhost:5000/")
     app.run(debug=True, use_reloader=False)
