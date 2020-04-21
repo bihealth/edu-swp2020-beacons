@@ -14,7 +14,7 @@ def test_home(client):
     assert rv.status_code == 200
 
 
-def test_handle(client):
+def test_handle_correct(client):
     rv = client.post("/results", data={"var": "1-1-A-A"})
     assert rv.status_code == 200
     assert b"Results" in rv.data
