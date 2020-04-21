@@ -63,7 +63,6 @@ def test_init(var, sig, output, monkeypatch, capsys, **kwargs):
     captured = capsys.readouterr().out.split("\n")
     for i in range(len(output)):
         assert captured[i] == output[i]
-    cap = capsys.readouterr().out
 
 
 @pytest.mark.parametrize("inp,val", inputs)

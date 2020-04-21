@@ -25,3 +25,5 @@ jobs:
         run: pipenv run pytest .
       - name: Check style with black
         run: pipenv run black --check .
+      - name: Check style with black
+        run: pipenv flake8 .
