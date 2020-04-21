@@ -1,16 +1,21 @@
 ## module beacon.database
+"""
+..."communicates" with database
+"""
 import sqlite3
-from . import common
 
 
 class ConnectDatabase:
     def __init__(self, database):
         self.connection = sqlite3.connect(database)
 
-    def parse_statement(self, sql_str, parameters=None, annV_bool=False):
-        """ Input: sql_string
-        Output: cursor_ouput or Error
-        function creates cursor object and requests database, gives “answer” back """
+    def parse_statement(self, sql_str, parameters, annV_bool=False):
+        """
+        Creates cursor object and requests database and gives “answer” back.
+
+        :param args: sql command, input parameters, bool if variant request
+        :return: cursor_ouput or Error
+        """
         try:
             c = self.connection.cursor()
             c.execute(sql_str, parameters)
@@ -27,9 +32,12 @@ class ConnectDatabase:
             return e
 
     def handle_variant(self, variant):
-        """Input: Variant Object
-      	   Output: bool or Error Object
-     	   Gets an variant object from flask handle/rest_api and parses request to database and gets an bool or Error as an output """
+        """
+        Gets an variant object and parses request to database and gets an bool or Error as an output.
+
+        :param args: Variant Object
+        :return: bool or Error Object
+        """
         sql_str = "SELECT id FROM variants WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
         parameters = (variant.chr, variant.pos, variant.ref, variant.alt)
         occ = self.parse_statement(sql_str, parameters, True)

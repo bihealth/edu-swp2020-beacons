@@ -1,12 +1,7 @@
 from . import common
 from . import database
-
-# import user_cli
-# import rest_api
 import webbrowser
-import os
-from flask import Flask, render_template, url_for, request, jsonify
-from threading import Timer
+from flask import Flask, render_template, request
 from . import settings
 
 app = Flask(__name__)
@@ -21,21 +16,23 @@ app = Flask(__name__)
 @app.route("/")
 def home():
     """
-    Input: /
-    Output: render_template(home.html)
-    home with input field and submit button
+    Starts home.html with input field and submit button.
+
+    :param args: /
+    :return: render_template(home.html)
     """
     return render_template("home.html")
 
 
-@app.route("/results", methods=["POST"])  # possible with GET??
+@app.route("/results", methods=["POST"])
 def handle():
     """
-    Input: request.form Object
-    Output: render_template(result.html, **locals()),
-    takes string from home.html, uses VariantStringParser to convert the input
-    string into Variant object and uses form database imported function
-    “handle_variant” and uses from common function var_str to convert AnnotatedVariant to string
+    Takes string from home.html, uses parse_var to convert the input
+    string into Variant object and pases Variant request to database
+    and gives "answer" to output.hmtl back.
+
+    :param args: request.form Object
+    :return: render_template(result.html, **locals())
     """
     connectDb = database.ConnectDatabase(settings.PATH_DATABASE)
     req = request.form
@@ -48,12 +45,6 @@ def handle():
         return render_template("output.html", title="Results", **locals())
 
 
-"""
-@app.teardown_appcontext
-def close_connection():
-    connectDb.connection.close()
-"""
-
-if __name__ == "__main__":
+if __name__ == "__main__":   # pragma nocover
     webbrowser.open_new("http://localhost:5000/")
     app.run(debug=True, use_reloader=False)
