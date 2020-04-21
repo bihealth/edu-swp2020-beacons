@@ -1,4 +1,4 @@
-import pytest # noqa
+import pytest  # noqa
 from beacon import user_cli
 import requests_mock
 

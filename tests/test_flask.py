@@ -1,4 +1,4 @@
-import pytest # noqa
+import pytest  # noqa
 import re
 
 

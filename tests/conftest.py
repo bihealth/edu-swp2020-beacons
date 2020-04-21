@@ -1,6 +1,8 @@
 import sqlite3
+
 # import vcf
 import pytest
+
 # import os
 # import tempfile
 # import requests
