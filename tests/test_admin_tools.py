@@ -1,7 +1,6 @@
 from beacon import admin_tools
 from beacon import database
-import pytest
-import sqlite3
+import pytest  # noqa
 
 
 def test_parse_vcf(demo_vcf_file, demo_db_path):  # ,empty_vcf_file
@@ -25,7 +24,7 @@ def test_find_dup(demo_db_path):
     sd = admin_tools.SearchDuplicatesCommand()
     out = sd.find_dup(con)
     assert out is not None
-    assert out is ""
+    assert out == ""
 
 
 def test_print_db(demo_db_path):
@@ -33,7 +32,7 @@ def test_print_db(demo_db_path):
     od = admin_tools.OperateDatabase()
     out = od.print_db(con)
     assert out is not None
-    assert out is ""
+    assert out == ""
 
 
 def test_count_variants(demo_db_path):
