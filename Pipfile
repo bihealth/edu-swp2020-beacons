@@ -13,6 +13,7 @@ pyvcf = "*"
 requests = "*"
 flask = "*"
 requests-mock = "*"
+pytest-coverage = "*"
 
 [requires]
 python_version = "3"

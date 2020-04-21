@@ -109,7 +109,7 @@ def main(pfad, args):
     connect.connection.close()
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: nocover
     pfad = path()
     args = parse_args(sys.argv[1:])
     sys.exit(print(main(pfad, args)))
