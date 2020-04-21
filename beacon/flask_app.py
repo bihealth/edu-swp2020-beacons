@@ -4,6 +4,10 @@ import webbrowser
 from flask import Flask, render_template, request
 from . import settings
 
+"""
+Provides (flask) server and connection to web interface.
+"""
+
 app = Flask(__name__)
 
 # Windows:
@@ -43,7 +47,9 @@ def handle():
     if isinstance(occ, bool):
         return render_template("output.html", title="Results", **locals())
     else:
-        return render_template("output.html", title="Results", **locals())   # pragma nocover
+        return render_template(
+            "output.html", title="Results", **locals()
+        )  # pragma nocover
 
 
 if __name__ == "__main__":  # pragma nocover

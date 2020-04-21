@@ -29,7 +29,9 @@ def main():
                     print(  # pragma: nocover
                         "\nWe have troubles with the database, please ask your admin for help.\n"
                     )
-                    print("The occuring error is: '", rep.json()["results"][4], "'\n")  # pragma: nocover
+                    print(
+                        "The occuring error is: '", rep.json()["results"][4], "'\n"
+                    )  # pragma: nocover
             except Exception as e:  # pragma: nocover
                 print(  # pragma: nocover
                     "\nWe have troubles reaching the server, please ask your local administrator or start 'rest_apy.py' in a seperate terminal."
