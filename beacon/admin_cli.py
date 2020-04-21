@@ -2,19 +2,17 @@
 ...to maintain the database
 """
 
-import sqlite3
-from sqlite3 import Error
 from . import admin_tools
 import argparse
 from . import database
-import vcf, sys, os
+import sys  # vcf, sys, os
 
 
 def path():
     """
     Asks for a path to the database.db for maintaining the Database.
 
-    :return: path 
+    :return: path
     """
     db_path = input("DB Path: ")
     # db_path = '/Users/leylanur/edu-swp2020-beacons/the_module/beacon/database.db'
@@ -24,9 +22,9 @@ def path():
 def parse_args(args):
     """
     Defines the flags.
-    
+
     :param args: the flag which was entered in the command line
-    :return: parser 
+    :return: parser
     """
     parser = argparse.ArgumentParser()
     parser.add_argument(
@@ -76,7 +74,7 @@ def parse_args(args):
 def main(pfad, args):
     """
     Maintaining the Database.
-    
+
     :param pfad: the path to the database.db
     :param args: the flag which was entered in the command line
     :return: Whether the maintenance of the database was successful

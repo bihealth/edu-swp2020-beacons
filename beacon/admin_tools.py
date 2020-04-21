@@ -3,21 +3,26 @@
 """
 
 import sqlite3
-from sqlite3 import Error
-from . import database
+# from sqlite3 import Error
+# from . import database
 import vcf
-import os
+# import os
 
 # db_connection = DatabaseConnection(path=os.environ.get("/database.db"))
-# wann wollen wir datenbank path festlegen? bei jeder neuen datenbank automatisch oder separiert durch den admint?
 # error handling -> if type(output) != str/bool: raise Exception(output.args[0])
 
 
 def parse_vcf(infile, con):
+    """
+    Reads VCF file and inserts the data into a database.
+
+    :param : a vcf file and a connection to the database
+    :return: bool
+    """
     vcf_reader = vcf.Reader(infile)
     try:
         for variant in vcf_reader:
-            """give to datenbank (sql_str)"""
+            # give to datenbank (sql_str)
             chr = variant.CHROM
             pos = str(variant.POS)
             ref = variant.REF
@@ -38,9 +43,12 @@ class CreateDbCommand:
         self.data = []
 
     def create_tables(self, con):
-        """ Input: Variant
-       Output: bool
-       creates variant table in database """
+        """
+        Creates variant table in database.
+
+        :param : connection to the database
+        :return: bool
+        """
         try:
             sql_create_db_table = "CREATE TABLE IF NOT EXISTS variants ( id integer ?, chr text ?, pos integer ?, ref text ?, alt text ?;)"
             # pos integer NOT NULL,
@@ -67,9 +75,12 @@ class SearchDuplicatesCommand:
         self.data = []
 
     def find_dup(self, con):
-        """ Input: database
-        Output: list of duplicates
-        looks for duplicates"""
+        """
+        Looks for duplicates in the database and shows them.
+
+        :param : connection to the database
+        :return:
+        """
         try:
             # sql_find_dup = "SELECT DISTINCT chr, pos, ref, alt FROM variants ORDER BY chr;"
             sql_find_dup = "SELECT id, chr, pos, COUNT(*) FROM variants GROUP BY chr, pos, ref, alt HAVING COUNT(*) > 1;"
@@ -88,7 +99,12 @@ class OperateDatabase:
         self.data = []
 
     def print_db(self, con):
-        """prints whole Database"""
+        """
+        Prints whole database.
+
+        :param : connection to the database
+        :return:
+        """
         try:
             sql_print = "SELECT id, chr, pos, ref, alt FROM variants GROUP BY id, chr, pos, ref, alt"
             output = con.parse_statement(sql_print, ())
@@ -101,7 +117,12 @@ class OperateDatabase:
             return e
 
     def count_variants(self, con):
-        """ counts the existing number of (all) Variants """
+        """
+        Counts the existing number of (all) Variants.
+
+        :param : connection to the database
+        :return: int
+        """
         try:
             sql_count_var = "SELECT COUNT(*) FROM variants"
             output = con.parse_statement(sql_count_var, ())
@@ -112,9 +133,13 @@ class OperateDatabase:
             return e
 
     def updating_data(self, con, variants):
-        """Input:variants
-        Output:bool
-        function access the database using connect() and updates."""
+        """
+        Updates a row in the database according to given id and input.
+
+        :param : connection to the database 
+        :param variant : chr, pos, ref, alt, id
+        :return: bool
+        """
         try:
             chr = str(variants[0])
             pos = str(variants[1])
@@ -135,9 +160,13 @@ class OperateDatabase:
             return e
 
     def delete_data(self, con, id):
-        """ Input: Variant, Database
-        Output: bool
-        function deletes given Variant in db and gives bool if succeeded back"""
+        """
+        Deletes a row with given id in the database.
+
+        :param : connection to the database
+        :param : id
+        :return: bool
+        """
         try:
             sql_str = "DELETE FROM variants WHERE id= ?;"
             parameters = id
