@@ -43,7 +43,7 @@ def handle():
     if isinstance(occ, bool):
         return render_template("output.html", title="Results", **locals())
     else:
-        return render_template("output.html", title="Results", **locals())
+        return render_template("output.html", title="Results", **locals())   # pragma nocover
 
 
 if __name__ == "__main__":  # pragma nocover
