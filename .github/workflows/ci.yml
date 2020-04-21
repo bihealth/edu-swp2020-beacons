@@ -25,5 +25,5 @@ jobs:
         run: pipenv run pytest --cov-report=term .
       - name: Check style with black
         run: pipenv run black --check .
-      - name: Check style with black
+      - name: Check style with flake8
         run: pipenv flake8 .
