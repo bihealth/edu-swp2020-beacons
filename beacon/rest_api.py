@@ -8,10 +8,12 @@ app = Flask(__name__)
 
 
 def annVar_ls(var, occ):
-    """Input: common.AnnotatedVariant
-    Output: ls with api values and AnnotatedVariant class  variables
-    function transformes AnnotatedVariant to ls
-    api =[{“chr”:str,“pos”:int,“res”:chr,“alt”:chr,“occ”:bool}]"""
+    """
+    Makes list from variant object and occurence
+    :param var: variant object
+    :param occ: bool for occurence of variant in database
+    :return: list of variant class attributes and occurence bool
+    """
     var_ls = list(var.__dict__.values())
     if isinstance(occ, bool):
         var_ls.append(occ)
@@ -22,6 +24,11 @@ def annVar_ls(var, occ):
 
 @app.route("/api/<var_str>", methods=["GET"])
 def get_api(var_str):
+    """
+    Takes variant string, hands it over to database module and returns the answer
+    :param var_str:
+    :return: json of variant and occurence
+    """
     connectDb = database.ConnectDatabase(settings.PATH_DATABASE)
     var = common.parse_var(var_str)
     occ = connectDb.handle_variant(var)
