@@ -3,9 +3,11 @@
 """
 
 import sqlite3
+
 # from sqlite3 import Error
 # from . import database
 import vcf
+
 # import os
 
 # db_connection = DatabaseConnection(path=os.environ.get("/database.db"))

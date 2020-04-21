@@ -7,13 +7,20 @@ import sqlite3
 
 class ConnectDatabase:
     def __init__(self, database):
+        """
+        Creates ConnectDatabase Object and connects to database.
+
+        :param database: path to database
+        """
         self.connection = sqlite3.connect(database)
 
     def parse_statement(self, sql_str, parameters, annV_bool=False):
         """
         Creates cursor object and requests database and gives “answer” back.
 
-        :param args: sql command, input parameters, bool if variant request
+        :param sql_str: sql command
+        :param parameters: input parameters
+        :param annV_bool: bool if variant request
         :return: cursor_ouput or Error
         """
         try:
@@ -35,7 +42,7 @@ class ConnectDatabase:
         """
         Gets an variant object and parses request to database and gets an bool or Error as an output.
 
-        :param args: Variant Object
+        :param variant: Variant Object
         :return: bool or Error Object
         """
         sql_str = "SELECT id FROM variants WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"

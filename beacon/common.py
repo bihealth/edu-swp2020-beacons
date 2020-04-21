@@ -5,12 +5,14 @@
 
 
 class Variant:
-
     def __init__(self, chr, pos, ref, alt):
         """
         Creates Variant Object.
 
-        :param args: Input variant
+        :param chr: chr of input variant
+        :param pos: pos of input variant
+        :param ref: ref of input variant
+        :param alt: alt of input variant
         """
         self.chr = chr
         self.pos = pos
@@ -22,7 +24,7 @@ def parse_var(inp):
     """
     Parses an input string to a variant object.
 
-    :param args: variant string
+    :param inp: variant string
     :return: variant object
     """
     strin_spli = inp.split("-")

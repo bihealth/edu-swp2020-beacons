@@ -18,7 +18,7 @@ def home():
     """
     Starts home.html with input field and submit button.
 
-    :param args: /
+    :param "/":
     :return: render_template(home.html)
     """
     return render_template("home.html")
@@ -31,7 +31,8 @@ def handle():
     string into Variant object and pases Variant request to database
     and gives "answer" to output.hmtl back.
 
-    :param args: request.form Object
+    :param "/results":
+    :param methods=["POST"]: request.form Object
     :return: render_template(result.html, **locals())
     """
     connectDb = database.ConnectDatabase(settings.PATH_DATABASE)
@@ -45,6 +46,6 @@ def handle():
         return render_template("output.html", title="Results", **locals())
 
 
-if __name__ == "__main__":   # pragma nocover
+if __name__ == "__main__":  # pragma nocover
     webbrowser.open_new("http://localhost:5000/")
     app.run(debug=True, use_reloader=False)

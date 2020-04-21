@@ -1,5 +1,4 @@
 import pytest # noqa
-# from beacon import flask_app
 import re
 
 
