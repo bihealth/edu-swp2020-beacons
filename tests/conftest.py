@@ -1,10 +1,10 @@
 import sqlite3
-import vcf
+# import vcf
 import pytest
-import os
-import tempfile
-import requests
-import flask
+# import os
+# import tempfile
+# import requests
+# import flask
 from beacon import flask_app
 
 SQL_CREATE = r"""

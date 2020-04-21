@@ -1,4 +1,4 @@
-import pytest
+import pytest # noqa
 from beacon import user_cli
 import requests_mock
 
@@ -51,6 +51,7 @@ def test_init(var, sig, output, monkeypatch, capsys, **kwargs):
         json={"results": ["1", "1", "A", "A", True]},
     )
     # monkeypatch.setattr(user_cli, '_check_input', lambda x: True)
+
     def mock_input(x):
         if x == "Please enter your variant (chr-pos-ref-alt):\n":
             return var
