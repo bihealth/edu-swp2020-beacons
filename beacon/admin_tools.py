@@ -138,7 +138,7 @@ class OperateDatabase:
         """
         Updates a row in the database according to given id and input.
 
-        :param : connection to the database 
+        :param : connection to the database
         :param variant : chr, pos, ref, alt, id
         :return: bool
         """
