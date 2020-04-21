@@ -1,11 +1,12 @@
+"""
+Provides (flask) server for beacon.
+"""
+
 from flask import Flask, jsonify
 from . import common
 from . import settings
 from . import database
 
-"""
-Provides (flask) server for beacon.
-"""
 
 app = Flask(__name__)
 

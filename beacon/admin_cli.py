@@ -15,7 +15,6 @@ def path():
     :return: path
     """
     db_path = input("DB Path: ")
-    # db_path = '/Users/leylanur/edu-swp2020-beacons/the_module/beacon/database.db'
     return db_path
 
 
@@ -104,7 +103,7 @@ def main(pfad, args):
     elif args.delete:
         print("delete is activated")
         return od.delete_data(connect, str(args.delete))
-    connect.connection.close()
+    connect.connection.close()  # pragma: nocover
 
 
 if __name__ == "__main__":  # pragma: nocover

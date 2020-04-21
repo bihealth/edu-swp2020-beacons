@@ -6,6 +6,11 @@ import sqlite3
 
 
 class ConnectDatabase:
+    """
+    includes functions for creating the ConnectDatabase Object and connects to database.
+
+    """
+
     def __init__(self, database):
         """
         Creates ConnectDatabase Object and connects to database.

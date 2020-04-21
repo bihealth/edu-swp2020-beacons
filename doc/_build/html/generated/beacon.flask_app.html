@@ -34,6 +34,7 @@
             
   <div class="section" id="module-beacon.flask_app">
 <span id="beacon-flask-app"></span><h1>beacon.flask_app<a class="headerlink" href="#module-beacon.flask_app" title="Permalink to this headline">¶</a></h1>
+<p>Provides (flask) server and connection to web interface.</p>
 <p class="rubric">Functions</p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -42,10 +43,10 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">handle</span></code>()</p></td>
-<td><p>Input: request.form Object Output: render_template(result.html, <a href="#id1"><span class="problematic" id="id2">**</span></a>locals()), takes string from home.html, uses VariantStringParser to convert the input string into Variant object and uses form database imported function “handle_variant” and uses from common function var_str to convert AnnotatedVariant to string</p></td>
+<td><p>Takes string from home.html, uses parse_var to convert the input string into Variant object and pases Variant request to database and gives “answer” to output.hmtl back.</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">home</span></code>()</p></td>
-<td><p>Input: / Output: render_template(home.html) home with input field and submit button</p></td>
+<td><p>Starts home.html with input field and submit button.</p></td>
 </tr>
 </tbody>
 </table>

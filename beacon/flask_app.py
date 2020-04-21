@@ -1,12 +1,13 @@
+"""
+Provides (flask) server and connection to web interface.
+"""
+
 from . import common
 from . import database
 import webbrowser
 from flask import Flask, render_template, request
 from . import settings
 
-"""
-Provides (flask) server and connection to web interface.
-"""
 
 app = Flask(__name__)
 

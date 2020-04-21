@@ -47,24 +47,37 @@ def test_parser(demo_vcf_file):
 
 
 def test_main(demo_db_path, demo_vcf_file):
-    parser = admin_cli.parse_args(
-        [
-            "-ct",
-            "-vcf",
-            str(demo_vcf_file),
-            "-fd",
-            "-p",
-            "-c",
-            "-u",
-            "1",
-            "1",
-            "A",
-            "A",
-            "1",
-            "-d",
-            "1",
-        ]
-    )
+    parser = admin_cli.parse_args(["-ct"])
+    out = admin_cli.main(demo_db_path, parser)
+    assert out is not None
+    assert out is True
+
+    parser = admin_cli.parse_args(["-vcf", str(demo_vcf_file)])
+    out = admin_cli.main(demo_db_path, parser)
+    assert out is not None
+    assert out is True
+
+    parser = admin_cli.parse_args(["-fd"])
+    out = admin_cli.main(demo_db_path, parser)
+    assert out is not None
+    assert out == ""
+
+    parser = admin_cli.parse_args(["-p"])
+    out = admin_cli.main(demo_db_path, parser)
+    assert out is not None
+    assert out == ""
+
+    parser = admin_cli.parse_args(["-c"])
+    out = admin_cli.main(demo_db_path, parser)
+    assert out is not None
+    assert out == 3
+
+    parser = admin_cli.parse_args(["-u", "1", "1", "A", "A", "1"])
+    out = admin_cli.main(demo_db_path, parser)
+    assert out is not None
+    assert out is True
+
+    parser = admin_cli.parse_args(["-d", "1"])
     out = admin_cli.main(demo_db_path, parser)
     assert out is not None
     assert out is True

@@ -1,10 +1,10 @@
-import sys
-import re
-import requests
-
 """
 Provides command line interface for beacon
 """
+
+import sys
+import re
+import requests
 
 
 def main():

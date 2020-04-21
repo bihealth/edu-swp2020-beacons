@@ -34,6 +34,7 @@
             
   <div class="section" id="module-beacon.rest_api">
 <span id="beacon-rest-api"></span><h1>beacon.rest_api<a class="headerlink" href="#module-beacon.rest_api" title="Permalink to this headline">¶</a></h1>
+<p>Provides (flask) server for beacon.</p>
 <p class="rubric">Functions</p>
 <table class="longtable docutils align-default">
 <colgroup>
@@ -42,10 +43,10 @@
 </colgroup>
 <tbody>
 <tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">annVar_ls</span></code>(var, occ)</p></td>
-<td><p>Input: common.AnnotatedVariant Output: ls with api values and AnnotatedVariant class  variables function transformes AnnotatedVariant to ls api =[{“chr”:str,“pos”:int,“res”:chr,“alt”:chr,“occ”:bool}]</p></td>
+<td><p>Makes list from variant object and occurence :param var: variant object :param occ: bool for occurence of variant in database :return: list of variant class attributes and occurence bool</p></td>
 </tr>
 <tr class="row-even"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_api</span></code>(var_str)</p></td>
-<td><p></p></td>
+<td><p>Takes variant string, hands it over to database module and returns the answer :param var_str: :return: json of variant and occurence</p></td>
 </tr>
 </tbody>
 </table>

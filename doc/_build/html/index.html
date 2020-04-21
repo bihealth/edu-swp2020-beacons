@@ -57,22 +57,22 @@
 <td><p>…that maintain the database</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#module-beacon.common" title="beacon.common"><code class="xref py py-obj docutils literal notranslate"><span class="pre">beacon.common</span></code></a></p></td>
-<td><p></p></td>
+<td><p>…prevents variant class for software</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#module-beacon.database" title="beacon.database"><code class="xref py py-obj docutils literal notranslate"><span class="pre">beacon.database</span></code></a></p></td>
-<td><p></p></td>
+<td><p>…”communicates” with database</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="generated/beacon.flask_app.html#module-beacon.flask_app" title="beacon.flask_app"><code class="xref py py-obj docutils literal notranslate"><span class="pre">beacon.flask_app</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Provides (flask) server and connection to web interface.</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="generated/beacon.rest_api.html#module-beacon.rest_api" title="beacon.rest_api"><code class="xref py py-obj docutils literal notranslate"><span class="pre">beacon.rest_api</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Provides (flask) server for beacon.</p></td>
 </tr>
 <tr class="row-odd"><td><p><a class="reference internal" href="#module-beacon.settings" title="beacon.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">beacon.settings</span></code></a></p></td>
-<td><p></p></td>
+<td><p>…path to database</p></td>
 </tr>
 <tr class="row-even"><td><p><a class="reference internal" href="#module-beacon.user_cli" title="beacon.user_cli"><code class="xref py py-obj docutils literal notranslate"><span class="pre">beacon.user_cli</span></code></a></p></td>
-<td><p></p></td>
+<td><p>Provides command line interface for beacon</p></td>
 </tr>
 </tbody>
 </table>
@@ -123,27 +123,74 @@
 </dd></dl>
 
 <span class="target" id="module-beacon.admin_tools"></span><p>…that maintain the database</p>
-<span class="target" id="module-beacon.common"></span><dl class="py class">
-<dt id="beacon.common.Variant">
-<em class="property">class </em><code class="sig-prename descclassname">beacon.common.</code><code class="sig-name descname">Variant</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chr</span></em>, <em class="sig-param"><span class="n">pos</span></em>, <em class="sig-param"><span class="n">ref</span></em>, <em class="sig-param"><span class="n">alt</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.common.Variant" title="Permalink to this definition">¶</a></dt>
-<dd><p>Input variants</p>
+<dl class="py function">
+<dt id="beacon.admin_tools.parse_vcf">
+<code class="sig-prename descclassname">beacon.admin_tools.</code><code class="sig-name descname">parse_vcf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">infile</span></em>, <em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.parse_vcf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads VCF file and inserts the data into a database.</p>
+<p>:param : a vcf file and a connection to the database
+:return: bool</p>
 </dd></dl>
 
+<span class="target" id="module-beacon.common"></span><p>…prevents variant class for software</p>
 <dl class="py function">
 <dt id="beacon.common.parse_var">
 <code class="sig-prename descclassname">beacon.common.</code><code class="sig-name descname">parse_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.common.parse_var" title="Permalink to this definition">¶</a></dt>
-<dd><p>Input: variant string 
-Output: variant objec(t parses an input string to a variant object or variant 
-objectto string</p>
+<dd><p>Parses an input string to a variant object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inp</strong> – variant string</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>variant object</p>
+</dd>
+</dl>
 </dd></dl>
 
-<span class="target" id="module-beacon.database"></span><span class="target" id="module-beacon.settings"></span><span class="target" id="module-beacon.user_cli"></span><dl class="py function">
+<span class="target" id="module-beacon.database"></span><p>…”communicates” with database</p>
+<dl class="py class">
+<dt id="beacon.database.ConnectDatabase">
+<em class="property">class </em><code class="sig-prename descclassname">beacon.database.</code><code class="sig-name descname">ConnectDatabase</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">database</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.database.ConnectDatabase" title="Permalink to this definition">¶</a></dt>
+<dd><p>includes functions for creating the ConnectDatabase Object and connects to database.</p>
+<dl class="py method">
+<dt id="beacon.database.ConnectDatabase.handle_variant">
+<code class="sig-name descname">handle_variant</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">variant</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.database.ConnectDatabase.handle_variant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets an variant object and parses request to database and gets an bool or Error as an output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>variant</strong> – Variant Object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>bool or Error Object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.database.ConnectDatabase.parse_statement">
+<code class="sig-name descname">parse_statement</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sql_str</span></em>, <em class="sig-param"><span class="n">parameters</span></em>, <em class="sig-param"><span class="n">annV_bool</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.database.ConnectDatabase.parse_statement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates cursor object and requests database and gives “answer” back.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sql_str</strong> – sql command</p></li>
+<li><p><strong>parameters</strong> – input parameters</p></li>
+<li><p><strong>annV_bool</strong> – bool if variant request</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>cursor_ouput or Error</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-beacon.settings"></span><p>…path to database</p>
+<span class="target" id="module-beacon.user_cli"></span><p>Provides command line interface for beacon</p>
+<dl class="py function">
 <dt id="beacon.user_cli.main">
 <code class="sig-prename descclassname">beacon.user_cli.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#beacon.user_cli.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>var_str = user input
-Output (print): Annotated Variant
-the function receives some command parameters like the Variant    
-string or help host$ python beacon.user_cli.py var_str</p>
+<dd><p>Takes command line inputs from user, makes request for the variance and prints answer</p>
 </dd></dl>
 
 <div class="toctree-wrapper compound">
