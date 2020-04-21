@@ -22,15 +22,15 @@ def main():
                     print("The result of your request is:")
                     print(res, "\n")
                 else:
-                    print(
+                    print( # pragma: nocover
                         "\nWe have troubles with the database, please ask your admin for help.\n"
                     )
-                    print("The occuring error is: '", rep.json()["results"][4], "'\n")
-            except Exception as e:
-                print(
+                    print("The occuring error is: '", rep.json()["results"][4], "'\n") #pragma: nocover
+            except Exception as e: # pragma: nocover
+                print( #pragma: nocover
                     "\nWe have troubles reaching the server, please ask your local administrator or start 'rest_apy.py' in a seperate terminal."
                 )
-                print(e.argv[0])
+                print(e.argv[0]) # pragma: nocover
         else:
             print(
                 "Your input has the wrong format. For futher information tipp --help."
@@ -40,7 +40,7 @@ def main():
             "If you like to continue: Press [c]\nIf you like to quit: Press [q]\n"
         )
         if inp == "c":
-            cont = True
+            cont = True # pragma: nocover
         elif inp == "q":
             cont = False
         else:
@@ -72,7 +72,7 @@ def _check_input(var_str):  # maybe better to check each input seperately
 
 def init():
     if __name__ == "__main__":
-        sys.exit(main())
+        sys.exit(main()) # pragma: nocover
 
 
 init()
