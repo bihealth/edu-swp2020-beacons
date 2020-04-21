@@ -35,5 +35,5 @@ def get_api(var_str):
     return jsonify(results=annVar_ls(var, occ))
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma nocover
     app.run(debug=True)
