@@ -23,8 +23,7 @@ Modules
    beacon.flask_app
    beacon.rest_api
    beacon.settings
-   beacon.user_cli
-   
+   beacon.user_cli 
 
 Functions...
 ------------
@@ -40,12 +39,6 @@ Functions...
 
 .. automodule:: beacon.database
    :members:
-
-#.. automodule:: beacon.flask_app
-#    :members:
-
-# .. automodule:: beacon.rest_api
-#    :members:
 
 .. automodule:: beacon.settings
    :members:
@@ -66,4 +59,3 @@ This a usage of :func:`beacon.admin_cli`:
 	>>> DB Path: *give the working directory of data.db file* 
 
 with ```-h``` or ```--help``` you can see which flag you can use.
-
