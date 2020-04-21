@@ -9,6 +9,7 @@ import argparse
 from . import database
 import vcf, sys, os
 
+
 def path():
     """
     Asks for a path to the database.db for maintaining the Database.
