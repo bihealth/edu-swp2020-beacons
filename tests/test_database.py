@@ -44,7 +44,7 @@ def test_parse_statement_user(demo_db_path):
         parameters1,
     )
     assert output0 is not None
-    assert len(output1) is 0
+    assert len(output1) == 0
 
 
 def test_handle_variant(demo_db_path):

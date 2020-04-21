@@ -1,5 +1,5 @@
-import pytest
-from beacon import flask_app
+import pytest # noqa
+# from beacon import flask_app
 import re
 
 
@@ -12,12 +12,12 @@ def test_home(client):
     assert "Submit" in rv.data.decode("utf-8")
     assert "SWP" in rv.data.decode("utf-8")
     assert "Search" in rv.data.decode("utf-8")
-    assert rv.status_code is 200
+    assert rv.status_code == 200
 
 
 def test_handle(client):
     rv = client.post("/results", data={"var": "1-1-A-A"})
-    assert rv.status_code is 200
+    assert rv.status_code == 200
     assert b"Results" in rv.data
     assert (
         b"Your variant 1-1-A-A was found."

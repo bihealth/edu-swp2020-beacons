@@ -1,7 +1,5 @@
 from beacon import admin_cli
-import pytest
-import argparse
-import sys
+import pytest  # noqa
 
 
 def test_path():
