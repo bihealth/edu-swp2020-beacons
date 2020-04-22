@@ -99,10 +99,10 @@ def main(pfad, args):
         return od.count_variants(connect)
     elif args.update:
         print("update is activated")
-        return od.updating_data(connect, tuple(args.update))
+        return od.updating_data(connect, args.update)
     elif args.delete:
         print("delete is activated")
-        return od.delete_data(connect, str(args.delete))
+        return od.delete_data(connect, int(args.delete))
     connect.connection.close()  # pragma: nocover
 
 

@@ -60,7 +60,7 @@ def test_main(demo_db_path, demo_vcf_file):
     parser = admin_cli.parse_args(["-fd"])
     out = admin_cli.main(demo_db_path, parser)
     assert out is not None
-    assert out == ""
+    assert out == []
 
     parser = admin_cli.parse_args(["-p"])
     out = admin_cli.main(demo_db_path, parser)

@@ -123,12 +123,128 @@
 </dd></dl>
 
 <span class="target" id="module-beacon.admin_tools"></span><p>…that maintain the database</p>
+<dl class="py class">
+<dt id="beacon.admin_tools.CreateDbCommand">
+<em class="property">class </em><code class="sig-prename descclassname">beacon.admin_tools.</code><code class="sig-name descname">CreateDbCommand</code><a class="headerlink" href="#beacon.admin_tools.CreateDbCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates variant table in database.</p>
+<dl class="py method">
+<dt id="beacon.admin_tools.CreateDbCommand.create_tables">
+<code class="sig-name descname">create_tables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.CreateDbCommand.create_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates variant table in database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>con</strong> – connection to the database</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="beacon.admin_tools.OperateDatabase">
+<em class="property">class </em><code class="sig-prename descclassname">beacon.admin_tools.</code><code class="sig-name descname">OperateDatabase</code><a class="headerlink" href="#beacon.admin_tools.OperateDatabase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides tools to maintain the database.</p>
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.count_variants">
+<code class="sig-name descname">count_variants</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.count_variants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Counts the existing number of (all) Variants.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>con</strong> – connection to the database</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.delete_data">
+<code class="sig-name descname">delete_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.delete_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a row with given id in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – connection to the database</p></li>
+<li><p><strong>id</strong> – id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.print_db">
+<code class="sig-name descname">print_db</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.print_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints whole database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>con</strong> – connection to the database</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>database</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.updating_data">
+<code class="sig-name descname">updating_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">variants</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.updating_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates a row in the database according to given id and input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>con</strong> – connection to the database</p>
+</dd>
+</dl>
+<p>:param variant : chr, pos, ref, alt, id
+:rtype: bool</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="beacon.admin_tools.SearchDuplicatesCommand">
+<em class="property">class </em><code class="sig-prename descclassname">beacon.admin_tools.</code><code class="sig-name descname">SearchDuplicatesCommand</code><a class="headerlink" href="#beacon.admin_tools.SearchDuplicatesCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Looks for duplicates in the database and prints them.</p>
+<dl class="py method">
+<dt id="beacon.admin_tools.SearchDuplicatesCommand.find_dup">
+<code class="sig-name descname">find_dup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.SearchDuplicatesCommand.find_dup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Looks for duplicates in the database and shows them.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>con</strong> – connection to the database</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>list with duplications</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 <dl class="py function">
 <dt id="beacon.admin_tools.parse_vcf">
 <code class="sig-prename descclassname">beacon.admin_tools.</code><code class="sig-name descname">parse_vcf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">infile</span></em>, <em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.parse_vcf" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads VCF file and inserts the data into a database.</p>
-<p>:param : a vcf file and a connection to the database
-:return: bool</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>infile</strong> – a vcf file</p></li>
+<li><p><strong>con</strong> – connection to the database</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
 </dd></dl>
 
 <span class="target" id="module-beacon.common"></span><p>…prevents variant class for software</p>
