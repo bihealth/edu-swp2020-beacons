@@ -35,8 +35,8 @@ def parse_vcf(infile, con):
             if type(output) == sqlite3.Error:
                 raise Exception(output)
         return True
-    except IOError:
-        print("kann datei nicht lesen")
+    except Exception as e:
+        return e
     infile.close()
 
 
@@ -68,7 +68,7 @@ class CreateDbCommand:
             if type(output) == sqlite3.Error:
                 raise Exception(output)
             return True
-        except sqlite3.Error as e:
+        except Exception as e:
             return e
 
 
@@ -92,7 +92,7 @@ class SearchDuplicatesCommand:
             for out in output:
                 print(out)
             return ""
-        except sqlite3.Error as e:
+        except Exception as e:
             return e
 
 
@@ -115,7 +115,7 @@ class OperateDatabase:
             for out in output:
                 print(out)
             return ""
-        except sqlite3.Error as e:
+        except Exception as e:
             return e
 
     def count_variants(self, con):
@@ -131,7 +131,7 @@ class OperateDatabase:
             if type(output) == sqlite3.Error:
                 raise Exception(output)
             return int(output[0][0])
-        except sqlite3.Error as e:
+        except Exception as e:
             return e
 
     def updating_data(self, con, variants):
@@ -158,7 +158,7 @@ class OperateDatabase:
             # print_db(con)
             print("rufe -p auf, um die Änderung zu sehen")
             return True
-        except sqlite3.Error as e:
+        except Exception as e:
             return e
 
     def delete_data(self, con, id):
@@ -177,13 +177,14 @@ class OperateDatabase:
                 raise Exception(output)
             print("rufe -p auf, um die Änderung zu sehen")
             return True
-        except sqlite3.Error as e:
+        except Exception as e:
             return e
 
 
 # nct: def export_db() + def print_row() + def count
 # für version 2:
 # - Kommas einlesen, bei alt in der funktion parse_vcf
+# - ersetzen vcf
 # - bei der funktion find_dup -> automatisch löschen
 # - 5 x updadte variablen benennen bei -h update -u U U U U U
 # - in der funktion update und delete noch das ergebnis printen
