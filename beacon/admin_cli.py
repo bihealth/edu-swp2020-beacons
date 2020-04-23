@@ -83,7 +83,9 @@ def main(pfad, args):
     if args.create_table:
         print("create table is activated")
         create = admin_tools.CreateDbCommand()
-        return create.create_tables(connect)
+        if (create.create_tables(connect)):
+            print(Creation was succesfully.)
+            return 0
     elif args.insert_data:
         print("inserting data is activated")
         return admin_tools.parse_vcf(args.insert_data, connect)

@@ -3,6 +3,7 @@
 ..."communicates" with database
 """
 import sqlite3
+from . import common
 
 
 class ConnectDatabase:
@@ -43,14 +44,29 @@ class ConnectDatabase:
         except sqlite3.Error as e:
             return e
 
-    def handle_variant(self, variant):
+    def handle_request(self, variant, authorization=False):
         """
-        Gets an variant object and parses request to database and gets an bool or Error as an output.
+        Gets an variant object and parses request to database and gets an AnnVar or Info as an output.
 
         :param variant: Variant Object
-        :return: bool or Error Object
+        :return: AnnVar or Info Object
         """
         sql_str = "SELECT id FROM variants WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
         parameters = (variant.chr, variant.pos, variant.ref, variant.alt)
         occ = self.parse_statement(sql_str, parameters, True)
-        return occ
+        annVar = common.AnnVar(variant.chr, variant.pos, variant.ref, variant.alt, occ)
+        if authorization is False:
+            return annVar
+        else:
+            sql_varCount = "SELECT COUNT(*) FROM population_allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
+            varCount = self.parse_statement(sql_varCount, parameters)
+            sql_population = ""
+            population = self.parse_statement(sql_population, parameters)
+            sql_countAll = "SELECT allel_count FROM population_allel"
+            countAll = self.parse_statement(sql_countAll, parameters)
+            sql_countAlt = "SELECT alt_count FROM population_allel"
+            countAlt = self.parse_statement(sql_countAlt, parameters)
+            frequency = countAll / countAlt
+            sql_phenotype = "SELECT phenotype FROM population_allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
+            phenotype = self.parse_statement(sql_phenotype, parameters)
+            return common.Info(annVar, varCount, population, None, frequency, phenotype)
