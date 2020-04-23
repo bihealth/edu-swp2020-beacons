@@ -45,16 +45,9 @@ class CreateDbCommand:
         :param con: connection to the database
         :rtype: bool
         """
-        sql_create_db_table = "CREATE TABLE IF NOT EXISTS variants ( id integer ?, chr text ?, pos integer ?, ref text ?, alt text ?;)"
+        sql_create_db_table = """CREATE TABLE IF NOT EXISTS variants ( id integer PRIMARY KEY AUTOINCREMENT, chr text NOT NULL, pos integer NOT NULL, ref text NOT NULL, alt text NOT NULL);"""
 
-        parameters = (
-            "PRIMARY KEY AUTOINCREMENT",
-            "NOT NULL",
-            "NOT NULL",
-            "NOT NULL",
-            "NOT NULL",
-        )
-        output = con.parse_statement(sql_create_db_table, parameters)
+        output = con.parse_statement(sql_create_db_table, ())
         if type(output) == sqlite3.Error:  # pragma: nocover
             return output
         else:
