@@ -58,15 +58,15 @@ class ConnectDatabase:
         if authorization is False:
             return annVar
         else:
-            sql_varCount = "SELECT COUNT(*) FROM population_allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
+            sql_varCount = "SELECT COUNT(*) FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
             varCount = self.parse_statement(sql_varCount, parameters)
-            sql_population = ""
+            sql_population = "SELECT population FROM populations WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
             population = self.parse_statement(sql_population, parameters)
-            sql_countAll = "SELECT allel_count FROM population_allel"
+            sql_countAll = "SELECT SUM(allel_homo) + SUM(allel_hetero) FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
             countAll = self.parse_statement(sql_countAll, parameters)
-            sql_countAlt = "SELECT alt_count FROM population_allel"
+            sql_countAlt = "SELECT alt_count FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
             countAlt = self.parse_statement(sql_countAlt, parameters)
-            frequency = countAll / countAlt
-            sql_phenotype = "SELECT phenotype FROM population_allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
+            frequency = countAll #/ countAlt
+            sql_phenotype = "SELECT phenotype FROM populations WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
             phenotype = self.parse_statement(sql_phenotype, parameters)
-            return common.Info(annVar, varCount, population, None, frequency, phenotype)
+            return common.Info(annVar.chr, annVar.pos, annVar.ref, annVar.alt, annVar.occ, varCount, population, None, frequency, phenotype)

@@ -1,15 +1,8 @@
 import sqlite3
-
-# import vcf
 import pytest
-
-# import os
-# import tempfile
-# import requests
-# import flask
 from beacon import flask_app
 
-SQL_CREATE = r"""
+SQL_CREATE1 = r"""
 CREATE TABLE IF NOT EXISTS variants (
     id integer PRIMARY KEY AUTOINCREMENT,
     chr text NOT NULL,
@@ -19,9 +12,50 @@ CREATE TABLE IF NOT EXISTS variants (
 );
 """
 
-SQL_INSERT = r"""
+SQL_CREATE2 = r"""
+CREATE TABLE IF NOT EXISTS allel (
+    id integer PRIMARY KEY AUTOINCREMENT, 
+    chr text NOT NULL, pos integer NOT NULL, 
+    ref text NOT NULL, alt text NOT NULL, 
+    allel_homo integer NOT NULL, 
+    allel_hetero integer NOT NULL, 
+    alt_count integer NOT NULL
+);
+"""
+
+SQL_CREATE3 = r"""
+CREATE TABLE IF NOT EXISTS populations (
+    id integer PRIMARY KEY AUTOINCREMENT,
+    chr text NOT NULL, 
+    pos integer NOT NULL, 
+    ref text NOT NULL, 
+    alt text NOT NULL, 
+    population text NOT NULL,
+    phenotype text
+);
+"""
+
+SQL_IDX1 = r"""
+CREATE INDEX allel_idx ON allel(chr,pos,ref,alt);
+"""
+
+SQL_IDX2 = r"""
+CREATE INDEX population_idx ON populations(chr,pos,ref,alt);
+"""
+
+SQL_INSERT_VAR = r"""
 INSERT INTO variants (chr, pos, ref, alt)
 VALUES (?, ?, ?, ?);
+"""
+
+SQL_INSERT_ALLEL = r"""
+INSERT INTO allel (chr, pos, ref, alt, allel_homo, allel_hetero, alt_count)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+"""
+
+SQL_INSERT_POP = r"""
+INSERT INTO populations (chr, pos, ref, alt, population, phenotype)
+VALUES (?, ?, ?, ?, ?, ?);
 """
 
 
@@ -29,16 +63,24 @@ VALUES (?, ?, ?, ?);
 def demo_db_path(tmpdir):
     path_db = str(tmpdir.join("test.sqlite3"))
     conn = sqlite3.connect(path_db)
-
     with conn:
-        # Create table.
-        conn.execute(SQL_CREATE)
+        # Creates tables.
+        conn.execute(SQL_CREATE1)
+        conn.execute(SQL_CREATE2)
+        conn.execute(SQL_CREATE3)
         # Insert values into table.
         for i in range(3):
             conn.execute(
-                SQL_INSERT, ("1", 1_000_000 + i, "CGAT"[i % 4], "CGAT"[(i + 1) % 4])
+                SQL_INSERT_VAR, ("1", 1_000_000 + i, "CGAT"[i % 4], "CGAT"[(i + 1) % 4])
             )
-
+        for i in range(3):
+            conn.execute(
+                SQL_INSERT_ALLEL, ("1", 1_000_000 + i, "CGAT"[i % 4], "CGAT"[(i + 1) % 4], i + 3, i, i + 5)
+            )
+        for i in range(3):
+            conn.execute(
+                SQL_INSERT_POP, ("1", 1_000_000 + i, "CGAT"[i % 4], "CGAT"[(i + 1) % 4], ["GBR", "GBR", "PER", "KEN"][(i + 1) % 4], ["neuronal", "epidermis", "muskulär", None][(i + 1) % 4])
+            )
     return path_db
 
 

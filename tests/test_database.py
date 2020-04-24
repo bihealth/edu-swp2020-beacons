@@ -1,6 +1,7 @@
 from beacon import database
 from beacon import common
 import pytest  # noqa
+import sqlite3
 
 
 def test_connect_empty(tmpdir):
@@ -17,12 +18,6 @@ def test_connect_demo(demo_db_path):
 def test_connect_demoXXX(demo_db_path):
     conn = database.ConnectDatabase(demo_db_path)
     assert conn.connection is not None
-
-
-def test_parse_statement_none(demo_db_path):
-    conn = database.ConnectDatabase(demo_db_path)
-    output = conn.parse_statement("", ())
-    assert output is not bool
 
 
 def test_parse_statement_admin(demo_db_path):
@@ -47,18 +42,28 @@ def test_parse_statement_user(demo_db_path):
     assert len(output1) == 0
 
 
-def test_handle_variant(demo_db_path):
+def test_handle_request_Var(demo_db_path):
     conn = database.ConnectDatabase(demo_db_path)
     variant0 = common.Variant("1", 1000000, "C", "G")
     variant1 = common.Variant("X", 10000000, "C", "G")
-    output0 = conn.handle_variant(variant0)
-    output1 = conn.handle_variant(variant1)
-    assert output0 is True
-    assert output1 is False
+    output0 = conn.handle_request(variant0)
+    output1 = conn.handle_request(variant1)
+    assert output0.occ is True
+    assert output1.occ is False
 
 
-def test_handle_variant_connection_error():
+def test_handle_request_connection_error():
     conn = database.ConnectDatabase("")
     variant = common.Variant("1", 1000000, "C", "G")
-    output = conn.handle_variant(variant)
-    assert output is not bool
+    output = conn.handle_request(variant)
+    assert isinstance(output.occ, sqlite3.Error)
+
+def test_handle_request_Info(demo_db_path):
+    conn = database.ConnectDatabase(demo_db_path)
+    variant0 = common.Variant("1", 1000000, "C", "G")
+    variant1 = common.Variant("X", 10000000, "C", "G")
+    output0 = conn.handle_request(variant0, True)
+    output1 = conn.handle_request(variant1, True)
+    print(output0.varCount, output0.population[0], output0.phenotype, output0.frequency)
+    assert output0.occ is True
+    assert output1.occ is False

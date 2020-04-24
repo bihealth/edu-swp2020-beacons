@@ -39,7 +39,8 @@ class AnnVar:
 
 
 class Info(AnnVar):
-    def __init__(self, varCount, population, statistic, frequency, phenotype):
+    def __init__(self, chr, pos, ref, alt, occ, varCount, population, statistic, frequency, phenotype):
+        
         """
         Creates Info Object and is subclass of AnnVar.
 
@@ -54,6 +55,7 @@ class Info(AnnVar):
         self.statistic = statistic
         self.frequency = frequency
         self.phenotype = phenotype
+        AnnVar.__init__(self, chr, pos, ref, alt, occ)
 
 
 def parse_var(inp):

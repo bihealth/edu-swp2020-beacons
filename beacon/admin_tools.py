@@ -45,14 +45,23 @@ class CreateDbCommand:
         :param con: connection to the database
         :rtype: bool
         """
-        sql_create_db_table_variants = """CREATE TABLE IF NOT EXISTS variants ( var_id integer PRIMARY KEY AUTOINCREMENT, chr text NOT NULL, pos integer NOT NULL, ref text NOT NULL, alt text NOT NULL, allel_count integer NOT NULL);"""
-        sql_create_db_table_populations = """CREATE TABLE IF NOT EXISTS populations ( id integer PRIMARY KEY AUTOINCREMENT, var_id integer NOT NULL, sample_id text NOT NULL, population text NOT NULL, phenotype text NOT NULL);"""
+        sql_create_db_table_variants = """CREATE TABLE IF NOT EXISTS variants (id integer PRIMARY KEY AUTOINCREMENT, chr text NOT NULL, pos integer NOT NULL, ref text NOT NULL, alt text NOT NULL);"""
+        sql_create_db_table_allel = """CREATE TABLE IF NOT EXISTS allel (id integer PRIMARY KEY AUTOINCREMENT, chr text NOT NULL, pos integer NOT NULL, ref text NOT NULL, alt text NOT NULL, allel_homo integer NOT NULL, allel_hetero integer NOT NULL, alt_count integer NOT NULL);"""
+        sql_create_db_table_populations = """CREATE TABLE IF NOT EXISTS populations (id integer PRIMARY KEY AUTOINCREMENT, chr text NOT NULL, pos integer NOT NULL, ref text NOT NULL, alt text NOT NULL, population text NOT NULL, phenotype text);"""
         output1 = con.parse_statement(sql_create_db_table_variants, ())
-        output2 = con.parse_statement(sql_create_db_table_populations, ())
-        if isinstance(output2, sqlite3.Error) or isinstance(output2, sqlite3.Error):  # pragma: nocover
-            raise Error(output1 +"\n"+output2)
+        output2 = con.parse_statement(sql_create_db_table_allel, ())
+        output3 = con.parse_statement(sql_create_db_table_populations, ())
+        if isinstance(output2, sqlite3.Error) or isinstance(output2, sqlite3.Error) or isinstance(output3, sqlite3.Error):  # pragma: nocover
+            raise Error(output1 +"\n"+output2+"\n"+output3)
         else:
-            return True
+            sql_idx_allel = "CREATE INDEX allel_idx ON allel(chr,pos,ref,alt);"
+            sql_idx_population = "CREATE INDEX populaation_idx ON population(chr,pos,ref,alt);"
+            output1 = con.parse_statement(sql_idx_allel, ())
+            output2 = con.parse_statement(sql_idx_population, ())
+            if isinstance(output2, sqlite3.Error) or isinstance(output2, sqlite3.Error):
+                raise Error(output1 +"\n"+output2)
+            else:
+                return True
 
 
 class SearchDuplicatesCommand:
