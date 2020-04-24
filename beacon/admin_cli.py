@@ -83,29 +83,28 @@ def main(pfad, args):
     if args.create_table:
         print("create table is activated")
         create = admin_tools.CreateDbCommand()
-        if (create.create_tables(connect)):
-            print(Creation was succesfully.)
-            return 0
+        output = create.create_tables(connect)
     elif args.insert_data:
         print("inserting data is activated")
-        return admin_tools.parse_vcf(args.insert_data, connect)
+        output = admin_tools.parse_vcf(args.insert_data, connect)
     elif args.find_dup:
         print("find_dup is activated")
         finddup = admin_tools.SearchDuplicatesCommand()
-        return finddup.find_dup(connect)
+        output = finddup.find_dup(connect)
     elif args.print_db:
         print("print_db is activated")
-        return od.print_db(connect)
+        output = od.print_db(connect)
     elif args.count_variants:
         print("count_variants is activated")
-        return od.count_variants(connect)
+        output = od.count_variants(connect)
     elif args.update:
         print("update is activated")
-        return od.updating_data(connect, args.update)
+        output = od.updating_data(connect, args.update)
     elif args.delete:
         print("delete is activated")
-        return od.delete_data(connect, int(args.delete))
+        output = od.delete_data(connect, int(args.delete))
     connect.connection.close()  # pragma: nocover
+    return output
 
 
 if __name__ == "__main__":  # pragma: nocover
