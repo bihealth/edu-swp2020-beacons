@@ -22,7 +22,7 @@ def test_connect_demoXXX(demo_db_path):
 
 def test_parse_statement_admin(demo_db_path):
     conn = database.ConnectDatabase(demo_db_path)
-    output = conn.parse_statement("SELECT chr, pos, ref, alt FROM variants;", ())
+    output = conn.parse_statement("SELECT chr, pos, ref, alt FROM allel;", ())
     assert output is not None
 
 
@@ -30,13 +30,13 @@ def test_parse_statement_user(demo_db_path):
     conn = database.ConnectDatabase(demo_db_path)
     parameters0 = ("1", 1000000, "C", "G")
     output0 = conn.parse_statement(
-        "SELECT chr, pos, ref, alt FROM variants WHERE chr = ? AND pos = ? AND ref = ? AND pos = ?;",
-        parameters0,
+        "SELECT chr, pos, ref, alt FROM allel WHERE chr = ? AND pos = ? AND ref = ? AND pos = ?;",
+        parameters0
     )
     parameters1 = ("X", 10000000, "C", "G")
     output1 = conn.parse_statement(
-        "SELECT chr, pos, ref, alt FROM variants WHERE chr = ? AND pos = ? AND ref = ? AND pos = ?;",
-        parameters1,
+        "SELECT chr, pos, ref, alt FROM allel WHERE chr = ? AND pos = ? AND ref = ? AND pos = ?;",
+        parameters1
     )
     assert output0 is not None
     assert len(output1) == 0
@@ -64,6 +64,7 @@ def test_handle_request_Info(demo_db_path):
     variant1 = common.Variant("X", 10000000, "C", "G")
     output0 = conn.handle_request(variant0, True)
     output1 = conn.handle_request(variant1, True)
-    print(output0.varCount, output0.population[0], output0.phenotype, output0.frequency)
+    #print(type(output0.varCount),type(output0.varCount[0]),output0.varCount[0][0] + output0.frequency[0][0])
+    print(output0.varCount, output0.population, output0.phenotype, output0.frequency)
     assert output0.occ is True
     assert output1.occ is False
