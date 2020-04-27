@@ -62,10 +62,12 @@ class ConnectDatabase:
             varCount = self.parse_statement(sql_varCount, parameters)
             sql_population = "SELECT population FROM populations WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
             population = self.parse_statement(sql_population, parameters)
-            sql_countAll = "SELECT SUM(allel_homo) + SUM(allel_hetero) FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
+            sql_countAll = "SELECT SUM(allel_homo)+SUM(allel_hetero) FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
             countAll = self.parse_statement(sql_countAll, parameters)
-            sql_countAlt = "SELECT alt_count FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
+            print("count_All: ", countAll)
+            sql_countAlt = "SELECT SUM(alt_count) FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
             countAlt = self.parse_statement(sql_countAlt, parameters)
+            print("count_Alt: ", countAlt)
             frequency = countAll #/ countAlt
             sql_phenotype = "SELECT phenotype FROM populations WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
             phenotype = self.parse_statement(sql_phenotype, parameters)
