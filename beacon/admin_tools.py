@@ -45,8 +45,7 @@ class CreateDbCommand:
         :param con: connection to the database
         :rtype: bool
         """
-        sql_create_db_table_variants = """CREATE TABLE IF NOT EXISTS variants (id integer PRIMARY KEY AUTOINCREMENT, chr text NOT NULL, pos integer NOT NULL, ref text NOT NULL, alt text NOT NULL);"""
-        sql_create_db_table_allel = """CREATE TABLE IF NOT EXISTS allel (id integer PRIMARY KEY AUTOINCREMENT, chr text NOT NULL, pos integer NOT NULL, ref text NOT NULL, alt text NOT NULL, allel_homo integer NOT NULL, allel_hetero integer NOT NULL, alt_count integer NOT NULL);"""
+        sql_create_db_table_allel = """CREATE TABLE IF NOT EXISTS allel (id integer PRIMARY KEY AUTOINCREMENT, chr text NOT NULL, pos integer NOT NULL, ref text NOT NULL, alt text NOT NULL, wildtype integer NOT NULL, alt_hetero integer NOT NULL, alt_homo integer NOT NULL, hemi_ref integer NOT NULL, hemi_alt integer NOT NULL);"""
         sql_create_db_table_populations = """CREATE TABLE IF NOT EXISTS populations (id integer PRIMARY KEY AUTOINCREMENT, chr text NOT NULL, pos integer NOT NULL, ref text NOT NULL, alt text NOT NULL, population text NOT NULL, phenotype text);"""
         output1 = con.parse_statement(sql_create_db_table_variants, ())
         output2 = con.parse_statement(sql_create_db_table_allel, ())
@@ -55,7 +54,7 @@ class CreateDbCommand:
             raise Error(output1 +"\n"+output2+"\n"+output3)
         else:
             sql_idx_allel = "CREATE INDEX allel_idx ON allel(chr,pos,ref,alt);"
-            sql_idx_population = "CREATE INDEX populaation_idx ON population(chr,pos,ref,alt);"
+            sql_idx_population = "CREATE INDEX population_idx ON populations(chr,pos,ref,alt);"
             output1 = con.parse_statement(sql_idx_allel, ())
             output2 = con.parse_statement(sql_idx_population, ())
             if isinstance(output2, sqlite3.Error) or isinstance(output2, sqlite3.Error):
