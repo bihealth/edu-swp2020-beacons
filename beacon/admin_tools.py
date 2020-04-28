@@ -6,6 +6,7 @@ import sqlite3
 import vcf
 import csv
 
+
 def parse_vcf(infile, con):
     """
     Reads VCF file and inserts the data into a database.
@@ -17,7 +18,7 @@ def parse_vcf(infile, con):
     vcf_reader = vcf.Reader(infile)
     for variant in vcf_reader:  # pragma: nocover
         # give to datenbank (sql_str)
-        chr = variant.CHROM      
+        chr = variant.CHROM
         pos = str(variant.POS)
         ref = variant.REF
         alt = "".join(str(i or "") for i in variant.ALT)
@@ -26,7 +27,7 @@ def parse_vcf(infile, con):
         wildtype = variant.num_hom_ref
         alt_hetero = variant.num_het
 
-        if chr == 'Y':  # was ist mit der X chr von männlichen samples?
+        if chr == "Y":  # was ist mit der X chr von männlichen samples?
             hemi_ref = wildtype
             hemi_alt = alt_hetero
         else:
@@ -34,29 +35,38 @@ def parse_vcf(infile, con):
             hemi_ref = 0
 
         sql_str = "INSERT INTO allel (chr,pos,ref,alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt) VALUES (?,?,?,?,?,?,?,?,?);"
-        parameters = (chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt)
+        parameters = (
+            chr,
+            pos,
+            ref,
+            alt,
+            wildtype,
+            alt_hetero,
+            alt_homo,
+            hemi_ref,
+            hemi_alt,
+        )
         output = con.parse_statement(sql_str, parameters)
-
         if type(output) != list:
             return output
     infile.close()  # pragma: nocover
     return True
-    
+
 
 def parse_tsv(infile, con):
     with open(infile) as tsv_file:
-        #tsv_reader = csv.reader(tsv_file, delimiter="\t")
-        tsv_reader = csv.DictReader(tsv_file, dialect='excel-tab')
+        # tsv_reader = csv.reader(tsv_file, delimiter="\t")
+        tsv_reader = csv.DictReader(tsv_file, dialect="excel-tab")
         count = 0
         for row in tsv_reader:
-            print(row['Sample name'])
-            
+            print(row["Sample name"])
+
             count = count + 1
             if count == 8:
                 break
-    
+
     tsv_file.close()
-    return True 
+    return True
 
 
 class CreateDbCommand:
@@ -74,83 +84,66 @@ class CreateDbCommand:
         :param con: connection to the database
         :rtype: bool
         """
-        sql_create_db_table_allel = 
-        """CREATE TABLE IF NOT EXISTS allel (
-            id integer PRIMARY KEY AUTOINCREMENT, 
-            chr text NOT NULL, 
-            pos integer NOT NULL, 
-            ref text NOT NULL, 
+        sql_create_db_table_allel = """
+            CREATE TABLE IF NOT EXISTS allel (
+            id integer PRIMARY KEY AUTOINCREMENT,
+            chr text NOT NULL,
+            pos integer NOT NULL,
+            ref text NOT NULL,
             alt text NOT NULL,
-            wildtype integer NOT NULL, 
-            alt_hetero integer NOT NULL, 
-            alt_homo integer NOT NULL, 
-            hemi_ref integer NOT NULL, 
+            wildtype integer NOT NULL,
+            alt_hetero integer NOT NULL,
+            alt_homo integer NOT NULL,
+            hemi_ref integer NOT NULL,
             hemi_alt integer NOT NULL
         );"""
-         
-        sql_create_db_table_populations = 
-        """CREATE TABLE IF NOT EXISTS populations (
-            id integer PRIMARY KEY AUTOINCREMENT, 
-            chr text NOT NULL, 
-            pos integer NOT NULL, 
-            ref text NOT NULL, 
-            alt text NOT NULL, 
-            wildtype integer NOT NULL, 
-            alt_hetero integer NOT NULL, 
-            alt_homo integer NOT NULL, 
-            hemi_ref integer NOT NULL, 
+        sql_create_db_table_populations = """
+            CREATE TABLE IF NOT EXISTS populations (
+            id integer PRIMARY KEY AUTOINCREMENT,
+            chr text NOT NULL,
+            pos integer NOT NULL,
+            ref text NOT NULL,
+            alt text NOT NULL,
+            wildtype integer NOT NULL,
+            alt_hetero integer NOT NULL,
+            alt_homo integer NOT NULL,
+            hemi_ref integer NOT NULL,
             hemi_alt integer NOT NULL,
             population text NOT NULL
         );"""
-            
-        sql_create_db_table_phenotype = 
-        """CREATE TABLE IF NOT EXISTS phenotype (
-            id integer PRIMARY KEY AUTOINCREMENT, 
-            chr text NOT NULL, 
-            pos integer NOT NULL, 
-            ref text NOT NULL, 
-            alt text NOT NULL, 
+        sql_create_db_table_phenotype = """
+            CREATE TABLE IF NOT EXISTS phenotype (
+            id integer PRIMARY KEY AUTOINCREMENT,
+            chr text NOT NULL,
+            pos integer NOT NULL,
+            ref text NOT NULL,
+            alt text NOT NULL,
             phenotype text
         );"""
-
-
         output1 = con.parse_statement(sql_create_db_table_allel, ())
         output2 = con.parse_statement(sql_create_db_table_populations, ())
-
-        if isinstance(output2, sqlite3.Error) or isinstance(output2, sqlite3.Error):  # pragma: nocover
-            raise Error(output1 +"\n"+output2+"\n"+output3)
+        output3 = con.parse_statement(sql_create_db_table_phenotype, ())
+        if isinstance(output1, sqlite3.Error):  # pragma: nocover
+            raise Exception(output1.args[0])
+        elif isinstance(output2, sqlite3.Error):  # pragma: nocover
+            raise Exception(output2.args[0])
+        elif isinstance(output3, sqlite3.Error):  # pragma: nocover
+            raise Exception(output3.args[0])
         else:
             sql_idx_allel = "CREATE INDEX allel_idx ON allel(chr,pos,ref,alt);"
-            sql_idx_population = "CREATE INDEX population_idx ON populations(chr,pos,ref,alt);"
+            sql_idx_population = "CREATE INDEX pop_idx ON populations(chr,pos,ref,alt);"
+            sql_idx_phenotype = "CREATE INDEX phe_idx ON phenotype(chr,pos,ref,alt);"
             output1 = con.parse_statement(sql_idx_allel, ())
             output2 = con.parse_statement(sql_idx_population, ())
-            if isinstance(output2, sqlite3.Error) or isinstance(output2, sqlite3.Error):
-                raise Error(output1 +"\n"+output2)
+            output3 = con.parse_statement(sql_idx_phenotype, ())
+            if isinstance(output1, sqlite3.Error):  # pragma: nocover
+                raise Exception(output1.args[0])
+            elif isinstance(output2, sqlite3.Error):  # pragma: nocover
+                raise Exception(output2.args[0])
+            elif isinstance(output3, sqlite3.Error):  # pragma: nocover
+                raise Exception(output3.args[0])
             else:
                 return True
-
-
-class SearchDuplicatesCommand:
-    """
-    Looks for duplicates in the database and prints them.
-    """
-
-    def __init__(self):
-        self.data = []
-
-    def find_dup(self, con):
-        """
-        Looks for duplicates in the database and shows them.
-
-        :param con: connection to the database
-        :return: list with duplications
-        :rtype: list
-        """
-        sql_find_dup = "SELECT id, chr, pos, COUNT(*) FROM variants GROUP BY chr, pos, ref, alt HAVING COUNT(*) > 1;"
-        output = con.parse_statement(sql_find_dup, ())
-        if type(output) != list:  # pragma: nocover
-            return output
-        return output
 
 
 class OperateDatabase:
@@ -168,15 +161,31 @@ class OperateDatabase:
         :param con: connection to the database
         :return: database
         """
-        sql_print = "SELECT id, chr, pos, ref, alt , wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt FROM allel GROUP BY id, chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt"
-        output = con.parse_statement(sql_print, ())
-        if type(output) != list:  # pragma: nocover
-            print(output)
+        sql_print_allel = "SELECT id, chr, pos, ref, alt , wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt FROM allel GROUP BY id, chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt;"
+        output_allel = con.parse_statement(sql_print_allel, ())
+        sql_print_population = "SELECT id, chr, pos, ref, alt , wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, population FROM populations GROUP BY id, chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, population;"
+        output_population = con.parse_statement(sql_print_population, ())
+        sql_print_phenotype = "SELECT id, chr, pos, ref, alt , phenotype FROM phenotype GROUP BY id, chr, pos, ref, alt, phenotype;"
+        output_phenotype = con.parse_statement(sql_print_phenotype, ())
+        if isinstance(output_allel, list) is False:  # pragma: nocover
+            print(output_allel)
+            return False
+        elif isinstance(output_population, list) is False:  # pragma: nocover
+            print(output_population)
+            return False
+        elif isinstance(output_phenotype, list) is False:  # pragma: nocover
+            print(output_phenotype)
             return False
         else:
-            for out in output:
+            print("TABLE allel: \n")
+            for out in output_allel:
                 print(out)
-            return ""
+            print("\nTABLE populations: \n")
+            for out in output_population:
+                print(out)
+            print("\nTABLE phenotype: \n")
+            for out in output_phenotype:
+                print(out)
 
     def count_variants(self, con):
         """
@@ -191,7 +200,7 @@ class OperateDatabase:
             print(output)
             return False
         else:
-            return int(output[0][0])
+            return output[0][0]
 
     def updating_data(self, con, variants):
         """
@@ -236,14 +245,3 @@ class OperateDatabase:
         else:
             print("rufe -p auf, um die Änderung zu sehen")
             return True
-
-
-# nct: def export_db() + def print_row() + def count
-# für version 2:
-# - Kommas einlesen, bei alt in der funktion parse_vcf
-# - ersetzen von database vcf
-# - create table geht nicht in dieser form mit ????
-# - update muss verbessert werden  id 100000 wird akzeptiert ?? -.-
-# - bei der funktion find_dup -> automatisch löschen
-# - 5 x updadte variablen benennen bei -h update -u U U U U U
-# - in der funktion update und delete noch das ergebnis printen
