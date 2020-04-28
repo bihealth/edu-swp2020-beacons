@@ -31,12 +31,12 @@ def test_parse_statement_user(demo_db_path):
     parameters0 = ("1", 1000000, "C", "G")
     output0 = conn.parse_statement(
         "SELECT chr, pos, ref, alt FROM allel WHERE chr = ? AND pos = ? AND ref = ? AND pos = ?;",
-        parameters0
+        parameters0,
     )
     parameters1 = ("X", 10000000, "C", "G")
     output1 = conn.parse_statement(
         "SELECT chr, pos, ref, alt FROM allel WHERE chr = ? AND pos = ? AND ref = ? AND pos = ?;",
-        parameters1
+        parameters1,
     )
     assert output0 is not None
     assert len(output1) == 0

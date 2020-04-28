@@ -88,15 +88,45 @@ def demo_db_path(tmpdir):
         # Insert values into table.
         for i in range(3):
             c.execute(
-                SQL_INSERT_ALLEL, ("1", 1_000_000 + i, "CGAT"[i % 4], "CGAT"[(i + 1) % 4], i + 3, i, i + 5, 0, 0)
+                SQL_INSERT_ALLEL,
+                (
+                    "1",
+                    1_000_000 + i,
+                    "CGAT"[i % 4],
+                    "CGAT"[(i + 1) % 4],
+                    i + 3,
+                    i,
+                    i + 5,
+                    0,
+                    0,
+                ),
             )
         for i in range(3):
             c.execute(
-                SQL_INSERT_POP, ("1", 1_000_000 + i, "CGAT"[i % 4], "CGAT"[(i + 1) % 4], i + 3, i, i + 5, 0, 0, ["GBR", "GBR", "PER", "KEN"][(i + 1) % 4])
+                SQL_INSERT_POP,
+                (
+                    "1",
+                    1_000_000 + i,
+                    "CGAT"[i % 4],
+                    "CGAT"[(i + 1) % 4],
+                    i + 3,
+                    i,
+                    i + 5,
+                    0,
+                    0,
+                    ["GBR", "GBR", "PER", "KEN"][(i + 1) % 4],
+                ),
             )
         for i in range(3):
             c.execute(
-                SQL_INSERT_PHE, ("1", 1_000_000 + i, "CGAT"[i % 4], "CGAT"[(i + 1) % 4], ["neuronal", "epidermis", "muskulär", None][(i + 1) % 4])
+                SQL_INSERT_PHE,
+                (
+                    "1",
+                    1_000_000 + i,
+                    "CGAT"[i % 4],
+                    "CGAT"[(i + 1) % 4],
+                    ["neuronal", "epidermis", "muskulär", None][(i + 1) % 4],
+                ),
             )
         conn.commit()
         c.close()
