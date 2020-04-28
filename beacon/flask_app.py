@@ -41,7 +41,7 @@ def handle():
     :return: render_template(result.html, **locals())
     """
     connectDb = database.ConnectDatabase(settings.PATH_DATABASE)
-    req = request.form  #in json 
+    req = request.form  # in json
     inp = req["var"]
     var = common.parse_var(inp)
     occ = connectDb.handle_variant(var)
@@ -51,6 +51,7 @@ def handle():
         return render_template(
             "output.html", title="Results", **locals()
         )  # pragma nocover
+
 
 if __name__ == "__main__":  # pragma nocover
     webbrowser.open_new("http://localhost:5000/")

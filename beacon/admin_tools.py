@@ -74,20 +74,22 @@ class CreateDbCommand:
         :param con: connection to the database
         :rtype: bool
         """
-        sql_create_db_table_allel = """CREATE TABLE IF NOT EXISTS allel (
+        sql_create_db_table_allel = 
+        """CREATE TABLE IF NOT EXISTS allel (
             id integer PRIMARY KEY AUTOINCREMENT, 
             chr text NOT NULL, 
             pos integer NOT NULL, 
             ref text NOT NULL, 
             alt text NOT NULL,
-        
             wildtype integer NOT NULL, 
             alt_hetero integer NOT NULL, 
             alt_homo integer NOT NULL, 
             hemi_ref integer NOT NULL, 
-            hemi_alt integer NOT NULL);"""
+            hemi_alt integer NOT NULL
+        );"""
          
-        sql_create_db_table_populations = """CREATE TABLE IF NOT EXISTS populations (
+        sql_create_db_table_populations = 
+        """CREATE TABLE IF NOT EXISTS populations (
             id integer PRIMARY KEY AUTOINCREMENT, 
             chr text NOT NULL, 
             pos integer NOT NULL, 
@@ -98,16 +100,18 @@ class CreateDbCommand:
             alt_homo integer NOT NULL, 
             hemi_ref integer NOT NULL, 
             hemi_alt integer NOT NULL,
-            population text NOT NULL);"""
+            population text NOT NULL
+        );"""
             
-        sql_create_db_table_phenotype = """CREATE TABLE IF NOT EXISTS phenotype (
+        sql_create_db_table_phenotype = 
+        """CREATE TABLE IF NOT EXISTS phenotype (
             id integer PRIMARY KEY AUTOINCREMENT, 
             chr text NOT NULL, 
             pos integer NOT NULL, 
             ref text NOT NULL, 
             alt text NOT NULL, 
-            
-            phenotype text);"""
+            phenotype text
+        );"""
 
 
         output1 = con.parse_statement(sql_create_db_table_allel, ())

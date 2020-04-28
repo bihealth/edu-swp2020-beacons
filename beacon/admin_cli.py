@@ -42,7 +42,7 @@ def parse_args(args):
         "-tsv",
         "--insert_data_tsv",
         help="according to a given sql command it inserts data from a tsv file in database",
-        #type=argparse.FileType("r"),
+        # type=argparse.FileType("r"),
     )
     parser.add_argument(
         "-fd",
