@@ -4,7 +4,7 @@
 
 import sqlite3
 import vcf
-
+import csv
 
 def parse_vcf(infile, con):
     """
@@ -17,17 +17,46 @@ def parse_vcf(infile, con):
     vcf_reader = vcf.Reader(infile)
     for variant in vcf_reader:  # pragma: nocover
         # give to datenbank (sql_str)
-        chr = variant.CHROM
+        chr = variant.CHROM      
         pos = str(variant.POS)
         ref = variant.REF
         alt = "".join(str(i or "") for i in variant.ALT)
-        sql_str = "INSERT INTO variants (chr,pos,ref,alt) VALUES (?,?,?,?);"
-        parameters = (chr, pos, ref, alt)
+
+        alt_homo = variant.num_hom_alt
+        wildtype = variant.num_hom_ref
+        alt_hetero = variant.num_het
+
+        if chr == 'Y':  # was ist mit der X chr von männlichen samples?
+            hemi_ref = wildtype
+            hemi_alt = alt_hetero
+        else:
+            hemi_alt = 0
+            hemi_ref = 0
+
+        sql_str = "INSERT INTO allel (chr,pos,ref,alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt) VALUES (?,?,?,?,?,?,?,?,?);"
+        parameters = (chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt)
         output = con.parse_statement(sql_str, parameters)
+
         if type(output) != list:
             return output
-    return True
     infile.close()  # pragma: nocover
+    return True
+    
+
+def parse_tsv(infile, con):
+    with open(infile) as tsv_file:
+        #tsv_reader = csv.reader(tsv_file, delimiter="\t")
+        tsv_reader = csv.DictReader(tsv_file, dialect='excel-tab')
+        count = 0
+        for row in tsv_reader:
+            print(row['Sample name'])
+            
+            count = count + 1
+            if count == 8:
+                break
+    
+    tsv_file.close()
+    return True 
 
 
 class CreateDbCommand:
@@ -45,12 +74,46 @@ class CreateDbCommand:
         :param con: connection to the database
         :rtype: bool
         """
-        sql_create_db_table_allel = """CREATE TABLE IF NOT EXISTS allel (id integer PRIMARY KEY AUTOINCREMENT, chr text NOT NULL, pos integer NOT NULL, ref text NOT NULL, alt text NOT NULL, wildtype integer NOT NULL, alt_hetero integer NOT NULL, alt_homo integer NOT NULL, hemi_ref integer NOT NULL, hemi_alt integer NOT NULL);"""
-        sql_create_db_table_populations = """CREATE TABLE IF NOT EXISTS populations (id integer PRIMARY KEY AUTOINCREMENT, chr text NOT NULL, pos integer NOT NULL, ref text NOT NULL, alt text NOT NULL, population text NOT NULL, phenotype text);"""
-        output1 = con.parse_statement(sql_create_db_table_variants, ())
-        output2 = con.parse_statement(sql_create_db_table_allel, ())
-        output3 = con.parse_statement(sql_create_db_table_populations, ())
-        if isinstance(output2, sqlite3.Error) or isinstance(output2, sqlite3.Error) or isinstance(output3, sqlite3.Error):  # pragma: nocover
+        sql_create_db_table_allel = """CREATE TABLE IF NOT EXISTS allel (
+            id integer PRIMARY KEY AUTOINCREMENT, 
+            chr text NOT NULL, 
+            pos integer NOT NULL, 
+            ref text NOT NULL, 
+            alt text NOT NULL,
+        
+            wildtype integer NOT NULL, 
+            alt_hetero integer NOT NULL, 
+            alt_homo integer NOT NULL, 
+            hemi_ref integer NOT NULL, 
+            hemi_alt integer NOT NULL);"""
+         
+        sql_create_db_table_populations = """CREATE TABLE IF NOT EXISTS populations (
+            id integer PRIMARY KEY AUTOINCREMENT, 
+            chr text NOT NULL, 
+            pos integer NOT NULL, 
+            ref text NOT NULL, 
+            alt text NOT NULL, 
+            wildtype integer NOT NULL, 
+            alt_hetero integer NOT NULL, 
+            alt_homo integer NOT NULL, 
+            hemi_ref integer NOT NULL, 
+            hemi_alt integer NOT NULL,
+            population text NOT NULL);"""
+            
+        sql_create_db_table_phenotype = """CREATE TABLE IF NOT EXISTS phenotype (
+            id integer PRIMARY KEY AUTOINCREMENT, 
+            chr text NOT NULL, 
+            pos integer NOT NULL, 
+            ref text NOT NULL, 
+            alt text NOT NULL, 
+            
+            phenotype text);"""
+
+
+        output1 = con.parse_statement(sql_create_db_table_allel, ())
+        output2 = con.parse_statement(sql_create_db_table_populations, ())
+
+        if isinstance(output2, sqlite3.Error) or isinstance(output2, sqlite3.Error):  # pragma: nocover
             raise Error(output1 +"\n"+output2+"\n"+output3)
         else:
             sql_idx_allel = "CREATE INDEX allel_idx ON allel(chr,pos,ref,alt);"
@@ -101,7 +164,7 @@ class OperateDatabase:
         :param con: connection to the database
         :return: database
         """
-        sql_print = "SELECT id, chr, pos, ref, alt FROM variants GROUP BY id, chr, pos, ref, alt"
+        sql_print = "SELECT id, chr, pos, ref, alt , wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt FROM allel GROUP BY id, chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt"
         output = con.parse_statement(sql_print, ())
         if type(output) != list:  # pragma: nocover
             print(output)
@@ -118,7 +181,7 @@ class OperateDatabase:
         :param con: connection to the database
         :rtype: int
         """
-        sql_count_var = "SELECT COUNT(*) FROM variants"
+        sql_count_var = "SELECT COUNT(*) FROM allel"
         output = con.parse_statement(sql_count_var, ())
         if type(output) != list:  # pragma: nocover
             print(output)
