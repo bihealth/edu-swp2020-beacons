@@ -65,9 +65,10 @@ def test_handle_request_Info(demo_db_path):
     variant1 = common.Variant("X", 10000000, "C", "G")
     output0 = conn.handle_request(variant0, True)
     output1 = conn.handle_request(variant1, True)
+    print(output0.varCount, output0.population)
     assert isinstance(output0, common.Info)
     assert output0.occ is True
-    assert output0.varCount == 10
+    assert output0.varCount == 20
     assert isinstance(output0.population, dict)
     assert isinstance(output0.phenotype, list)
     assert output0.frequency == 0.625

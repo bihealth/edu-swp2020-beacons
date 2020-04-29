@@ -64,23 +64,23 @@ class ConnectDatabase:
         # else create Info object
         else:
             # count allel in database for variant and sum it n VarCount
-            sql_alt_hetero = "SELECT alt_hetero FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
-            sql_alt_homo = "SELECT alt_homo FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
-            sql_hemi_alt = "SELECT hemi_alt FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
+            sql_alt_hetero = "SELECT SUM(alt_hetero) FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
+            sql_alt_homo = "SELECT SUM(alt_homo) FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
+            sql_hemi_alt = "SELECT SUM(hemi_alt) FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
             alt_hetero = self.parse_statement(sql_alt_hetero, parameters)[0][0]
             alt_homo = self.parse_statement(sql_alt_homo, parameters)[0][0]
             hemi_alt = self.parse_statement(sql_hemi_alt, parameters)[0][0]
             varCount = alt_hetero + 2 * alt_homo + hemi_alt
             # select populations of variant
             sql_population = "SELECT population FROM populations WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
-            population = self.parse_statement(sql_population, parameters)
+            population = list(dict.fromkeys(self.parse_statement(sql_population, parameters)))
             # create dic for population output
             pop_dic = {}
             # for each population count allel = popCount and add to output population dic
             for p in population:
-                sql_alt_hetero = "SELECT alt_hetero FROM populations WHERE chr = ? AND pos = ? AND ref = ? AND alt = ? AND population = ?;"
-                sql_alt_homo = "SELECT alt_homo FROM populations WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ? AND population = ?;"
-                sql_hemi_alt = "SELECT hemi_alt FROM populations WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ? AND population = ?;"
+                sql_alt_hetero = "SELECT SUM(alt_hetero) FROM populations WHERE chr = ? AND pos = ? AND ref = ? AND alt = ? AND population = ?;"
+                sql_alt_homo = "SELECT SUM(alt_homo) FROM populations WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ? AND population = ?;"
+                sql_hemi_alt = "SELECT SUM(hemi_alt) FROM populations WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ? AND population = ?;"
                 alt_hetero = self.parse_statement(
                     sql_alt_hetero,
                     (annVar.chr, annVar.pos, annVar.ref, annVar.alt, p[0]),
@@ -94,8 +94,8 @@ class ConnectDatabase:
                 popCount = alt_hetero + 2 * alt_homo + hemi_alt
                 pop_dic[p[0]] = popCount
             # select count of general allel information
-            sql_wildtype = "SELECT wildtype FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
-            sql_hemi_ref = "SELECT hemi_ref FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
+            sql_wildtype = "SELECT SUM(wildtype) FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
+            sql_hemi_ref = "SELECT SUM(hemi_ref) FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
             wildtype = self.parse_statement(sql_wildtype, parameters)[0][0]
             hemi_ref = self.parse_statement(sql_hemi_ref, parameters)[0][0]
             # calculate frequency out of it (#variant_allel/#locus_information_allel)
