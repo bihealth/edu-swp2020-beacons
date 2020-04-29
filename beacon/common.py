@@ -39,20 +39,8 @@ class AnnVar:
 
 
 class Info(AnnVar):
-    def __init__(
-        self,
-        chr,
-        pos,
-        ref,
-        alt,
-        occ,
-        varCount,
-        population,
-        statistic,
-        frequency,
-        phenotype,
-    ):
-
+    def __init__(self, chr, pos, ref, alt, occ, varCount, population, statistic, frequency, phenotype):
+        
         """
         Creates Info Object and is subclass of AnnVar.
 
@@ -77,6 +65,5 @@ def parse_var(inp):
     :param inp: variant string
     :return: variant object
     """
-    strin_spli = inp.split("-")
-    new_var = Variant(strin_spli[0], strin_spli[1], strin_spli[2], strin_spli[3])
+    new_var = Variant(inp['chr'], inp['pos'], inp['ref'], inp['alt'])
     return new_var

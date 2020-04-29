@@ -1,43 +1,107 @@
+
 """
 Provides (flask) server for beacon.
 """
-
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request
 from . import common
-from . import settings
 from . import database
-
-
+import requests
+from . import settings
 app = Flask(__name__)
 
 
-def annVar_ls(var, occ):
-    """
-    Makes list from variant object and occurence
-    :param var: variant object
-    :param occ: bool for occurence of variant in database
-    :return: list of variant class attributes and occurence bool
-    """
-    var_ls = list(var.__dict__.values())
-    if isinstance(occ, bool):
-        var_ls.append(occ)
-    else:
-        var_ls.append(occ.args[0])
-    return var_ls
-
-
-@app.route("/api/<var_str>", methods=["GET"])
-def get_api(var_str):
+@app.route("/query", methods=["POST"]) #change user_cli to make POST instead of GET request : done
+def get_api(): #gets json/dict as POST request : done
     """
     Takes variant string, hands it over to database module and returns the answer
     :param var_str:
     :return: json of variant and occurence
     """
+
+    token = request.headers['token']
+    auth = request_permission(token)
     connectDb = database.ConnectDatabase(settings.PATH_DATABASE)
-    var = common.parse_var(var_str)
-    occ = connectDb.handle_variant(var)
-    return jsonify(results=annVar_ls(var, occ))
+    var = common.parse_var(request.json) #need to change common.parse_var to convert from dict to variant object
+    if auth == 0:
+        un_ann = request.json
+        un_ann['occ'] = None
+        return jsonify(un_ann)
+    elif auth == 1:
+        ann_var = connectDb.handle_request(var) #change common.parse_var to get annotated variant
+        
+        print(ann_var.__dict__['occ'])
+        return jsonify(ann_var.__dict__) #change user_cli to take dict 
+    else:
+        ann_var = connectDb.handle_request(var, True)
+        return jsonify(ann_var.__dict__)
 
 
-if __name__ == "__main__":  # pragma nocover
+def request_permission(token):
+    con = database.ConnectDatabase(settings.PATH_LOGIN)
+    cur = con.connection.cursor()
+    auth = cur.execute("SELECT authorization,count_req FROM login WHERE token = ?", [token]).fetchone()
+    increment_string = "UPDATE login SET count_req = count_req + 1 WHERE token = ?"
+    print(auth[1])
+
+    if auth[1] > 10:
+        return 0
+    else:
+        cur.execute(increment_string, [token])
+        con.connection.commit()
+        return auth[0]
+
+@app.route("/", methods=["POST"]) #put some information on this site?
+def home():
+    """
+    Input: /
+    Output: render_template(home.html)
+    home with input field and submit button
+    """
+    return render_template("home.html") #need to change home.html to  send data as json
+
+
+@app.route("/results", methods=["POST"])  # possible with GET??
+def handle():
+    """
+    Input: request.form Object
+    Output: render_template(result.html, **locals()),
+    takes string from home.html, uses VariantStringParser to convert the input
+    string into Variant object and uses form database imported function
+    “handle_variant” and uses from common function var_str to convert AnnotatedVariant to string
+    """
+    rep = requests.post("http://localhost:5000/query", data=request.json)
+    res = rep.json
+    return render_template("output.html", title="Results", **locals()) #need to change output.html to get information from json
+
+
+@app.route('/api/users', methods = ['POST'])
+def new_user():
+    username = request.json.get('username')
+    password = request.json.get('password')
+    authorization = request.json.get('autorization')
+    if username is None or password is None or autorization is None:
+        abort(400)
+    conn = test_db.create_connection(settings.PATH_LOGIN)
+    user = (username, password, authorization)
+    test_db.create_user(conn, user)
+
+
+
+@app.route('/api/verify', methods = ['POST'])
+def verify_user():
+    con = database.ConnectDatabase(settings.PATH_LOGIN)
+    token = request.headers['token']
+    exist_query = "SELECT token,name FROM login WHERE token = ?"
+    cur = con.connection.cursor()
+    cur.execute(exist_query, [token])
+    exist = cur.fetchone()
+    if exist:
+        return jsonify({'verified': True, 'user': exist[1] })
+    else:
+        return jsonify({'verified': False, 'user': None})
+
+
+
+
+if __name__ == "__main__":
     app.run(debug=True)

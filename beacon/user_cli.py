@@ -1,7 +1,7 @@
+
 """
 Provides command line interface for beacon
 """
-
 import sys
 import re
 import requests
@@ -13,34 +13,19 @@ def main():
 
     """
     print("Welcome to our project beacon software!\n")
+    ver = (False,)
+    while ver[0] == False:
+        inp = input("Please enter your secret token: ")
+        ver = verify_token(inp)
+    print("Hello", ver[1])
+    cookie = inp
+
+
     cont = True
     while cont:
         inp = input("Please enter your variant (chr-pos-ref-alt):\n")
         # if input is valid - communication to database and send answer
-        if _check_input(inp):
-            try:
-
-                rep = requests.get("http://localhost:5000/api/" + inp)
-                res = " - ".join(map(str, rep.json()["results"]))
-                if isinstance(rep.json()["results"][4], bool):
-                    print("The result of your request is:")
-                    print(res, "\n")
-                else:
-                    print(  # pragma: nocover
-                        "\nWe have troubles with the database, please ask your admin for help.\n"
-                    )
-                    print(
-                        "The occuring error is: '", rep.json()["results"][4], "'\n"
-                    )  # pragma: nocover
-            except Exception as e:  # pragma: nocover
-                print(  # pragma: nocover
-                    "\nWe have troubles reaching the server, please ask your local administrator or start 'rest_apy.py' in a seperate terminal."
-                )
-                print(e.argv[0])  # pragma: nocover
-        else:
-            print(
-                "Your input has the wrong format. For futher information tipp --help."
-            )
+        query_request(inp,cookie) 
 
         inp = input(
             "If you like to continue: Press [c]\nIf you like to quit: Press [q]\n"
@@ -56,6 +41,15 @@ def main():
             cont = False
     print("Thank you for using our tool.")
 
+
+def verify_token(inp):
+    resp = requests.post("http://localhost:5000/api/verify", headers = {'token': inp})
+    if resp.json()['verified']:
+        return (True,resp.json()['user'])
+    else:
+        print("This is not a valid token")
+        return (False,)
+ 
 
 def _check_input(var_str):  # maybe better to check each input seperately
     """
@@ -76,6 +70,54 @@ def _check_input(var_str):  # maybe better to check each input seperately
         return True
 
 
+def string_to_dict(inp):
+    inp_list = inp.split('-')
+    inp_dict = {'chr':inp_list[0], 'pos': inp_list[1], 'ref': inp_list[2], 'alt': inp_list[3]}
+    return inp_dict
+
+
+def query_request(inp,cookie):
+
+    if _check_input(inp):
+        connection_established = False
+        try:
+            inp_dict = string_to_dict(inp)
+            rep = requests.post("http://localhost:5000/query", json = inp_dict, headers = {'token': cookie})
+            connection_established = True
+        except Exception as e:  # pragma: nocover
+            print(  # pragma: nocover
+                "\nWe have troubles reaching the server, please ask your local administrator or start 'rest_apy.py' in a seperate terminal.", e
+            )
+            #print(e.argv[0])  # pragma: nocover
+        if connection_established:
+            outp_dict = rep.json()
+            print_results(outp_dict)
+    else:
+        print(
+            "Your input has the wrong format. For futher information tipp --help."
+        )
+
+
+def print_results(outp_dict):
+    if outp_dict['occ'] == None:
+        print( "\nYou are not allowed to make more requests.")
+
+        print(  # pragma: nocover
+            "\nWe have troubles with the database, please ask your admin for help.\n"
+        )
+        print(
+            "The occuring error is: '", outp_dict['occ'], "'\n"
+        )  # pragma: nocover
+
+
+    elif len(outp_dict) == 5:
+        res = "chr: " + outp_dict['chr'] + " pos: " + outp_dict['pos'] + " ref: " + outp_dict['ref'] + " alt: " + outp_dict['alt'] + " occ: " + str(outp_dict['occ'])
+
+        print("The result of your request is:")
+        print(res, "\n")
+    else:
+        print (outp_dict)
+    
 def init():
     if __name__ == "__main__":
         sys.exit(main())  # pragma: nocover
