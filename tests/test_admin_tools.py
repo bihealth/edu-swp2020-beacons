@@ -25,6 +25,30 @@ def test_create_tables(tmpdir):
     assert out_phenotype == []
 
 
+def test_create_tables_error(tmpdir):
+    path_db = str(tmpdir.join("test.sqlite3"))
+    con = database.ConnectDatabase(path_db)
+    sql_create_db_table_allel = """
+            CREATE TABLE IF NOT EXISTS allel (
+            id integer PRIMARY KEY AUTOINCREMENT,
+            chr text NOT NULL,
+            pos integer NOT NULL,
+            ref text NOT NULL,
+            alt text NOT NULL,
+            wildtype integer NOT NULL,
+            alt_hetero integer NOT NULL,
+            alt_homo integer NOT NULL,
+            hemi_ref integer NOT NULL,
+            hemi_alt integer NOT NULL
+        );"""
+    sql_idx_allel = "CREATE INDEX allel_idx ON allel(chr,pos,ref,alt);"
+    con.parse_statement(sql_create_db_table_allel, ())
+    con.parse_statement(sql_idx_allel, ())
+    data = admin_tools.CreateDbCommand()
+    out = data.create_tables(con)
+    assert "An error has occured:" in out
+
+
 def test_print_db(demo_db_path, capsys):
     conn = database.ConnectDatabase(demo_db_path)
     od = admin_tools.OperateDatabase()
@@ -38,22 +62,45 @@ def test_print_db(demo_db_path, capsys):
     assert "(2, '1', 1000001, 'G', 'A', 'muskulär')" in out[0]
 
 
+def test_print_db_error(tmpdir):
+    path_db = str(tmpdir.join("test.sqlite3"))
+    conn = database.ConnectDatabase(path_db)
+    od = admin_tools.OperateDatabase()
+    out = od.print_db(conn)
+    assert "An error has occured:" in out
+
+
 def test_count_variants(demo_db_path):
     con = database.ConnectDatabase(demo_db_path)
     od = admin_tools.OperateDatabase()
     out = od.count_variants(con)
-    print(out)
     assert out is not None
     assert out == 3
 
 
-""" def test_updating_data(demo_db_path):
+def test_count_variants_error(tmpdir):
+    path_db = str(tmpdir.join("test.sqlite3"))
+    con = database.ConnectDatabase(path_db)
+    od = admin_tools.OperateDatabase()
+    out = od.count_variants(con)
+    assert "An error has occured:" in out
+
+
+def test_updating_allel(demo_db_path, tmpdir, capsys):
     con = database.ConnectDatabase(demo_db_path)
     od = admin_tools.OperateDatabase()
-    variants = (1, 1, "A", "T", 3)
-    out = od.updating_data(con, variants)
-    assert out is not None
-    assert out is True
+    allel = (1, 1, "A", "T", 4, 3, 4, 0, 0, 3)
+    od.updating_allel(con, allel)
+    out = capsys.readouterr()
+    path_db = str(tmpdir.join("test.sqlite3"))
+    con_err = database.ConnectDatabase(path_db)
+    od = admin_tools.OperateDatabase()
+    od.updating_allel(con_err, allel)
+    out_err = capsys.readouterr()
+    assert "The table allel has been updated. Call -p to see the changes." in out[0]
+    assert "An error has occured:" in out_err[0]
+
+
 
 
 def test_delete_data(demo_db_path):
@@ -66,4 +113,4 @@ def test_delete_data(demo_db_path):
     errorid = 10000
     eo = od.delete_data(con, errorid)
     print(eo)
-    assert eo is False """
+    assert eo is False

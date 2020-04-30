@@ -21,7 +21,7 @@ class Variant:
 
 
 class AnnVar:
-    def __init__(self, chr, pos, ref, alt, occ, error = None):
+    def __init__(self, chr, pos, ref, alt, occ, error=None):
         """
         Creates AnnVar Object.
 
@@ -47,6 +47,7 @@ class Info(AnnVar):
         ref,
         alt,
         occ,
+        error,
         varCount,
         population,
         statistic,
@@ -68,7 +69,7 @@ class Info(AnnVar):
         self.statistic = statistic
         self.frequency = frequency
         self.phenotype = phenotype
-        AnnVar.__init__(self, chr, pos, ref, alt, occ)
+        AnnVar.__init__(self, chr, pos, ref, alt, occ, error)
 
 
 def parse_var(inp):
