@@ -38,16 +38,11 @@ def get_api(): #gets json/dict as POST request : done
 
 def request_permission(token):
     con = database.ConnectDatabase(settings.PATH_LOGIN)
-    cur = con.connection.cursor()
-    auth = cur.execute("SELECT authorization,count_req FROM login WHERE token = ?", [token]).fetchone()
-    increment_string = "UPDATE login SET count_req = count_req + 1 WHERE token = ?"
-    print(auth[1])
-
+    auth = con.parse_statement("SELECT authorization,count_req FROM login WHERE token = ?", [token])
     if auth[1] > 10:
         return 0
     else:
-        cur.execute(increment_string, [token])
-        con.connection.commit()
+        con.parse_statement("UPDATE login SET count_req = count_req + 1 WHERE token = ?",[token])
         return auth[0]
 
 @app.route('/api/users', methods = ['POST'])
@@ -68,9 +63,7 @@ def verify_user():
     con = database.ConnectDatabase(settings.PATH_LOGIN)
     token = request.headers['token']
     exist_query = "SELECT token,name FROM login WHERE token = ?"
-    cur = con.connection.cursor()
-    cur.execute(exist_query, [token])
-    exist = cur.fetchone()
+    exist = con.parse_statement(exist_query, [token])
     if exist:
         return jsonify({'verified': True, 'user': exist[1] })
     else:
