@@ -320,6 +320,8 @@ class UserDB():
         output = con.parse_statement(sql_create_login_table, ())
         if isinstance(output, sqlite3.Error):  # pragma: nocover
             raise Exception(output.args[0])
+        else:
+            return True
 
     def addusers(self, acc, con):
         """
@@ -380,3 +382,4 @@ class UserDB():
             print("TABLE login: \n")
             for out in output:
                 print(out)
+            return ""

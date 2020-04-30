@@ -6,6 +6,7 @@ from . import admin_tools
 import argparse
 from . import database
 import sys  # vcf, sys, os
+import os
 
 
 def path():
@@ -14,8 +15,9 @@ def path():
 
     :return: path
     """
-    # db_path = input("DB Path: ")
-    db_path = '/Users/leylanur/edu-swp2020-beacons/beacon/login.db'
+    path = os.path.dirname(__file__)
+    db = input("DB Name: ")
+    db_path = os.path.join(path, db)
     return db_path
 
 
@@ -137,7 +139,6 @@ def main(pfad, args):
         output = us.addusers(args.insert_user_data, connect)
     elif args.find_token:
         print("find_token is activated")
-        print(args.find_token)
         output = us.find_user_token(connect, args.find_token)
     elif args.print_user_db:
         print("print_user_db is activated")
