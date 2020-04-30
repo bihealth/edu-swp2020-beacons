@@ -15,7 +15,7 @@ def path():
     :return: path
     """
     # db_path = input("DB Path: ")
-    db_path = '/home/namuun/edu-swp2020-beacons/beacon/test5.db'
+    db_path = "/home/namuun/edu-swp2020-beacons/beacon/test5.db"
     return db_path
 
 

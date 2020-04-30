@@ -55,8 +55,12 @@ def test_handle_request_Var(demo_db_path):
 def test_handle_request_connection_error():
     conn = database.ConnectDatabase("")
     variant = common.Variant("1", 1000000, "C", "G")
-    output = conn.handle_request(variant)
-    assert isinstance(output.occ, sqlite3.Error)
+    output0 = conn.handle_request(variant)
+    output1 = conn.handle_request(variant, True)
+    assert isinstance(output0.error, sqlite3.Error)
+    assert isinstance(output0, common.AnnVar)
+    assert isinstance(output1.error, sqlite3.Error)
+    assert isinstance(output1, common.Info)
 
 
 def test_handle_request_Info(demo_db_path):
@@ -65,7 +69,6 @@ def test_handle_request_Info(demo_db_path):
     variant1 = common.Variant("X", 10000000, "C", "G")
     output0 = conn.handle_request(variant0, True)
     output1 = conn.handle_request(variant1, True)
-    print(output0.varCount, output0.population)
     assert isinstance(output0, common.Info)
     assert output0.occ is True
     assert output0.varCount == 20
