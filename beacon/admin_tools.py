@@ -433,8 +433,7 @@ class OperateDatabase:
         """
         try:
             sql_str = "DELETE FROM allel WHERE id= ?;"
-            parameters = str(id)
-            con.parse_statement(sql_str, parameters)
+            con.parse_statement(sql_str, id)
             print("call -p to see the changes")
         except sqlite3.Error as e:
             return "An error has occured: " + str(e)
@@ -449,8 +448,7 @@ class OperateDatabase:
         """
         try:
             sql_str = "DELETE FROM populations WHERE id= ?;"
-            parameters = str(id)
-            con.parse_statement(sql_str, parameters)
+            con.parse_statement(sql_str, id)
             print("call -p to see the changes")
         except sqlite3.Error as e:
             return "An error has occured: " + str(e)
@@ -465,8 +463,7 @@ class OperateDatabase:
         """
         try:
             sql_str = "DELETE FROM phenotype WHERE id= ?;"
-            parameters = str(id)
-            con.parse_statement(sql_str, parameters)
+            con.parse_statement(sql_str, id)
             print("call -p to see the changes")
         except sqlite3.Error as e:
             return "An error has occured: " + str(e)

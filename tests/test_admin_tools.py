@@ -86,31 +86,57 @@ def test_count_variants_error(tmpdir):
     assert "An error has occured:" in out
 
 
-def test_updating_allel(demo_db_path, tmpdir, capsys):
+def test_updating_allel(demo_db_path, capsys):
     con = database.ConnectDatabase(demo_db_path)
     od = admin_tools.OperateDatabase()
     allel = (1, 1, "A", "T", 4, 3, 4, 0, 0, 3)
     od.updating_allel(con, allel)
     out = capsys.readouterr()
-    path_db = str(tmpdir.join("test.sqlite3"))
-    con_err = database.ConnectDatabase(path_db)
-    od = admin_tools.OperateDatabase()
-    od.updating_allel(con_err, allel)
-    out_err = capsys.readouterr()
     assert "The table allel has been updated. Call -p to see the changes." in out[0]
-    assert "An error has occured:" in out_err[0]
 
 
+def test_updating_allel_error(tmpdir):
+    allel = (1, 1, "A", "T", 4, 3, 4, 0, 0, 3)
+    path_db = str(tmpdir.join("test.sqlite3"))
+    con = database.ConnectDatabase(path_db)
+    od = admin_tools.OperateDatabase()
+    out = od.updating_allel(con, allel)
+    assert "An error has occured:" in out
 
 
-def test_delete_data(demo_db_path):
+def test_updating_populations(demo_db_path, capsys):
     con = database.ConnectDatabase(demo_db_path)
     od = admin_tools.OperateDatabase()
-    id = 1
-    out = od.delete_data(con, id)
-    assert out is not None
-    assert out is True
-    errorid = 10000
-    eo = od.delete_data(con, errorid)
-    print(eo)
-    assert eo is False
+    populations = (1, 1, "A", "T", 4, 3, 4, 0, 0, 3, "GER", 1)
+    od.updating_populations(con, populations)
+    out = capsys.readouterr()
+    assert (
+        "The table populations has been updated. Call -p to see the changes." in out[0]
+    )
+
+
+def test_updating_populations_error(tmpdir):
+    populations = (1, 1, "A", "T", 4, 3, 4, 0, 0, 3, "GER", 1)
+    path_db = str(tmpdir.join("test.sqlite3"))
+    con = database.ConnectDatabase(path_db)
+    od = admin_tools.OperateDatabase()
+    out = od.updating_populations(con, populations)
+    assert "An error has occured:" in out
+
+
+def test_updating_phenotype(demo_db_path, capsys):
+    con = database.ConnectDatabase(demo_db_path)
+    od = admin_tools.OperateDatabase()
+    phenotype = (1, 1, "A", "T", "synaptical", 1)
+    od.updating_phenotype(con, phenotype)
+    out = capsys.readouterr()
+    assert "The table phenotype has been updated. Call -p to see the changes." in out[0]
+
+
+def test_updating_phenotype_error(tmpdir):
+    phenotype = (1, 1, "A", "T", "synaptical", 1)
+    path_db = str(tmpdir.join("test.sqlite3"))
+    con = database.ConnectDatabase(path_db)
+    od = admin_tools.OperateDatabase()
+    out = od.updating_phenotype(con, phenotype)
+    assert "An error has occured:" in out
