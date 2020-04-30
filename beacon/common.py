@@ -21,7 +21,7 @@ class Variant:
 
 
 class AnnVar:
-    def __init__(self, chr, pos, ref, alt, occ):
+    def __init__(self, chr, pos, ref, alt, occ, error = None):
         """
         Creates AnnVar Object.
 
@@ -36,6 +36,7 @@ class AnnVar:
         self.ref = ref
         self.alt = alt
         self.occ = occ
+        self.error = error
 
 
 class Info(AnnVar):

@@ -16,9 +16,9 @@ def test_create_tables(tmpdir):
     con = database.ConnectDatabase(path_db)
     data = admin_tools.CreateDbCommand()
     out = data.create_tables(con)
-    out_allel = con.parse_statement("SELECT * FROM allel",())
-    out_populations = con.parse_statement("SELECT * FROM populations",())
-    out_phenotype = con.parse_statement("SELECT * FROM phenotype",())
+    out_allel = con.parse_statement("SELECT * FROM allel", ())
+    out_populations = con.parse_statement("SELECT * FROM populations", ())
+    out_phenotype = con.parse_statement("SELECT * FROM phenotype", ())
     assert out is True
     assert out_allel == []
     assert out_populations == []
@@ -42,11 +42,12 @@ def test_count_variants(demo_db_path):
     con = database.ConnectDatabase(demo_db_path)
     od = admin_tools.OperateDatabase()
     out = od.count_variants(con)
+    print(out)
     assert out is not None
     assert out == 3
 
 
-def test_updating_data(demo_db_path):
+""" def test_updating_data(demo_db_path):
     con = database.ConnectDatabase(demo_db_path)
     od = admin_tools.OperateDatabase()
     variants = (1, 1, "A", "T", 3)
@@ -65,4 +66,4 @@ def test_delete_data(demo_db_path):
     errorid = 10000
     eo = od.delete_data(con, errorid)
     print(eo)
-    assert eo is False
+    assert eo is False """

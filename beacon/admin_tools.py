@@ -194,15 +194,15 @@ class OperateDatabase:
         :param con: connection to the database
         :rtype: int
         """
-        sql_count_var = "SELECT COUNT(*) FROM allel"
+        sql_count_var = "SELECT COUNT(*) FROM allel GROUP BY chr, pos, alt, ref;"
         output = con.parse_statement(sql_count_var, ())
-        if type(output) != list:  # pragma: nocover
+        if isinstance(output, list) is False:  # pragma: nocover
             print(output)
             return False
         else:
-            return output[0][0]
+            return len(output)
 
-    def updating_data(self, con, variants):
+    def updating_data(self, con, variants):  # noqa
         """
         Updates a row in the database according to given id and input.
 
@@ -227,7 +227,7 @@ class OperateDatabase:
             print("rufe -p auf, um die Änderung zu sehen")
             return True
 
-    def delete_data(self, con, id):
+    def delete_data(self, con, id):  # noqa
         """
         Deletes a row with given id in the database.
 

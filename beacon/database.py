@@ -73,7 +73,9 @@ class ConnectDatabase:
             varCount = alt_hetero + 2 * alt_homo + hemi_alt
             # select populations of variant
             sql_population = "SELECT population FROM populations WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;"
-            population = list(dict.fromkeys(self.parse_statement(sql_population, parameters)))
+            population = list(
+                dict.fromkeys(self.parse_statement(sql_population, parameters))
+            )
             # create dic for population output
             pop_dic = {}
             # for each population count allel = popCount and add to output population dic
