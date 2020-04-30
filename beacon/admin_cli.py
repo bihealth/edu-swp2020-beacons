@@ -14,8 +14,7 @@ def path():
 
     :return: path
     """
-    # db_path = input("DB Path: ")
-    db_path = '/home/namuun/edu-swp2020-beacons/beacon/test5.db'
+    db_path = input("DB Path: ")
     return db_path
 
 
@@ -38,7 +37,7 @@ def parse_args(args):
         "--insert_data",
         help="according to a given sql command it inserts data from a vcf file in database",
         type=argparse.FileType("r"),
-        nargs=2,
+        nargs=3,
     )
     parser.add_argument(
         "-fd",

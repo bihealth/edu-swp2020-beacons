@@ -8,65 +8,96 @@ import csv
 
 def parse_vcf(infile, con):
     """
-    Reads VCF file and inserts the data into a database.
+    Reads given files and inserts the data into a database.
 
-    :param infile: a vcf file
+    :param infile[0]: a vcf file for variants
+    :param infile[1]: a tsv file for population
+    :param infile[2]: a tsv or xslx file for phenotype
     :param con: connection to the database
     :rtype: bool
     """
-    #reads tsv file and creates for each sample a dict entry with pop and sex
-    populationDict = {}
-    with infile[1] as tsv_file:
-        
-        tsv_reader = csv.DictReader(tsv_file, dialect='excel-tab')
-        count = 0
-        for row in tsv_reader:
-            populationDict[row['Sample name']] = {'pop_code':row['Population code'], 'sex':row['Sex'] } 
+    try:
+        #reads tsv file for population and creates for each sample a dict entry with pop and sex
+        populationDict = {}
+        with infile[1] as tsv_file:
             
-            count = count + 1
-            if count == 8:
-                break
-    tsv_file.close()
-   
+            tsv_reader = csv.DictReader(tsv_file, dialect='excel-tab')
+            # count = 0
+            for row in tsv_reader:
+                populationDict[row['Sample name']] = {'pop_code':row['Population code'], 'sex':row['Sex'] } 
+                
+                # count = count + 1
+                # if count == 8:
+                #     break
+        tsv_file.close()
+        #------------------------------------------------------------------------------------
+        # reads file for phenotype and creates for each sample a dict entry with hpo-term-id and hpo-term-name
+        phenotypeDict = {}
+        with infile[2] as phenotype_file:
+            # count=0
+            key = 0
+            phenotype_reader = csv.DictReader(phenotype_file, dialect='excel-tab')
+            for row in phenotype_reader:
+                phenotypeDict[key] = {'HPO-Term-ID':row[None][1],'HPO-Term-Name':row[None][2]}
+                key += 1
+                # count += 1
+                # if count == 9:
+                #     break
+        phenotype_file.close()
+    except csv.Error as error:
+        raise ValueError(error)
     #------------------------------------------------------------------------------------
-    vcf_reader = vcf.Reader(infile[0])
-    for variant in vcf_reader:  # pragma: nocover
-       
-        chr = variant.CHROM      
-        pos = variant.POS
-        ref = variant.REF
-        alt = "".join(str(i or "") for i in variant.ALT) # add ,
+    pheno_key = 0
+    try:
+        vcf_reader = vcf.Reader(infile[0])
+        for variant in vcf_reader:  # pragma: nocover
+        
+            chr = variant.CHROM      
+            pos = variant.POS
+            ref = variant.REF
+            alt = "".join(str(i or "") for i in variant.ALT) # add ,
 
-        #for allel
-        hemi_alt = 0
-        hemi_ref = 0
-        wildtype = 0
-        alt_hetero = 0
-        alt_homo = 0
+            #for allel
+            hemi_alt = 0
+            hemi_ref = 0
+            wildtype = 0
+            alt_hetero = 0
+            alt_homo = 0
 
-        exist_bool = False
-        tempDict = {}
-        for sample in variant.samples:
-            sample_id = sample.sample
-            population = populationDict[sample_id]['pop_code']
-            if sample_id in populationDict:
-                exist_bool = True
+            tempDict = {}
+            for sample in variant.samples:
+                sample_id = sample.sample
                 gt = sample.gt_type
-                if population not in tempDict: 
-                    tempDict[population] = {'pop_wildtype':0, 'pop_alt_hetero':0, 'pop_alt_homo':0, 'pop_hemi_ref':0, 'pop_hemi_alt':0}
-                # case autosome 
-                if chr == 'Y' or chr == 'X':
-                    # case male
-                    if populationDict[sample_id]['sex'] == 'male':
-                        if gt == 2:  # 2 => hom_alt
-                            hemi_alt += 1 
-                            tempDict[population]['pop_hemi_alt'] +=1
-                        else:  # sample.gt_type == 0 => hom_ref / wildtype
-                            hemi_ref += 1
-                            tempDict[population]['pop_hemi_ref'] +=1
-                    # case female
-                    else: 
-                        if gt == 0: 
+
+                if sample_id in populationDict:
+                    population = populationDict[sample_id]['pop_code']
+
+                    if population not in tempDict: 
+                        tempDict[population] = {'pop_wildtype':0, 'pop_alt_hetero':0, 'pop_alt_homo':0, 'pop_hemi_ref':0, 'pop_hemi_alt':0}
+                    # case autosome 
+                    if chr == 'Y' or chr == 'X':
+                        # case male
+                        if populationDict[sample_id]['sex'] == 'male':
+                            if gt == 2:  # 2 => hom_alt
+                                hemi_alt += 1 
+                                tempDict[population]['pop_hemi_alt'] +=1
+                            else:  # sample.gt_type == 0 => hom_ref / wildtype
+                                hemi_ref += 1
+                                tempDict[population]['pop_hemi_ref'] +=1
+                        # case female
+                        else: 
+                            if gt == 0: 
+                                wildtype += 1
+                                tempDict[population]['pop_wildtype'] +=1
+                            elif gt == 1:
+                                alt_hetero += 1
+                                tempDict[population]['pop_alt_hetero'] +=1
+                            else:  # gt == 2
+                                alt_homo += 1
+                                tempDict[population]['pop_alt_homo'] +=1
+                    # not autosome
+                    else:
+                        if gt == 0:
                             wildtype += 1
                             tempDict[population]['pop_wildtype'] +=1
                         elif gt == 1:
@@ -75,8 +106,11 @@ def parse_vcf(infile, con):
                         else:  # gt == 2
                             alt_homo += 1
                             tempDict[population]['pop_alt_homo'] +=1
-                # not autosome
-                else:
+
+                else: 
+                    population = None
+                    if population not in tempDict: 
+                        tempDict[population] = {'pop_wildtype':0, 'pop_alt_hetero':0, 'pop_alt_homo':0, 'pop_hemi_ref':0, 'pop_hemi_alt':0}
                     if gt == 0:
                         wildtype += 1
                         tempDict[population]['pop_wildtype'] +=1
@@ -85,37 +119,35 @@ def parse_vcf(infile, con):
                         tempDict[population]['pop_alt_hetero'] +=1
                     else:  # gt == 2
                         alt_homo += 1
-                        tempDict[population]['pop_alt_homo'] +=1   
+                        tempDict[population]['pop_alt_homo'] +=1
 
-        if exist_bool is False:
-            alt_homo = variant.num_hom_alt 
-            wildtype = variant.num_hom_ref
-            alt_hetero = variant.num_het
-        
-        #INSERT   - Duplicates allowed
-        sql_str = "INSERT INTO allel (chr,pos,ref,alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt) VALUES (?,?,?,?,?,?,?,?,?);"
-        parameters = (chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt)
-        output = con.parse_statement(sql_str, parameters)
+            #INSERT   - Duplicates allowed
+            sql_str = "INSERT INTO allel (chr,pos,ref,alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt) VALUES (?,?,?,?,?,?,?,?,?);"
+            parameters = (chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt)
+            output = con.parse_statement(sql_str, parameters)
 
-        sql_str2 = "INSERT INTO phenotype (chr,pos,ref,alt,phenotype) VALUES (?,?,?,?,?);"
-        phenotype = ''
-        parameters2 = (chr, pos, ref, alt, phenotype)
-        output2 = con.parse_statement(sql_str2, parameters2)
+            sql_str2 = "INSERT INTO phenotype (chr,pos,ref,alt,phenotype) VALUES (?,?,?,?,?);"
 
-        if isinstance(output,list) is False or isinstance(output2,list) is False: #evtl error
-              return output, output2
+            phenotype = phenotypeDict[pheno_key]['HPO-Term-ID']+'; '+ phenotypeDict[pheno_key]['HPO-Term-Name']
+            pheno_key += 1
+            parameters2 = (chr, pos, ref, alt, phenotype)
+            output2 = con.parse_statement(sql_str2, parameters2)
 
-        for td in tempDict:                   
-            sql_str1 = "INSERT INTO populations (chr,pos,ref,alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, population) VALUES (?,?,?,?,?,?,?,?,?,?);"
-            parameters1 = (chr, pos, ref, alt, tempDict[td]['pop_wildtype'],tempDict[td]['pop_alt_hetero'], tempDict[td]['pop_alt_homo'], tempDict[td]['pop_hemi_ref'], tempDict[td]['pop_hemi_alt'], td)
-            output1 = con.parse_statement(sql_str1, parameters1)
+            if isinstance(output,list) is False or isinstance(output2,list) is False: #evtl error
+                return output, output2
 
-            if isinstance(output1,list) is False:
-                return output1
+            for td in tempDict:                   
+                sql_str1 = "INSERT INTO populations (chr,pos,ref,alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, population) VALUES (?,?,?,?,?,?,?,?,?,?);"
+                parameters1 = (chr, pos, ref, alt, tempDict[td]['pop_wildtype'],tempDict[td]['pop_alt_hetero'], tempDict[td]['pop_alt_homo'], tempDict[td]['pop_hemi_ref'], tempDict[td]['pop_hemi_alt'], td)
+                output1 = con.parse_statement(sql_str1, parameters1)
 
-    infile[0].close()  # pragma: nocover
-    return True
+                if isinstance(output1,list) is False:
+                    return output1
 
+        infile[0].close()  # pragma: nocover
+        return True
+    except SyntaxError or Exception as e:
+        return "An error has occured", e
 
 class CreateDbCommand:
     """
