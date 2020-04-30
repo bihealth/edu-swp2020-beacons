@@ -50,30 +50,6 @@ def request_permission(token):
         con.connection.commit()
         return auth[0]
 
-@app.route("/", methods=["POST"]) #put some information on this site?
-def home():
-    """
-    Input: /
-    Output: render_template(home.html)
-    home with input field and submit button
-    """
-    return render_template("home.html") #need to change home.html to  send data as json
-
-
-@app.route("/results", methods=["POST"])  # possible with GET??
-def handle():
-    """
-    Input: request.form Object
-    Output: render_template(result.html, **locals()),
-    takes string from home.html, uses VariantStringParser to convert the input
-    string into Variant object and uses form database imported function
-    “handle_variant” and uses from common function var_str to convert AnnotatedVariant to string
-    """
-    rep = requests.post("http://localhost:5000/query", data=request.json)
-    res = rep.json
-    return render_template("output.html", title="Results", **locals()) #need to change output.html to get information from json
-
-
 @app.route('/api/users', methods = ['POST'])
 def new_user():
     username = request.json.get('username')
