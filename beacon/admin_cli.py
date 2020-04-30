@@ -15,7 +15,7 @@ def path():
     :return: path
     """
     # db_path = input("DB Path: ")
-    db_path = '/home/namuun/edu-swp2020-beacons/beacon/test5.db'
+    db_path = '/Users/leylanur/edu-swp2020-beacons/beacon/login.db'
     return db_path
 
 
@@ -69,6 +69,29 @@ def parse_args(args):
         "--delete",
         help="according to a given sql command it deletes data in database",
     )
+    parser.add_argument(
+        "-ctu",
+        "--create_table_user",
+        action="store_true",
+        help="according to a given sql command it creates new table in 'user'-database",
+    )
+    parser.add_argument(
+        "-add",
+        "--insert_user_data",
+        help="according to a given sql command it adds the user in the database",
+        nargs=2
+    )
+    parser.add_argument(
+        "-t",
+        "--find_token",
+        help="according to a given sql command it finds the token for the associated username in database",
+    )
+    parser.add_argument(
+        "-pu",
+        "--print_user_db",
+        action="store_true",
+        help="according to a given sql command it prints the database",
+    )
     return parser.parse_args(args)
 
 
@@ -82,6 +105,7 @@ def main(pfad, args):
     """
     connect = database.ConnectDatabase(pfad)
     od = admin_tools.OperateDatabase()
+    us = admin_tools.UserDB()
     if args.create_table:
         print("create table is activated")
         create = admin_tools.CreateDbCommand()
@@ -105,6 +129,19 @@ def main(pfad, args):
     elif args.delete:
         print("delete is activated")
         output = od.delete_data(connect, int(args.delete))
+    elif args.create_table_user:
+        print("create user table is activated")
+        output = us.create_tables(connect)
+    elif args.insert_user_data:
+        print("inserting user data is activated")
+        output = us.addusers(args.insert_user_data, connect)
+    elif args.find_token:
+        print("find_token is activated")
+        print(args.find_token)
+        output = us.find_user_token(connect, args.find_token)
+    elif args.print_user_db:
+        print("print_user_db is activated")
+        output = us.print_db(connect)
     connect.connection.close()  # pragma: nocover
     return output
 

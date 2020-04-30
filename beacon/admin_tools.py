@@ -5,6 +5,7 @@
 import sqlite3
 import vcf
 import csv
+import secrets
 
 def parse_vcf(infile, con):
     """
@@ -293,3 +294,89 @@ class OperateDatabase:
         else:
             print("rufe -p auf, um die Änderung zu sehen")
             return True
+
+class UserDB():
+    """
+    Maintenance of the user database 
+    """
+    def __init__(self):
+        self.data = []
+
+    def create_tables(self, con):
+        """
+        Creates variant table in database.
+
+        :param con: connection to the database
+        :rtype: bool
+        """
+        sql_create_login_table= """
+            CREATE TABLE IF NOT EXISTS login (
+            id integer PRIMARY KEY,
+            name text NOT NULL,
+            token text NOT NULL,
+            authorization integer NOT NULL,
+            count_req integer
+        );"""
+        output = con.parse_statement(sql_create_login_table, ())
+        if isinstance(output, sqlite3.Error):  # pragma: nocover
+            raise Exception(output.args[0])
+
+    def addusers(self, acc, con):
+        """
+        Adds user to database with a token and authorization number and prevents duplication of usernames.
+
+        :param username: username and authorization-key
+        :param con: connection to the database
+        :rtype: bool
+        """
+        name = acc[0]
+        authorization = acc[1]
+        token = secrets.token_urlsafe()
+
+        sql_find_dup ="SELECT name FROM login WHERE name = ?"
+        output = con.parse_statement(sql_find_dup, [name])
+        if type(output) != list:  # pragma: nocover
+            return output
+        if output == []:
+            sql_str = "INSERT INTO login(name,token,authorization,count_req) VAlUES(?,?,?,0);"
+            parameters = (name, token, authorization)
+            output = con.parse_statement(sql_str, parameters)
+            if isinstance(output,list) is False:
+                return output
+            return True
+        else:
+            return 'Username already exists'
+
+
+    def find_user_token(self, con, username):
+        """
+        finds the token for the associated username
+
+        :param con: connection to the database
+        :return: token
+        """
+        sql_find_dup ="SELECT token FROM login WHERE name = ?"
+        output = con.parse_statement(sql_find_dup, [username])
+        if isinstance(output, list) is False:  # pragma: nocover
+            print(output)
+            return False
+        else:
+            print("Token:")
+            return output[0][0]
+
+    def print_db(self, con):
+        """
+        Prints whole database.
+
+        :param con: connection to the database
+        :return: database
+        """
+        sql_print = "SELECT * FROM login"
+        output = con.parse_statement(sql_print, ())
+        if isinstance(output, list) is False:  # pragma: nocover
+            print(output)
+            return False
+        else:
+            print("TABLE login: \n")
+            for out in output:
+                print(out)
