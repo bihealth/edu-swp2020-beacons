@@ -3,6 +3,8 @@
 ..."communicates" with database
 """
 import sqlite3
+import numpy as np
+import matplotlib.pyplot as plt
 from . import common
 
 
@@ -140,3 +142,6 @@ class ConnectDatabase:
                     None,
                     None,
                 )
+
+    def _create_statistics(self, populations, pop_wildtypes, pop_alt_hetero, pop_alt_homo, pop_hemi_alt, pop_hemi_ref):
+        pass
