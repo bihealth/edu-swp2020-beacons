@@ -5,7 +5,7 @@
 from . import admin_tools
 import argparse
 from . import database
-import sys  # vcf, sys, os
+import sys, os  # vcf, sys, os
 
 
 def path():
