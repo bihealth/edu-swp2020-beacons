@@ -13,7 +13,7 @@ def path():
     Asks for a path to the database.db for maintaining the Database.
     :return: path
     """
-    # db_path = input("DB Path: ")
+    db_path = input("DB Path: ")
     return db_path
 
 
