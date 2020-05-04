@@ -398,7 +398,6 @@ class OperateDatabase:
             print("call -p to see the changes")
         except sqlite3.Error as e:
             return "An error has occured: " + str(e)
-<<<<<<< HEAD
 
 class UserDB():
     """
@@ -508,5 +507,3 @@ class UserDB():
         else:
             print("rufe -p auf, um die Änderung zu sehen")
             return True
-=======
->>>>>>> cb196e8de620ae5f2bf04c959a3edec5be2b4f23
