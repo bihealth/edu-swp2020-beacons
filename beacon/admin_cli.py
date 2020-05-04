@@ -13,7 +13,9 @@ def path():
     Asks for a path to the database.db for maintaining the Database.
     :return: path
     """
-    db_path = input("DB Path: ")
+    path = os.path.dirname(__file__)
+    db = input("DB Name: ")
+    db_path = os.path.join(path, db)
     return db_path
 
 
