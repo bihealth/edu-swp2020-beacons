@@ -39,7 +39,7 @@ def get_api(): #gets json/dict as POST request : done
 def request_permission(token):
     con = database.ConnectDatabase(settings.PATH_LOGIN)
     auth = con.parse_statement("SELECT authorization,count_req FROM login WHERE token = ?", [token])
-    if auth[1] > 10:
+    if auth[0][1] > 10:
         return 0
     else:
         con.parse_statement("UPDATE login SET count_req = count_req + 1 WHERE token = ?",[token])
