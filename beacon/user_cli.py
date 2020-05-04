@@ -108,12 +108,13 @@ def query_request(inp, cookie):
 
 def print_results(outp_dict):
     if outp_dict["occ"] == None:
-        print("\nYou are not allowed to make more requests.")
-
-        print(  # pragma: nocover
-            "\nWe have troubles with the database, please ask your admin for help.\n"
-        )
-        print("The occuring error is: '", outp_dict["occ"], "'\n")  # pragma: nocover
+        if outp_dict["error"] == None:
+            print("\nYou are not allowed to make more requests.")
+        else:
+            print(  # pragma: nocover
+                "\nWe have troubles with the database, please ask your admin for help.\n"
+            )
+            print("The occuring error is: '", outp_dict["occ"], "'\n")  # pragma: nocover
 
     elif len(outp_dict) == 5:
         res = (

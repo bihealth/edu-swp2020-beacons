@@ -29,7 +29,6 @@ def get_api(): #gets json/dict as POST request : done
     elif auth == 1:
         ann_var = connectDb.handle_request(var) #change common.parse_var to get annotated variant
         
-        print(ann_var.__dict__['occ'])
         return jsonify(ann_var.__dict__) #change user_cli to take dict 
     else:
         ann_var = connectDb.handle_request(var, True)
@@ -41,7 +40,7 @@ def request_permission(ip_addr,token):
     if token == None:
         auth = con.parse_statement("SELECT authorization,count_req FROM login WHERE ip_addr = ?", [ip_addr])
         if not auth:
-            con.parse_statement("INSERT INTO login(authorization, count_req, ip_addr) VALUES(1,1,?)", [ip_addr]) 
+            con.parse_statement("INSERT INTO login(name, token, authorization, count_req, ip_addr) VALUES('user', 'user',1,1,?)", [ip_addr]) 
             return 1
         elif auth[0][1] > 10:
             return 0
