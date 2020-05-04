@@ -429,6 +429,7 @@ class UserDB():
             token text NOT NULL,
             authorization integer NOT NULL,
             count_req integer
+            ip_addr text
         );"""
         output = con.parse_statement(sql_create_login_table, ())
         if isinstance(output, sqlite3.Error):  # pragma: nocover
@@ -453,7 +454,7 @@ class UserDB():
         if type(output) != list:  # pragma: nocover
             return output
         if output == []:
-            sql_str = "INSERT INTO login(name,token,authorization,count_req) VAlUES(?,?,?,0);"
+            sql_str = "INSERT INTO login(name,token,authorization,count_req,ip_addr) VAlUES(?,?,?,0);"
             parameters = (name, token, authorization)
             output = con.parse_statement(sql_str, parameters)
             if isinstance(output,list) is False:
