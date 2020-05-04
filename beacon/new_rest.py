@@ -7,7 +7,7 @@ import requests
 app = Flask(__name__)
 
 
-#def annVar_ls(var, occ):
+# def annVar_ls(var, occ):
 #    """Input: common.AnnotatedVariant
 #    Output: ls with api values and AnnotatedVariant class  variables
 #    function transformes AnnotatedVariant to ls
@@ -20,24 +20,31 @@ app = Flask(__name__)
 #    return var_ls
 
 
-@app.route("/query", methods=["POST"]) #change user_cli to make POST instead of GET request
-def get_api(): #gets json/dict as POST request 
+@app.route(
+    "/query", methods=["POST"]
+)  # change user_cli to make POST instead of GET request
+def get_api():  # gets json/dict as POST request
     connectDb = database.ConnectDatabase(settings.PATH_DATABASE)
-    var = common.parse_var(request.json) #need to change common.parse_var to convert from dict to variant object
-    ann_var = connectDb.handle_variant(var) #change common.parse_var to get annotated variant
-    return jsonify(ann_var.__dict__) #change user_cli to take dict 
+    var = common.parse_var(
+        request.json
+    )  # need to change common.parse_var to convert from dict to variant object
+    ann_var = connectDb.handle_variant(
+        var
+    )  # change common.parse_var to get annotated variant
+    return jsonify(ann_var.__dict__)  # change user_cli to take dict
 
 
-
-
-@app.route("/", methods=["POST"]) #put some information on this site?
+@app.route("/", methods=["POST"])  # put some information on this site?
 def home():
     """
     Input: /
     Output: render_template(home.html)
     home with input field and submit button
     """
-    return render_template("home.html") #need to change home.html to  send data as json
+    return render_template(
+        "home.html"
+    )  # need to change home.html to  send data as json
+
 
 @app.route("/results", methods=["POST"])  # possible with GET??
 def handle():
@@ -50,10 +57,9 @@ def handle():
     """
     rep = requests.post("http://localhost:5000/query", data=request.json)
     res = rep.json
-    return render_template("output.html", title="Results", **locals()) #need to change output.html to get information from json
-
-
-
+    return render_template(
+        "output.html", title="Results", **locals()
+    )  # need to change output.html to get information from json
 
 
 if __name__ == "__main__":

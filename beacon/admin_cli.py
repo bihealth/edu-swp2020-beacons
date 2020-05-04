@@ -6,25 +6,21 @@ from . import admin_tools
 import argparse
 from . import database
 import sys  # vcf, sys, os
-import os
 
 
 def path():
     """
     Asks for a path to the database.db for maintaining the Database.
-
     :return: path
     """
-    path = os.path.dirname(__file__)
-    db = input("DB Name: ")
-    db_path = os.path.join(path, db)
+    # db_path = input("DB Path: ")
+    db_path = "/home/namuun/edu-swp2020-beacons/beacon/test5.db"
     return db_path
 
 
 def parse_args(args):
     """
     Defines the flags.
-
     :param args: the flag which was entered in the command line
     :return: parser
     """
@@ -40,7 +36,7 @@ def parse_args(args):
         "--insert_data",
         help="according to a given sql command it inserts data from a vcf file in database",
         type=argparse.FileType("r"),
-        nargs=3,
+        nargs=2,
     )
     parser.add_argument(
         "-p",
@@ -87,48 +83,18 @@ def parse_args(args):
         "--delete_phenotype",
         help="according to a given sql command it deletes data in database",
     )
-    parser.add_argument(
-        "-ctu",
-        "--create_table_user",
-        action="store_true",
-        help="according to a given sql command it creates new table in 'user'-database",
-    )
-    parser.add_argument(
-        "-add",
-        "--insert_user_data",
-        help="according to a given sql command it adds the user in the database",
-        nargs=2
-    )
-    parser.add_argument(
-        "-t",
-        "--find_token",
-        help="according to a given sql command it finds the token for the associated username in database",
-    )
-    parser.add_argument(
-        "-pu",
-        "--print_user_db",
-        action="store_true",
-        help="according to a given sql command it prints the database",
-    )
-    parser.add_argument(
-        "-du",
-        "--delete_user_db",
-        help="according to a given sql command it prints the database"
-    )
     return parser.parse_args(args)
 
 
 def main(pfad, args):
     """
     Maintaining the Database.
-
     :param pfad: the path to the database.db
     :param args: the flag which was entered in the command line
     :return: Whether the maintenance of the database was successful
     """
     connect = database.ConnectDatabase(pfad)
     od = admin_tools.OperateDatabase()
-    us = admin_tools.UserDB()
     if args.create_table:
         print("create table is activated")
         create = admin_tools.CreateDbCommand()
@@ -159,25 +125,8 @@ def main(pfad, args):
         output = od.delete_populations(connect, args.delete)
     elif args.delete_phenotype:
         print("delete is activated")
-        output = od.delete_data(connect, int(args.delete))
-    elif args.create_table_user:
-        print("create user table is activated")
-        output = us.create_tables(connect)
-    elif args.insert_user_data:
-        print("inserting user data is activated")
-        output = us.addusers(args.insert_user_data, connect)
-    elif args.find_token:
-        print("find_token is activated")
-        output = us.find_user_token(connect, args.find_token)
-    elif args.print_user_db:
-        print("print_user_db is activated")
-        output = us.print_db(connect)
-    elif args.delete_user_db:
-        print("delete_user_db is activated")
-        output = us.delete_user(connect, args.delete_user_db)
-    else:
-        output = "Please enter a flag. To see which flags you can use, use -h or --help"
-    connect.connection.close()  # pragma: nocover
+        output = od.delete_phenotype(connect, args.delete)
+    connect.connection.close()
     return output
 
 

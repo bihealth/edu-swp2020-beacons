@@ -5,99 +5,75 @@
 import sqlite3
 import vcf
 import csv
-import secrets
 
 
 def parse_vcf(infile, con):
     """
-    Reads given files and inserts the data into a database.
-
-    :param infile[0]: a vcf file for variants
-    :param infile[1]: a tsv file for population
-    :param infile[2]: a tsv or xslx file for phenotype
+    Reads VCF file and inserts the data into a database.
+    :param infile: a vcf file
     :param con: connection to the database
     :rtype: bool
     """
-    try:
-        #reads tsv file for population and creates for each sample a dict entry with pop and sex
-        populationDict = {}
-        with infile[1] as tsv_file:
-            
-            tsv_reader = csv.DictReader(tsv_file, dialect='excel-tab')
-            # count = 0
-            for row in tsv_reader:
-                populationDict[row['Sample name']] = {'pop_code':row['Population code'], 'sex':row['Sex'] } 
-                
-                # count = count + 1
-                # if count == 8:
-                #     break
-        tsv_file.close()
-        #------------------------------------------------------------------------------------
-        # reads file for phenotype and creates for each sample a dict entry with hpo-term-id and hpo-term-name
-        phenotypeDict = {}
-        with infile[2] as phenotype_file:
-            # count=0
-            key = 0
-            phenotype_reader = csv.DictReader(phenotype_file, dialect='excel-tab')
-            for row in phenotype_reader:
-                phenotypeDict[key] = {'HPO-Term-ID':row[None][1],'HPO-Term-Name':row[None][2]}
-                key += 1
-                # count += 1
-                # if count == 9:
-                #     break
-        phenotype_file.close()
-    except csv.Error as error:
-        return "An error has occured: " + str(error)
-    #------------------------------------------------------------------------------------
-    pheno_key = 0
-    try:
-        vcf_reader = vcf.Reader(infile[0])
-        for variant in vcf_reader:  # pragma: nocover
-        
-            chr = variant.CHROM      
-            pos = variant.POS
-            ref = variant.REF
-            alt = "".join(str(i or "") for i in variant.ALT) # add ,
+    # reads tsv file and creates for each sample a dict entry with pop and sex
+    populationDict = {}
+    with infile[1] as tsv_file:
 
-            #for allel
-            hemi_alt = 0
-            hemi_ref = 0
-            wildtype = 0
-            alt_hetero = 0
-            alt_homo = 0
+        tsv_reader = csv.DictReader(tsv_file, dialect="excel-tab")
+        count = 0
+        for row in tsv_reader:
+            populationDict[row["Sample name"]] = {
+                "pop_code": row["Population code"],
+                "sex": row["Sex"],
+            }
 
-            tempDict = {}
-            for sample in variant.samples:
-                sample_id = sample.sample
+            count = count + 1
+            if count == 8:
+                break
+    tsv_file.close()
+
+    # ------------------------------------------------------------------------------------
+    vcf_reader = vcf.Reader(infile[0])
+    for variant in vcf_reader:  # pragma: nocover
+
+        chr = variant.CHROM
+        pos = variant.POS
+        ref = variant.REF
+        alt = "".join(str(i or "") for i in variant.ALT)  # add ,
+
+        # for allel
+        hemi_alt = 0
+        hemi_ref = 0
+        wildtype = 0
+        alt_hetero = 0
+        alt_homo = 0
+
+        exist_bool = False
+        tempDict = {}
+        for sample in variant.samples:
+            sample_id = sample.sample
+            population = populationDict[sample_id]["pop_code"]
+            if sample_id in populationDict:
+                exist_bool = True
                 gt = sample.gt_type
-
-                if sample_id in populationDict:
-                    population = populationDict[sample_id]['pop_code']
-
-                    if population not in tempDict: 
-                        tempDict[population] = {'pop_wildtype':0, 'pop_alt_hetero':0, 'pop_alt_homo':0, 'pop_hemi_ref':0, 'pop_hemi_alt':0}
-                    # case autosome 
-                    if chr == 'Y' or chr == 'X':
-                        # case male
-                        if populationDict[sample_id]['sex'] == 'male':
-                            if gt == 2:  # 2 => hom_alt
-                                hemi_alt += 1 
-                                tempDict[population]['pop_hemi_alt'] +=1
-                            else:  # sample.gt_type == 0 => hom_ref / wildtype
-                                hemi_ref += 1
-                                tempDict[population]['pop_hemi_ref'] +=1
-                        # case female
-                        else: 
-                            if gt == 0: 
-                                wildtype += 1
-                                tempDict[population]['pop_wildtype'] +=1
-                            elif gt == 1:
-                                alt_hetero += 1
-                                tempDict[population]['pop_alt_hetero'] +=1
-                            else:  # gt == 2
-                                alt_homo += 1
-                                tempDict[population]['pop_alt_homo'] +=1
-                    # not autosome
+                if population not in tempDict:
+                    tempDict[population] = {
+                        "pop_wildtype": 0,
+                        "pop_alt_hetero": 0,
+                        "pop_alt_homo": 0,
+                        "pop_hemi_ref": 0,
+                        "pop_hemi_alt": 0,
+                    }
+                # case autosome
+                if chr == "Y" or chr == "X":
+                    # case male
+                    if populationDict[sample_id]["sex"] == "male":
+                        if gt == 2:  # 2 => hom_alt
+                            hemi_alt += 1
+                            tempDict[population]["pop_hemi_alt"] += 1
+                        else:  # sample.gt_type == 0 => hom_ref / wildtype
+                            hemi_ref += 1
+                            tempDict[population]["pop_hemi_ref"] += 1
+                    # case female
                     else:
                         if gt == 0:
                             wildtype += 1
@@ -107,12 +83,9 @@ def parse_vcf(infile, con):
                             tempDict[population]["pop_alt_hetero"] += 1
                         else:  # gt == 2
                             alt_homo += 1
-                            tempDict[population]['pop_alt_homo'] +=1
-
-                else: 
-                    population = None
-                    if population not in tempDict: 
-                        tempDict[population] = {'pop_wildtype':0, 'pop_alt_hetero':0, 'pop_alt_homo':0, 'pop_hemi_ref':0, 'pop_hemi_alt':0}
+                            tempDict[population]["pop_alt_homo"] += 1
+                # not autosome
+                else:
                     if gt == 0:
                         wildtype += 1
                         tempDict[population]["pop_wildtype"] += 1
@@ -121,35 +94,62 @@ def parse_vcf(infile, con):
                         tempDict[population]["pop_alt_hetero"] += 1
                     else:  # gt == 2
                         alt_homo += 1
-                        tempDict[population]['pop_alt_homo'] +=1
+                        tempDict[population]["pop_alt_homo"] += 1
 
-            #INSERT   - Duplicates allowed
-            sql_str = "INSERT INTO allel (chr,pos,ref,alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt) VALUES (?,?,?,?,?,?,?,?,?);"
-            parameters = (chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt)
-            output = con.parse_statement(sql_str, parameters)
+        if exist_bool is False:
+            alt_homo = variant.num_hom_alt
+            wildtype = variant.num_hom_ref
+            alt_hetero = variant.num_het
 
-            sql_str2 = "INSERT INTO phenotype (chr,pos,ref,alt,phenotype) VALUES (?,?,?,?,?);"
+        # INSERT   - Duplicates allowed
+        sql_str = "INSERT INTO allel (chr,pos,ref,alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt) VALUES (?,?,?,?,?,?,?,?,?);"
+        parameters = (
+            chr,
+            pos,
+            ref,
+            alt,
+            wildtype,
+            alt_hetero,
+            alt_homo,
+            hemi_ref,
+            hemi_alt,
+        )
+        output = con.parse_statement(sql_str, parameters)
 
-            phenotype = phenotypeDict[pheno_key]['HPO-Term-ID']+'; '+ phenotypeDict[pheno_key]['HPO-Term-Name']
-            pheno_key += 1
-            parameters2 = (chr, pos, ref, alt, phenotype)
-            output2 = con.parse_statement(sql_str2, parameters2)
+        sql_str2 = (
+            "INSERT INTO phenotype (chr,pos,ref,alt,phenotype) VALUES (?,?,?,?,?);"
+        )
+        phenotype = ""
+        parameters2 = (chr, pos, ref, alt, phenotype)
+        output2 = con.parse_statement(sql_str2, parameters2)
 
-            if isinstance(output,list) is False or isinstance(output2,list) is False: #evtl error
-                return output, output2
+        if (
+            isinstance(output, list) is False or isinstance(output2, list) is False
+        ):  # evtl error
+            return output, output2
 
-            for td in tempDict:                   
-                sql_str1 = "INSERT INTO populations (chr,pos,ref,alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, population) VALUES (?,?,?,?,?,?,?,?,?,?);"
-                parameters1 = (chr, pos, ref, alt, tempDict[td]['pop_wildtype'],tempDict[td]['pop_alt_hetero'], tempDict[td]['pop_alt_homo'], tempDict[td]['pop_hemi_ref'], tempDict[td]['pop_hemi_alt'], td)
-                output1 = con.parse_statement(sql_str1, parameters1)
+        for td in tempDict:
+            sql_str1 = "INSERT INTO populations (chr,pos,ref,alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, population) VALUES (?,?,?,?,?,?,?,?,?,?);"
+            parameters1 = (
+                chr,
+                pos,
+                ref,
+                alt,
+                tempDict[td]["pop_wildtype"],
+                tempDict[td]["pop_alt_hetero"],
+                tempDict[td]["pop_alt_homo"],
+                tempDict[td]["pop_hemi_ref"],
+                tempDict[td]["pop_hemi_alt"],
+                td,
+            )
+            output1 = con.parse_statement(sql_str1, parameters1)
 
-                if isinstance(output1,list) is False:
-                    return output1
+            if isinstance(output1, list) is False:
+                return output1
 
-        infile[0].close()  # pragma: nocover
-        return True
-    except SyntaxError or Exception as e:
-        return "An error has occured: " + str(e)
+    infile[0].close()  # pragma: nocover
+    return True
+
 
 class CreateDbCommand:
     """
@@ -162,7 +162,6 @@ class CreateDbCommand:
     def create_tables(self, con):
         """
         Creates variant table in database.
-
         :param con: connection to the database
         :rtype: bool
         """
@@ -228,7 +227,6 @@ class OperateDatabase:
     def print_db(self, con):
         """
         Prints whole database.
-
         :param con: connection to the database
         :return: database
         """
@@ -254,7 +252,6 @@ class OperateDatabase:
     def count_variants(self, con):
         """
         Counts the existing number of (all) Variants.
-
         :param con: connection to the database
         :rtype: int
         """
@@ -268,7 +265,6 @@ class OperateDatabase:
     def updating_allel(self, con, allel):
         """
         Updates a row in the table allel of the database according to given id and input.
-
         :param con: connection to the database
         :param allel : (chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, id)
         :rtype: bool
@@ -305,7 +301,6 @@ class OperateDatabase:
     def updating_populations(self, con, populations):
         """
         Updates a row in the table populations of the database according to given id and input.
-
         :param con: connection to the database
         :param populations : (chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, population, id)
         :rtype: bool
@@ -344,7 +339,6 @@ class OperateDatabase:
     def updating_phenotype(self, con, phenotype):
         """
         Updates a row in the table phenotype of the database according to given id and input.
-
         :param con: connection to the database
         :param phenotype : (chr, pos, ref, alt, phenotype, id)
         :rtype: bool
@@ -366,7 +360,6 @@ class OperateDatabase:
     def delete_data_allel(self, con, id):
         """
         Deletes a row in table allel with given id in the database.
-
         :param con: connection to the database
         :param id: id
         :rtype: in case error string
@@ -381,7 +374,6 @@ class OperateDatabase:
     def delete_data_populations(self, con, id):
         """
         Deletes a row in table populations with given id in the database.
-
         :param con: connection to the database
         :param id: id
         :rtype: in case error string
@@ -396,7 +388,6 @@ class OperateDatabase:
     def delete_data_phenotype(self, con, id):
         """
         Deletes a row in table phenotype with given id in the database.
-
         :param con: connection to the database
         :param id: id
         :rtype: in case error string
@@ -407,112 +398,3 @@ class OperateDatabase:
             print("call -p to see the changes")
         except sqlite3.Error as e:
             return "An error has occured: " + str(e)
-
-class UserDB():
-    """
-    Maintenance of the user database 
-    """
-    def __init__(self):
-        self.data = []
-
-    def create_tables(self, con):
-        """
-        Creates variant table in database.
-
-        :param con: connection to the database
-        :rtype: bool
-        """
-        sql_create_login_table= """
-            CREATE TABLE IF NOT EXISTS login (
-            id integer PRIMARY KEY,
-            name text NOT NULL,
-            token text NOT NULL,
-            authorization integer NOT NULL,
-            count_req integer
-            ip_addr text
-        );"""
-        output = con.parse_statement(sql_create_login_table, ())
-        if isinstance(output, sqlite3.Error):  # pragma: nocover
-            raise Exception(output.args[0])
-        else:
-            return True
-
-    def addusers(self, acc, con):
-        """
-        Adds user to database with a token and authorization number and prevents duplication of usernames.
-
-        :param username: username and authorization-key
-        :param con: connection to the database
-        :rtype: bool
-        """
-        name = acc[0]
-        authorization = acc[1]
-        token = secrets.token_urlsafe()
-
-        sql_find_dup ="SELECT name FROM login WHERE name = ?"
-        output = con.parse_statement(sql_find_dup, [name])
-        if type(output) != list:  # pragma: nocover
-            return output
-        if output == []:
-            sql_str = "INSERT INTO login(name,token,authorization,count_req,ip_addr) VAlUES(?,?,?,0);"
-            parameters = (name, token, authorization)
-            output = con.parse_statement(sql_str, parameters)
-            if isinstance(output,list) is False:
-                return output
-            return True
-        else:
-            return 'Username already exists'
-
-
-    def find_user_token(self, con, username):
-        """
-        finds the token for the associated username
-
-        :param con: connection to the database
-        :return: token
-        """
-        sql_find_dup ="SELECT token FROM login WHERE name = ?"
-        output = con.parse_statement(sql_find_dup, [username])
-        if isinstance(output, list) is False:  # pragma: nocover
-            print(output)
-            return False
-        else:
-            print("Token:")
-            return output[0][0]
-
-    def print_db(self, con):
-        """
-        Prints whole database.
-
-        :param con: connection to the database
-        :return: database
-        """
-        sql_print = "SELECT * FROM login"
-        output = con.parse_statement(sql_print, ())
-        if isinstance(output, list) is False:  # pragma: nocover
-            print(output)
-            return False
-        else:
-            print("TABLE login: \n")
-            for out in output:
-                print(out)
-            return ""
-        
-    def delete_user(self, con, id):
-        """
-        Deletes a row with given id in the database.
-
-        :param con: connection to the database
-        :param id: id
-        :rtype: bool
-        """
-
-        sql_str = "DELETE FROM login WHERE id= ?;"
-        parameters = str(id)
-        output = con.parse_statement(sql_str, parameters)
-        if type(output) != list:
-            print(output)
-            return False
-        else:
-            print("rufe -p auf, um die Änderung zu sehen")
-            return True
