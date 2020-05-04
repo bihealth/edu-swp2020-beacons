@@ -94,6 +94,11 @@ def parse_args(args):
         action="store_true",
         help="according to a given sql command it prints the database",
     )
+    parser.add_argument(
+        "-du",
+        "--delete_user_db",
+        help="according to a given sql command it prints the database"
+    )
     return parser.parse_args(args)
 
 
@@ -143,6 +148,11 @@ def main(pfad, args):
     elif args.print_user_db:
         print("print_user_db is activated")
         output = us.print_db(connect)
+    elif args.delete_user_db:
+        print("delete_user_db is activated")
+        output = us.delete_user(connect, args.delete_user_db)
+    else:
+        output = "Please enter a flag. To see which flags you can use, use -h or --help"
     connect.connection.close()  # pragma: nocover
     return output
 

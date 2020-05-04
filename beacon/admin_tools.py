@@ -383,3 +383,22 @@ class UserDB():
             for out in output:
                 print(out)
             return ""
+        
+    def delete_user(self, con, id):
+        """
+        Deletes a row with given id in the database.
+
+        :param con: connection to the database
+        :param id: id
+        :rtype: bool
+        """
+
+        sql_str = "DELETE FROM login WHERE id= ?;"
+        parameters = str(id)
+        output = con.parse_statement(sql_str, parameters)
+        if type(output) != list:
+            print(output)
+            return False
+        else:
+            print("rufe -p auf, um die Änderung zu sehen")
+            return True
