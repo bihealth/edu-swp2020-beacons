@@ -399,10 +399,12 @@ class OperateDatabase:
         except sqlite3.Error as e:
             return "An error has occured: " + str(e)
 
-class UserDB():
+
+class UserDB:
     """
-    Maintenance of the user database 
+    Maintenance of the user database
     """
+
     def __init__(self):
         self.data = []
 
@@ -413,7 +415,7 @@ class UserDB():
         :param con: connection to the database
         :rtype: bool
         """
-        sql_create_login_table= """
+        sql_create_login_table = """
             CREATE TABLE IF NOT EXISTS login (
             id integer PRIMARY KEY,
             name text NOT NULL,
@@ -440,20 +442,21 @@ class UserDB():
         authorization = acc[1]
         token = secrets.token_urlsafe()
 
-        sql_find_dup ="SELECT name FROM login WHERE name = ?"
+        sql_find_dup = "SELECT name FROM login WHERE name = ?"
         output = con.parse_statement(sql_find_dup, [name])
         if type(output) != list:  # pragma: nocover
             return output
         if output == []:
-            sql_str = "INSERT INTO login(name,token,authorization,count_req) VAlUES(?,?,?,0);"
+            sql_str = (
+                "INSERT INTO login(name,token,authorization,count_req) VAlUES(?,?,?,0);"
+            )
             parameters = (name, token, authorization)
             output = con.parse_statement(sql_str, parameters)
-            if isinstance(output,list) is False:
+            if isinstance(output, list) is False:
                 return output
             return True
         else:
-            return 'Username already exists'
-
+            return "Username already exists"
 
     def find_user_token(self, con, username):
         """
@@ -462,7 +465,7 @@ class UserDB():
         :param con: connection to the database
         :return: token
         """
-        sql_find_dup ="SELECT token FROM login WHERE name = ?"
+        sql_find_dup = "SELECT token FROM login WHERE name = ?"
         output = con.parse_statement(sql_find_dup, [username])
         if isinstance(output, list) is False:  # pragma: nocover
             print(output)
@@ -488,7 +491,7 @@ class UserDB():
             for out in output:
                 print(out)
             return ""
-        
+
     def delete_user(self, con, id):
         """
         Deletes a row with given id in the database.
