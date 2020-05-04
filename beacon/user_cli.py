@@ -116,6 +116,8 @@ def print_results(outp_dict):
         print("The result of your request is:")
         print(res, "\n")
     else:
+
+        print("The result of your request is:")
         print (outp_dict)
     
 def init():
