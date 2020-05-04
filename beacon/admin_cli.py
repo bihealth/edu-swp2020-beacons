@@ -40,13 +40,7 @@ def parse_args(args):
         "--insert_data",
         help="according to a given sql command it inserts data from a vcf file in database",
         type=argparse.FileType("r"),
-        nargs=2,
-    )
-    parser.add_argument(
-        "-fd",
-        "--find_dup",
-        action="store_true",
-        help="according to a given sql command it finds duplicated data in database",
+        nargs=3,
     )
     parser.add_argument(
         "-p",
@@ -61,14 +55,36 @@ def parse_args(args):
         help="according to a given sql command it counts the variants in database",
     )
     parser.add_argument(
-        "-u",
-        "--update",
+        "-ua",
+        "--update_allel",
+        help="according to a given sql command it update data in database",
+        nargs=9,
+    )
+    parser.add_argument(
+        "-up",
+        "--update_populations",
+        help="according to a given sql command it update data in database",
+        nargs=10,
+    )
+    parser.add_argument(
+        "-upt",
+        "--update_phenotype",
         help="according to a given sql command it update data in database",
         nargs=5,
     )
     parser.add_argument(
-        "-d",
-        "--delete",
+        "-da",
+        "--delete_allel",
+        help="according to a given sql command it deletes data in database",
+    )
+    parser.add_argument(
+        "-dp",
+        "--delete_populations",
+        help="according to a given sql command it deletes data in database",
+    )
+    parser.add_argument(
+        "-dpt",
+        "--delete_phenotype",
         help="according to a given sql command it deletes data in database",
     )
     parser.add_argument(
@@ -120,20 +136,28 @@ def main(pfad, args):
     elif args.insert_data:
         print("inserting data is activated")
         output = admin_tools.parse_vcf(args.insert_data, connect)
-    elif args.find_dup:
-        print("find_dup is activated")
-        finddup = admin_tools.SearchDuplicatesCommand()
-        output = finddup.find_dup(connect)
     elif args.print_db:
         print("print_db is activated")
         output = od.print_db(connect)
     elif args.count_variants:
         print("count_variants is activated")
         output = od.count_variants(connect)
-    elif args.update:
+    elif args.update_allel:
         print("update is activated")
-        output = od.updating_data(connect, args.update)
-    elif args.delete:
+        output = od.updating_allel(connect, args.update)
+    elif args.update_populations:
+        print("update is activated")
+        output = od.updating_populations(connect, args.update)
+    elif args.update_phenotype:
+        print("update is activated")
+        output = od.updating_phenotype(connect, args.update)
+    elif args.delete_allel:
+        print("delete is activated")
+        output = od.delete_allel(connect, args.delete)
+    elif args.delete_populations:
+        print("delete is activated")
+        output = od.delete_populations(connect, args.delete)
+    elif args.delete_phenotype:
         print("delete is activated")
         output = od.delete_data(connect, int(args.delete))
     elif args.create_table_user:
