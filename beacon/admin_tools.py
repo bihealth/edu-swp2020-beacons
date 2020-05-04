@@ -5,6 +5,7 @@
 import sqlite3
 import vcf
 import csv
+import secrets
 
 def parse_vcf(infile, con):
     """

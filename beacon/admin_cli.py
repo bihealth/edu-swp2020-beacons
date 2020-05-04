@@ -122,6 +122,7 @@ def main(pfad, args):
     """
     connect = database.ConnectDatabase(pfad)
     od = admin_tools.OperateDatabase()
+    us = admin_tools.UserDB()
     if args.create_table:
         print("create table is activated")
         create = admin_tools.CreateDbCommand()
