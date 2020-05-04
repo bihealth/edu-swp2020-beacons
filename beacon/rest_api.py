@@ -35,25 +35,23 @@ def get_api(): #gets json/dict as POST request : done
         return jsonify(ann_var.__dict__)
 
 
-def request_permission(ip_addr,token):
-    con = database.ConnectDatabase(settings.PATH_LOGIN)
-    if token == None:
-        auth = con.parse_statement("SELECT authorization,count_req FROM login WHERE ip_addr = ?", [ip_addr])
-        if not auth:
-            con.parse_statement("INSERT INTO login(name, token, authorization, count_req, ip_addr) VALUES('user', 'user',1,1,?)", [ip_addr]) 
-            return 1
-        elif auth[0][1] > 10:
-            return 0
-        else:
-            con.parse_statement("UPDATE login SET count_req = count_req + 1 WHERE ip_addr = ?",[ip_addr])
-            return auth[0]
+def request_permission(ip_addr,token):   
+    con_ip = database.ConnectDatabase(settings.PATH_IP)
+    con_login = database.ConnectDatabase(settings.PATH_LOGIN)
+    auth = con_ip.parse_statement("SELECT count_req FROM ip WHERE ip_addr = ?", [ip_addr])
+    if not auth:
+        con_ip.parse_statement("INSERT INTO ip(count_req, ip_addr) VALUES(1,?)", [ip_addr]) 
+    elif auth[0][1] > 10:
+        return 0
     else:
-        auth = con.parse_statement("SELECT authorization,count_req FROM login WHERE token = ?", [token])
-        if auth[0][1] > 10:
-            return 0
-        else:
-            con.parse_statement("UPDATE login SET count_req = count_req + 1 WHERE token = ?",[token])
-            return auth[0]
+        con_ip.parse_statement("UPDATE ip SET count_req = count_req + 1 WHERE ip_addr = ?",[ip_addr])
+    
+    if token == None:
+        return 1
+    else:
+        auth = con_login.parse_statement("SELECT authorization FROM login WHERE token = ?", [token])
+        con_login.parse_statement("UPDATE login SET count_req = count_req + 1 WHERE token = ?",[token])
+        return auth[0]
 
 @app.route('/api/users', methods = ['POST'])
 def new_user():
@@ -70,7 +68,7 @@ def new_user():
 
 @app.route('/api/verify', methods = ['POST'])
 def verify_user():
-    con = database.ConnectDatabase(settings.PATH_LOGIN)
+    con_login = database.ConnectDatabase(settings.PATH_LOGIN)
     token = request.headers['token']
     exist_query = "SELECT token,name FROM login WHERE token = ?"
     exist = con.parse_statement(exist_query, [token])
