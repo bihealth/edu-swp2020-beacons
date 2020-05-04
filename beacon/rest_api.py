@@ -18,8 +18,8 @@ def get_api(): #gets json/dict as POST request : done
     :return: json of variant and occurence
     """
 
-    token = request.headers['token']
-    auth = request_permission(token)
+    token = request.headers.get('token')
+    auth = request_permission(request.remote_addr,token)
     connectDb = database.ConnectDatabase(settings.PATH_DATABASE)
     var = common.parse_var(request.json) #need to change common.parse_var to convert from dict to variant object
     if auth == 0:
@@ -36,14 +36,25 @@ def get_api(): #gets json/dict as POST request : done
         return jsonify(ann_var.__dict__)
 
 
-def request_permission(token):
+def request_permission(ip_addr,token):
     con = database.ConnectDatabase(settings.PATH_LOGIN)
-    auth = con.parse_statement("SELECT authorization,count_req FROM login WHERE token = ?", [token])
-    if auth[0][1] > 10:
-        return 0
+    if token == None:
+        auth = con.parse_statement("SELECT authorization,count_req FROM login WHERE ip_addr = ?", [ip_addr])
+        if not auth:
+            con.parse_statement("INSERT INTO login(authorization, count_req, ip_addr) VALUES(1,1,?)", [ip_addr]) 
+            return 1
+        elif auth[0][1] > 10:
+            return 0
+        else:
+            con.parse_statement("UPDATE login SET count_req = count_req + 1 WHERE ip_addr = ?",[ip_addr])
+            return auth[0]
     else:
-        con.parse_statement("UPDATE login SET count_req = count_req + 1 WHERE token = ?",[token])
-        return auth[0]
+        auth = con.parse_statement("SELECT authorization,count_req FROM login WHERE token = ?", [token])
+        if auth[0][1] > 10:
+            return 0
+        else:
+            con.parse_statement("UPDATE login SET count_req = count_req + 1 WHERE token = ?",[token])
+            return auth[0]
 
 @app.route('/api/users', methods = ['POST'])
 def new_user():

@@ -14,8 +14,12 @@ def main():
     print("Welcome to our project beacon software!\n")
     ver = (False,)
     while ver[0] == False:
-        inp = input("Please enter your secret token: ")
-        ver = verify_token(inp)
+        inp = input("Please enter your secret token or enter nothing to continue as not registered user: ")
+        if inp:
+            ver = verify_token(inp)
+        else:
+            inp = None
+            ver = (True, "Unregistered user")
     print("Hello", ver[1])
     cookie = inp
 
