@@ -65,7 +65,7 @@ def verify_user():
     exist_query = "SELECT token,name FROM login WHERE token = ?"
     exist = con.parse_statement(exist_query, [token])
     if exist:
-        return jsonify({'verified': True, 'user': exist[1] })
+        return jsonify({'verified': True, 'user': exist[0][1]})
     else:
         return jsonify({'verified': False, 'user': None})
 
