@@ -36,15 +36,14 @@ def get_api(): #gets json/dict as POST request : done
 
 
 def request_permission(ip_addr,token):   
-    con_ip = database.ConnectDatabase(settings.PATH_IP)
     con_login = database.ConnectDatabase(settings.PATH_LOGIN)
-    auth = con_ip.parse_statement("SELECT count_req FROM ip WHERE ip_addr = ?", [ip_addr])
+    auth = con_login.parse_statement("SELECT count_req FROM ip WHERE ip_addr = ?", [ip_addr])
     if not auth:
-        con_ip.parse_statement("INSERT INTO ip(count_req, ip_addr) VALUES(1,?)", [ip_addr]) 
-    elif auth[0][1] > 10:
+        con_login.parse_statement("INSERT INTO ip(count_req, ip_addr) VALUES(1,?)", [ip_addr]) 
+    elif auth[0][0] > 10:
         return 0
     else:
-        con_ip.parse_statement("UPDATE ip SET count_req = count_req + 1 WHERE ip_addr = ?",[ip_addr])
+        con_login.parse_statement("UPDATE ip SET count_req = count_req + 1 WHERE ip_addr = ?",[ip_addr])
     
     if token == None:
         return 1
@@ -52,17 +51,6 @@ def request_permission(ip_addr,token):
         auth = con_login.parse_statement("SELECT authorization FROM login WHERE token = ?", [token])
         con_login.parse_statement("UPDATE login SET count_req = count_req + 1 WHERE token = ?",[token])
         return auth[0]
-
-@app.route('/api/users', methods = ['POST'])
-def new_user():
-    username = request.json.get('username')
-    password = request.json.get('password')
-    authorization = request.json.get('autorization')
-    if username is None or password is None or autorization is None:
-        abort(400)
-    conn = test_db.create_connection(settings.PATH_LOGIN)
-    user = (username, password, authorization)
-    test_db.create_user(conn, user)
 
 
 
