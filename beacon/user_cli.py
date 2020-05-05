@@ -116,26 +116,8 @@ def print_results(outp_dict):
             )
             print("The occuring error is: '", outp_dict["occ"], "'\n")  # pragma: nocover
 
-    elif len(outp_dict) == 5:
-        res = (
-            "chr: "
-            + outp_dict["chr"]
-            + " pos: "
-            + outp_dict["pos"]
-            + " ref: "
-            + outp_dict["ref"]
-            + " alt: "
-            + outp_dict["alt"]
-            + " occ: "
-            + str(outp_dict["occ"])
-        )
-
-        print("The result of your request is:")
-        print(res, "\n")
-    else:
-
-        print("The result of your request is:")
-        print(outp_dict)
+    print("The result of your request is:")
+    print(outp_dict)
 
 
 def init():
