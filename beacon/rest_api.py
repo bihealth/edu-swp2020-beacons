@@ -59,7 +59,7 @@ def verify_user():
     con_login = database.ConnectDatabase(settings.PATH_LOGIN)
     token = request.headers['token']
     exist_query = "SELECT token,name FROM login WHERE token = ?"
-    exist = con.parse_statement(exist_query, [token])
+    exist = con_login.parse_statement(exist_query, [token])
     if exist:
         return jsonify({'verified': True, 'user': exist[0][1]})
     else:
