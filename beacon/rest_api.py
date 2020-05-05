@@ -29,7 +29,9 @@ def get_api(): #gets json/dict as POST request : done
         return jsonify(un_ann)
     else:
         ann_var = connectDb.handle_request(var, auth)
-        return jsonify(ann_var.__dict__)
+        a_dict = ann_var.__dict__
+        out = {x: a_dict[x] for x in a_dict if x is not 'statistic'}
+        return jsonify(out)
 
 
 def request_permission(ip_addr,token):   
