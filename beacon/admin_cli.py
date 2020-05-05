@@ -88,7 +88,7 @@ def parse_args(args):
         "-ctu",
         "--create_table_user",
         action="store_true",
-        help="according to a given sql command it creates new table in 'user'-database",
+        help="according to a given sql command it creates two new tables in 'user'-database",
     )
     parser.add_argument(
         "-add",
@@ -105,12 +105,23 @@ def parse_args(args):
         "-pu",
         "--print_user_db",
         action="store_true",
-        help="according to a given sql command it prints the database",
+        help="according to a given sql command it prints the user database",
     )
     parser.add_argument(
         "-du",
         "--delete_user_db",
-        help="according to a given sql command it prints the database"
+        help="according to a given sql command it prints the user database"
+    )
+    parser.add_argument(
+        "-pi",
+        "--print_ip_db",
+        action="store_true",
+        help="according to a given sql command it prints the ip database",
+    )
+    parser.add_argument(
+        "-di",
+        "--delete_ip_db",
+        help="according to a given sql command it prints the ip database"
     )
     return parser.parse_args(args)
 
@@ -171,6 +182,12 @@ def main(pfad, args):
     elif args.delete_user_db:
         print("delete_user_db is activated")
         output = us.delete_user(connect, args.delete_user_db)
+    elif args.print_ip_db:
+        print("print_ip_db is activated")
+        output = us.print_ip(connect)
+    elif args.delete_ip_db:
+        print("delete_ip_db is activated")
+        output = us.delete_ip(connect, args.delete_ip_db)
     else:
         output = "Please enter a flag. To see which flags you can use, use -h or --help"
     connect.connection.close()  # pragma: nocover
