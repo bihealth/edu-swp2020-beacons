@@ -22,6 +22,7 @@ def get_api(): #gets json/dict as POST request : done
     auth = request_permission(request.remote_addr,token)
     connectDb = database.ConnectDatabase(settings.PATH_DATABASE)
     var = common.parse_var(request.json) #need to change common.parse_var to convert from dict to variant object
+    print( "auth is: ", auth)
     if auth == 0:
         un_ann = request.json
         un_ann['occ'] = None
@@ -48,7 +49,7 @@ def request_permission(ip_addr,token):
         return 1
     else:
         auth = con_login.parse_statement("SELECT authorization FROM login WHERE token = ?", [token])
-        return auth[0]
+        return auth[0][0]
 
 
 
