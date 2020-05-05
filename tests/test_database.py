@@ -56,24 +56,44 @@ def test_handle_request_connection_error():
     conn = database.ConnectDatabase("")
     variant = common.Variant("1", 1000000, "C", "G")
     output0 = conn.handle_request(variant)
-    output1 = conn.handle_request(variant, True)
+    output1 = conn.handle_request(variant, 2)
+    output2 = conn.handle_request(variant, 3)
     assert isinstance(output0.error, sqlite3.Error)
     assert isinstance(output0, common.AnnVar)
     assert isinstance(output1.error, sqlite3.Error)
-    assert isinstance(output1, common.Info)
+    assert isinstance(output1, common.AnnVar)
+    assert isinstance(output2.error, sqlite3.Error)
+    assert isinstance(output2, common.AnnVar)
 
 
-def test_handle_request_Info(demo_db_path):
+def test_handle_request_Info_2(demo_db_path):
     conn = database.ConnectDatabase(demo_db_path)
     variant0 = common.Variant("1", 1000000, "C", "G")
     variant1 = common.Variant("X", 10000000, "C", "G")
-    output0 = conn.handle_request(variant0, True)
-    output1 = conn.handle_request(variant1, True)
+    output0 = conn.handle_request(variant0, 2)
+    output1 = conn.handle_request(variant1, 2)
     assert isinstance(output0, common.Info)
     assert output0.occ is True
-    assert output0.varCount == 20
+    assert output0.varCount == 10
+    assert output0.population is None
+    assert output0.phenotype is None
+    assert output0.frequency == 0.625
+    assert isinstance(output1, common.AnnVar)
+    assert output1.occ is False
+
+
+def test_handle_request_Info_3(demo_db_path):
+    conn = database.ConnectDatabase(demo_db_path)
+    variant0 = common.Variant("1", 1000000, "C", "G")
+    variant1 = common.Variant("X", 10000000, "C", "G")
+    output0 = conn.handle_request(variant0, 3)
+    output1 = conn.handle_request(variant1, 3)
+    assert isinstance(output0, common.Info)
+    assert output0.occ is True
+    assert output0.varCount == 10
     assert isinstance(output0.population, dict)
     assert isinstance(output0.phenotype, list)
     assert output0.frequency == 0.625
+    assert isinstance(output0.statistic.plot(), list)
     assert isinstance(output1, common.AnnVar)
     assert output1.occ is False
