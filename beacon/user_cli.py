@@ -107,17 +107,17 @@ def query_request(inp, cookie):
 
 
 def print_results(outp_dict):
-    if outp_dict["occ"] == None:
-        if outp_dict["error"] == None:
-            print("\nYou are not allowed to make more requests.")
+    if outp_dict['occ'] == None:
+        if outp_dict['error'] == None:
+            print("You are not allowed to make more requests from this IP-address.")
         else:
             print(  # pragma: nocover
                 "\nWe have troubles with the database, please ask your admin for help.\n"
             )
-            print("The occuring error is: '", outp_dict["occ"], "'\n")  # pragma: nocover
-
-    print("The result of your request is:")
-    print(outp_dict)
+            print("The occuring error is: '", outp_dict['error'], "'\n")  # pragma: nocover
+    else:
+        print("The result of your request is:")
+        print(outp_dict)
 
 
 def init():
