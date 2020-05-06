@@ -4,7 +4,10 @@ Provides command line interface for beacon
 import sys
 import re
 import requests
-
+import base64
+import matplotlib.pyplot as plot
+import matplotlib.image as mpimg
+import io
 
 def main():
     """
@@ -116,9 +119,15 @@ def print_results(outp_dict):
             )
             print("The occuring error is: '", outp_dict['error'], "'\n")  # pragma: nocover
     else:
+        print_dict = {x: outp_dict[x] for x in outp_dict if x != 'statistic'}
         print("The result of your request is:")
-        print(outp_dict)
-
+        print(print_dict)
+        if outp_dict['statistic']:
+            stat_byte = outp_dict['statistic'].encode('ascii')
+            figure = base64.b64decode(stat_byte)
+            img = mpimg.imread(io.BytesIO(figure))
+            imgplot = plot.imshow(img)
+            plot.show()
 
 def init():
     if __name__ == "__main__":
