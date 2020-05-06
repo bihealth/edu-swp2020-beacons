@@ -32,6 +32,7 @@ def get_api(): #gets json/dict as POST request : done
         ann_var = connectDb.handle_request(var, auth)
         a_dict = ann_var.__dict__
         out = {x: a_dict[x] for x in a_dict if x is not 'statistic'}
+        print(out)
         return jsonify(out)
 
 
