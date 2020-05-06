@@ -65,7 +65,23 @@ def test_init(var, sig, output, monkeypatch, capsys, **kwargs):
     for i in range(len(output)):
         assert captured[i] == output[i]
 
+def test_verify_token:
+
 
 @pytest.mark.parametrize("inp,val", inputs)
 def test__check_input(inp, val):
     assert user_cli._check_input(inp) == val
+
+def test_string_to_dicti():
+    assert user_cli.string_to_dict("1-1-A-A") == {'alt': 'A', 'chr': '1', 'pos': '1', 'ref': 'A'}
+
+
+
+
+def test_query_request():
+
+inputs_print_results = [{'alt': 'A', 'chr': '1', 'error': None, 'occ': False, 'pos': '1', 'ref': 'A'},),]
+def test_print_results(capsys):
+    outp_dict = {'alt': 'A', 'chr': '1', 'error': None, 'occ': False, 'pos': '1', 'ref': 'A'}
+    
+

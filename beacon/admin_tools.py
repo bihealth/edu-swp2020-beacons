@@ -5,6 +5,7 @@
 import sqlite3
 import vcf
 import csv
+import secrets
 
 def parse_vcf(infile, con):
     """
@@ -419,16 +420,23 @@ class UserDB:
             id integer PRIMARY KEY,
             name text NOT NULL,
             token text NOT NULL,
-            authorization integer NOT NULL,
-            count_req integer,
-            ip_addr text
+            authorization integer NOT NULL
         );"""
-        output = con.parse_statement(sql_create_login_table, ())
-        if isinstance(output, sqlite3.Error):  # pragma: nocover
-            raise Exception(output.args[0])
-        else:
-            return True
 
+        sql_create_ip_table = """
+            CREATE TABLE IF NOT EXISTS ip (
+            id integer PRIMARY KEY,
+            count_req integer NOT NULL,
+            ip_addr text NOT NULL
+        );"""
+
+        try:
+            output = con.parse_statement(sql_create_login_table, ())
+            output2 = con.parse_statement(sql_create_ip_table, ())
+            return True
+        except sqlite3.Error as e:
+            return "An error has occured: " + str(e)
+        
     def addusers(self, acc, con):
         """
         Adds user to database with a token and authorization number and prevents duplication of usernames.
@@ -440,22 +448,24 @@ class UserDB:
         name = acc[0]
         authorization = acc[1]
         token = secrets.token_urlsafe()
-
-        sql_find_dup = "SELECT name FROM login WHERE name = ?"
-        output = con.parse_statement(sql_find_dup, [name])
-        if type(output) != list:  # pragma: nocover
-            return output
-        if output == []:
-            sql_str = (
-                "INSERT INTO login(name,token,authorization,count_req) VAlUES(?,?,?,0);"
-            )
-            parameters = (name, token, authorization)
-            output = con.parse_statement(sql_str, parameters)
-            if isinstance(output, list) is False:
-                return output
-            return True
-        else:
-            return "Username already exists"
+        try:
+            sql_find_dup = "SELECT name FROM login WHERE name = ?"
+            output = con.parse_statement(sql_find_dup, [name])
+            if output == []:
+                try:
+                    sql_str = (
+                        "INSERT INTO login(name,token,authorization) VAlUES(?,?,?);"
+                    )
+                    parameters = (name, token, authorization)
+                    output = con.parse_statement(sql_str, parameters)
+                    return True
+                except sqlite3.Error as e:
+                    return "An error has occured: " + str(e)
+            else:
+                return "Username already exists"
+        except sqlite3.Error as e:
+            return "An error has occured: " + str(e)
+        
 
     def find_user_token(self, con, username):
         """
@@ -464,14 +474,13 @@ class UserDB:
         :param con: connection to the database
         :return: token
         """
-        sql_find_dup = "SELECT token FROM login WHERE name = ?"
-        output = con.parse_statement(sql_find_dup, [username])
-        if isinstance(output, list) is False:  # pragma: nocover
-            print(output)
-            return False
-        else:
+        try:
+            sql_find_dup = "SELECT token FROM login WHERE name = ?"
+            output = con.parse_statement(sql_find_dup, [username])
             print("Token:")
             return output[0][0]
+        except sqlite3.Error as e:
+            return "An error has occured: " + str(e)
 
     def print_db(self, con):
         """
@@ -480,16 +489,32 @@ class UserDB:
         :param con: connection to the database
         :return: database
         """
-        sql_print = "SELECT * FROM login"
-        output = con.parse_statement(sql_print, ())
-        if isinstance(output, list) is False:  # pragma: nocover
-            print(output)
-            return False
-        else:
+        try:
+            sql_print = "SELECT * FROM login"
+            output = con.parse_statement(sql_print, ())
             print("TABLE login: \n")
             for out in output:
                 print(out)
             return ""
+        except sqlite3.Error as e:
+            return "An error has occured: " + str(e)
+    
+    def print_ip(self, con):
+        """
+        Prints whole database.
+
+        :param con: connection to the database
+        :return: database
+        """
+        try:
+            sql_print = "SELECT * FROM ip"
+            output = con.parse_statement(sql_print, ())
+            print("TABLE ip: \n")
+            for out in output:
+                print(out)
+            return ""
+        except sqlite3.Error as e:
+            return "An error has occured: " + str(e)
 
     def delete_user(self, con, id):
         """
@@ -499,13 +524,28 @@ class UserDB:
         :param id: id
         :rtype: bool
         """
-
-        sql_str = "DELETE FROM login WHERE id= ?;"
-        parameters = str(id)
-        output = con.parse_statement(sql_str, parameters)
-        if type(output) != list:
-            print(output)
-            return False
-        else:
+        try: 
+            sql_str = "DELETE FROM login WHERE id= ?;"
+            parameters = str(id)
+            output = con.parse_statement(sql_str, parameters)
             print("rufe -p auf, um die Änderung zu sehen")
             return True
+        except sqlite3.Error as e:
+            return "An error has occured: " + str(e)
+    
+    def delete_ip(self, con, id):
+        """
+        Deletes a row with given id in the database.
+
+        :param con: connection to the database
+        :param id: id
+        :rtype: bool
+        """
+        try: 
+            sql_str = "DELETE FROM ip WHERE id= ?;"
+            parameters = str(id)
+            output = con.parse_statement(sql_str, parameters)
+            print("rufe -p auf, um die Änderung zu sehen")
+            return True
+        except sqlite3.Error as e:
+            return "An error has occured: " + str(e)

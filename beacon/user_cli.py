@@ -14,8 +14,12 @@ def main():
     print("Welcome to our project beacon software!\n")
     ver = (False,)
     while ver[0] == False:
-        inp = input("Please enter your secret token: ")
-        ver = verify_token(inp)
+        inp = input("Please enter your secret token or enter nothing to continue as not registered user: ")
+        if inp:
+            ver = verify_token(inp)
+        else:
+            inp = None
+            ver = (True, "Unregistered user")
     print("Hello", ver[1])
     cookie = inp
 
@@ -103,32 +107,15 @@ def query_request(inp, cookie):
 
 
 def print_results(outp_dict):
-    if outp_dict["occ"] == None:
-        print("\nYou are not allowed to make more requests.")
-
-        print(  # pragma: nocover
-            "\nWe have troubles with the database, please ask your admin for help.\n"
-        )
-        print("The occuring error is: '", outp_dict["occ"], "'\n")  # pragma: nocover
-
-    elif len(outp_dict) == 5:
-        res = (
-            "chr: "
-            + outp_dict["chr"]
-            + " pos: "
-            + outp_dict["pos"]
-            + " ref: "
-            + outp_dict["ref"]
-            + " alt: "
-            + outp_dict["alt"]
-            + " occ: "
-            + str(outp_dict["occ"])
-        )
-
-        print("The result of your request is:")
-        print(res, "\n")
+    if outp_dict['occ'] == None:
+        if outp_dict['error'] == None:
+            print("You are not allowed to make more requests from this IP-address.")
+        else:
+            print(  # pragma: nocover
+                "\nWe have troubles with the database, please ask your admin for help.\n"
+            )
+            print("The occuring error is: '", outp_dict['error'], "'\n")  # pragma: nocover
     else:
-
         print("The result of your request is:")
         print(outp_dict)
 
