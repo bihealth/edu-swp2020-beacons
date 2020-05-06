@@ -2,14 +2,37 @@ from beacon import admin_tools
 from beacon import database
 import pytest  # noqa
 
+@pytest.fixture
+def test_parse_vcf(demo_vcf_file, demo_pop_file, demo_pheno_file, demo_empty_db):
+    con = database.ConnectDatabase(demo_empty_db)
+    infile1 = open(demo_vcf_file)
+    infile = [infile1,demo_pop_file,demo_pheno_file]
+    out = admin_tools.parse_vcf(infile, con)
+    if out is True:
+        return demo_empty_db
+    else:
+        raise('Error')
 
-def test_parse_vcf(demo_vcf_file, demo_db_path):
-    con = database.ConnectDatabase(demo_db_path)
-    inflie = open(demo_vcf_file, "r")
-    out = admin_tools.parse_vcf(inflie, con)
-    assert out is not None
-    assert out is True
+def test_parse_vcf_error(test_parse_vcf):
+    
+    out = test_parse_vcf
+    con = database.ConnectDatabase(out)
+    # assert out is True
+    # insertion in demo_empty_db
+    # con2 = database.ConnectDatabase(demo_empty_db)
+    out_allel = con.parse_statement("SELECT * FROM populations", ())
+    out_populations = con.parse_statement("SELECT * FROM populations", ())
+    out_phenotype = con.parse_statement("SELECT * FROM phenotype", ())
+    assert out_allel == []
+    assert out_populations == []
+    assert out_phenotype == []
+    
 
+# def test_parse_vcf_error(demo_vcf_file, error_pop_file, demo_pheno_file, demo_empty_db):
+#     con = database.ConnectDatabase(demo_empty_db)
+#     infile = [demo_vcf_file,error_pop_file,demo_pheno_file]
+#     out = admin_tools.parse_vcf(infile,con )
+#     assert "An error has occured:" in out
 
 def test_create_tables(tmpdir):
     path_db = str(tmpdir.join("test.sqlite3"))

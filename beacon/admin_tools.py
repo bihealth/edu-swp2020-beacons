@@ -22,13 +22,13 @@ def parse_vcf(infile, con):
         with infile[1] as tsv_file:
             
             tsv_reader = csv.DictReader(tsv_file, dialect='excel-tab')
-            count = 0
+            # count = 0
             for row in tsv_reader:
                 populationDict[row['Sample name']] = {'pop_code':row['Population code'], 'sex':row['Sex'] } 
                 
-                count = count + 1
-                if count == 8:
-                    break
+                # count = count + 1
+                # if count == 8:
+                #     break
         tsv_file.close()
         #------------------------------------------------------------------------------------
         # reads file for phenotype and creates for each sample a dict entry with hpo-term-id and hpo-term-name
@@ -38,19 +38,20 @@ def parse_vcf(infile, con):
             key = 0
             phenotype_reader = csv.DictReader(phenotype_file, dialect='excel-tab')
             for row in phenotype_reader:
-                phenotypeDict[key] = {'HPO-Term-ID':row[None][1],'HPO-Term-Name':row[None][2]}
+                phenotypeDict[key] = {'HPO-Term-ID':row['HPO-Term-ID'],'HPO-Term-Name':row['HPO-Term-Name']}
+                # print(row['HPO-Term-ID'])
                 key += 1
-                count += 1
-                if count == 8:
-                    break
+                # count += 1
+                # if count == 8:
+                #     break
         phenotype_file.close()
-    except csv.Error as error:
+    except csv.Error or ValueError or TypeError or KeyError as error:
         return "An error has occured: " + str(error)
     #------------------------------------------------------------------------------------
     pheno_key = 0
     try:
         vcf_reader = vcf.Reader(infile[0])
-        for variant in vcf_reader:  # pragma: nocover
+        for variant in vcf_reader:
         
             chr = variant.CHROM      
             pos = variant.POS
@@ -145,7 +146,7 @@ def parse_vcf(infile, con):
 
         infile[0].close()  # pragma: nocover
         return True
-    except SyntaxError or Exception as e:
+    except SyntaxError or Exception or TypeError or ValueError as e:
         return "An error has occured: " + str(e)
 
 
