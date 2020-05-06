@@ -127,7 +127,9 @@ def print_results(outp_dict):
             figure = base64.b64decode(stat_byte)
             img = mpimg.imread(io.BytesIO(figure))
             imgplot = plot.imshow(img)
-            plot.show()
+            plot.ion()
+            plot.show(block=False)
+            plot.pause(1)
 
 def init():
     if __name__ == "__main__":
