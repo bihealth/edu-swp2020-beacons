@@ -15,8 +15,13 @@ flask = "*"
 requests-mock = "*"
 pytest-coverage = "*"
 sphinx = "*"
+<<<<<<< HEAD
 numpy = "*"
 matplotlib = "*"
+=======
+matplotlib = "*"
+numpy = "*"
+>>>>>>> 746e5d21526fc9128fde945f2020dd133a9ebaec
 
 [requires]
 python_version = "3"
