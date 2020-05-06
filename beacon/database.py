@@ -125,7 +125,7 @@ class ConnectDatabase:
                         (annVar.chr, annVar.pos, annVar.ref, annVar.alt, p),
                     )[0][0]
                     popCount = pop_alt_hetero + 2 * pop_alt_homo + pop_hemi_alt
-                    pop_dic[p[0]] = popCount
+                    pop_dic[p] = popCount
                     sql_pop_wildtype = "SELECT SUM(wildtype) FROM populations WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ? AND population = ?;"
                     sql_pop_hemi_ref = "SELECT SUM(hemi_ref) FROM populations WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ? AND population = ?;"
                     pop_wildtype = self.parse_statement(
