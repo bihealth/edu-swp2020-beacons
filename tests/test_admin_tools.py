@@ -1,32 +1,25 @@
 from beacon import admin_tools
 from beacon import database
 import pytest  # noqa
+import vcf
 
-@pytest.fixture
 def test_parse_vcf(demo_vcf_file, demo_pop_file, demo_pheno_file, demo_empty_db):
     con = database.ConnectDatabase(demo_empty_db)
-    infile1 = open(demo_vcf_file)
-    infile = [infile1,demo_pop_file,demo_pheno_file]
+    infile = [demo_vcf_file,demo_pop_file,demo_pheno_file]
     out = admin_tools.parse_vcf(infile, con)
-    if out is True:
-        return demo_empty_db
-    else:
-        raise('Error')
-
-def test_parse_vcf_error(test_parse_vcf):
-    
-    out = test_parse_vcf
-    con = database.ConnectDatabase(out)
-    # assert out is True
     # insertion in demo_empty_db
-    # con2 = database.ConnectDatabase(demo_empty_db)
-    out_allel = con.parse_statement("SELECT * FROM populations", ())
-    out_populations = con.parse_statement("SELECT * FROM populations", ())
-    out_phenotype = con.parse_statement("SELECT * FROM phenotype", ())
-    assert out_allel == []
-    assert out_populations == []
-    assert out_phenotype == []
+    out_allel = con.parse_statement("SELECT chr FROM allel", ())
+    out_populations = con.parse_statement("SELECT chr FROM populations", ())
+    out_phenotype = con.parse_statement("SELECT phenotype FROM phenotype WHERE pos = 14370", ())
+    od = admin_tools.OperateDatabase()
+    od.print_db(con)
+    con.connection.close()   
     
+    assert out is True
+    assert out_allel == [('20',), ('20',), ('X',)]
+    assert out_populations == [('20',), ('20',), ('20',), ('20',), ('X',), ('X',)]
+    assert out_phenotype ==  [('HP:0004322; Short stature',)]
+
 
 # def test_parse_vcf_error(demo_vcf_file, error_pop_file, demo_pheno_file, demo_empty_db):
 #     con = database.ConnectDatabase(demo_empty_db)
