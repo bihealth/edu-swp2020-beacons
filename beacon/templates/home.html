@@ -9,7 +9,7 @@
   <form id="v" enctype='application/json' action = "{{ url_for('handle') }}" method = "POST">
     <input type="hidden" id="token" name="token" value="{{token}}">
     <label for="chr">Chromosom:</label>
-    <input type="text" id="chr" name="chr" pattern = "(([3-9]|([1][0-9]?)|([2][0-2]?)|[XY])-\d+-[ACGT]+-[ACGT]+" placeholder="chr" autofocus><br>
+    <input type="text" id="chr" name="chr" pattern = "(([3-9]|([1][0-9]?)|([2][0-2]?)|[XY])" placeholder="chr" autofocus><br>
     <label for="pos" >Position:</label>
     <input type="text" id="pos" name="pos" pattern = "\d+" placeholder="pos"><br>
     <label for="ref">Referenz:</label>
