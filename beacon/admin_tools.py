@@ -24,9 +24,11 @@ def parse_vcf(infile, con):
             
             tsv_reader = csv.DictReader(tsv_file, dialect='excel-tab')
             # count = 0
-            for row in tsv_reader:
-                populationDict[row['Sample name']] = {'pop_code':row['Population code'], 'sex':row['Sex'] } 
-                
+            try:
+                for row in tsv_reader:
+                    populationDict[row['Sample name']] = {'pop_code':row['Population code'], 'sex':row['Sex'] } 
+            except Exception as error:
+                return "An error has occured: " + str(error)
                 # count = count + 1
                 # if count == 8:
                 #     break
@@ -37,14 +39,17 @@ def parse_vcf(infile, con):
             # count=0
             key = 0
             phenotype_reader = csv.DictReader(phenotype_file, dialect='excel-tab')
-            for row in phenotype_reader:
-                phenotypeDict[key] = {'HPO-Term-ID':row['HPO-Term-ID'],'HPO-Term-Name':row['HPO-Term-Name']}
-                # print(row['HPO-Term-ID'])
-                key += 1
-                # count += 1
-                # if count == 8:
-                #     break
-    except csv.Error or ValueError or TypeError or KeyError as error:
+            try:
+                for row in phenotype_reader:
+                    phenotypeDict[key] = {'HPO-Term-ID':row['HPO-Term-ID'],'HPO-Term-Name':row['HPO-Term-Name']}
+                    # print(row['HPO-Term-ID'])
+                    key += 1
+                    # count += 1
+                    # if count == 8:
+                    #     break
+            except KeyError as error:
+                return "An error has occured: " + str(error)
+    except Exception as error:
         return "An error has occured: " + str(error)
     #------------------------------------------------------------------------------------
     pheno_key = 0
@@ -89,9 +94,9 @@ def parse_vcf(infile, con):
                                 if gt == 0: 
                                     wildtype += 1
                                     tempDict[population]['pop_wildtype'] +=1
-                                elif gt == 1:
-                                    alt_hetero += 1
-                                    tempDict[population]['pop_alt_hetero'] +=1
+                                # elif gt == 1:
+                                #     alt_hetero += 1
+                                #     tempDict[population]['pop_alt_hetero'] +=1
                                 else:  # gt == 2
                                     alt_homo += 1
                                     tempDict[population]['pop_alt_homo'] +=1
@@ -131,18 +136,18 @@ def parse_vcf(infile, con):
                 parameters2 = (chr, pos, ref, alt, phenotype)
                 output2 = con.parse_statement(sql_str2, parameters2)
 
-                if isinstance(output,list) is False or isinstance(output2,list) is False: #evtl error
-                    return output, output2
+                if isinstance(output,list) is False or isinstance(output2,list) is False:  # pragma: no cover 
+                    raise output or output2
 
                 for td in tempDict:                   
                     sql_str1 = "INSERT INTO populations (chr,pos,ref,alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, population) VALUES (?,?,?,?,?,?,?,?,?,?);"
                     parameters1 = (chr, pos, ref, alt, tempDict[td]['pop_wildtype'],tempDict[td]['pop_alt_hetero'], tempDict[td]['pop_alt_homo'], tempDict[td]['pop_hemi_ref'], tempDict[td]['pop_hemi_alt'], td)
                     output1 = con.parse_statement(sql_str1, parameters1)
 
-                    if isinstance(output1,list) is False:
-                        return output1
+                    if isinstance(output1,list) is False:  # pragma: no cover
+                        raise output1
             return True
-    except SyntaxError or Exception or TypeError or ValueError as e:
+    except Exception as e:
         return "An error has occured: " + str(e)
 
 
@@ -185,7 +190,7 @@ class CreateDbCommand:
             alt_homo integer NOT NULL,
             hemi_ref integer NOT NULL,
             hemi_alt integer NOT NULL,
-            population text NOT NULL
+            population text 
         );"""
         sql_create_db_table_phenotype = """
             CREATE TABLE IF NOT EXISTS phenotype (

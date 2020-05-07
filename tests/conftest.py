@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS populations (
     alt_homo integer NOT NULL,
     hemi_ref integer NOT NULL,
     hemi_alt integer NOT NULL,
-    population text NOT NULL
+    population text
 );
 """
 
@@ -195,16 +195,19 @@ def demo_vcf_file(tmpdir):
             '##FORMAT=<ID=HQ,Number=2,Type=Integer,Description="Haplotype Quality">\n'
         )
         vcf_file.write(
-            "#CHROM POS      ID         REF   ALT    QUAL  FILTER   INFO                             FORMAT       HG00174         HG00179          HG00148\n"
+            "#CHROM POS      ID         REF   ALT    QUAL  FILTER   INFO                             FORMAT       HG00174         HG00179          HG00148           NA12414\n"
         )
         vcf_file.write(
-            "20     14370    rs6054257  G     A      29    PASS    NS=3;DP=14;AF=0.5;DB;H2           GT:GQ:DP:HQ  0|0:48:1:51,51  1|0:48:8:51,51   1/1:43:5:.,.\n"
+            "20     14370    rs6054257  G     A      29    PASS    NS=3;DP=14;AF=0.5;DB;H2           GT:GQ:DP:HQ  0|0:48:1:51,51  1|0:48:8:51,51   1/1:43:5:.,.      0|0:48:1:51,51\n"
         )
         vcf_file.write(
-            "20     17330    .          T     A      3     q10     NS=3;DP=11;AF=0.017               GT:GQ:DP:HQ  0|0:49:3:58,50  0|1:3:5:65,3     0/0:41:3\n"
+            "20     17330    .          T     A      3     q10     NS=3;DP=11;AF=0.017               GT:GQ:DP:HQ  0|0:49:3:58,50  0|1:3:5:65,3     0/0:41:3          0|1:3:5:65,3\n"
         )
         vcf_file.write(
-            "X     1110696  rs6040355  A     G,T    67    PASS    NS=2;DP=10;AF=0.333,0.667;AA=T;DB GT:GQ:DP:HQ  1|2:21:6:23,27  2|1:2:0:18,2     2/2:35:4\n"
+            "X     1110696  rs6040355   A     G,T   67    PASS    NS=2;DP=10;AF=0.333,0.667;AA=T;DB  GT           1               0                1                 1\n"
+        )
+        vcf_file.write(
+            "Y     2655180  rs6040355   G     A     67    PASS    NS=2;DP=10;AF=0.333,0.667;AA=T;DB  GT           0               1                0                 1\n"
         )
     return 'demo2.vcf'
 
@@ -229,6 +232,20 @@ def demo_pop_file(tmpdir):
     return 'demo_pop.tsv'
 
 @pytest.fixture
+def error_pop_file(tmpdir):
+    # create pop file
+    tmpdir.join("error_pop.tsv")
+    pop_file = open("error_pop.tsv", 'w')
+    with pop_file as pf:
+        fnames = ['ERROR Sample name', 'Sex', 'Population code']
+        writer = csv.DictWriter(pf, fieldnames=fnames, delimiter='\t')
+        writer.writeheader()
+        writer.writerow({'ERROR Sample name':'HG00174', 'Sex':'female', 'Population code':'FIN'})
+        writer.writerow({'ERROR Sample name':'HG00179', 'Sex':'female', 'Population code':'FIN'})
+        writer.writerow({'ERROR Sample name':'HG00148', 'Sex':'male', 'Population code':'GBR'})
+    return 'error_pop.tsv'
+
+@pytest.fixture
 def demo_pheno_file(tmpdir):
     # create pop file
     tmpdir.join("demo_pheno.tsv")
@@ -240,4 +257,20 @@ def demo_pheno_file(tmpdir):
         writer.writerow({'entrez-gene-id':'8192', 'entrez-gene-symbol':'CLPP', 'HPO-Term-ID':'HP:0004322', 'HPO-Term-Name':'Short stature'})
         writer.writerow({'entrez-gene-id':'8192', 'entrez-gene-symbol':'CLPP', 'HPO-Term-ID':'HP:0000007', 'HPO-Term-Name':'Autosomal recessive inheritance'})
         writer.writerow({'entrez-gene-id':'8192', 'entrez-gene-symbol':'CLPP', 'HPO-Term-ID':'HP:0000013', 'HPO-Term-Name':'Hypoplasia of the uterus'})
+        writer.writerow({'entrez-gene-id':'8192', 'entrez-gene-symbol':'CLPP', 'HPO-Term-ID':'HP:0000252', 'HPO-Term-Name':'Microcephaly'})
     return 'demo_pheno.tsv'
+
+@pytest.fixture
+def error_pheno_file(tmpdir):
+    # create pop file
+    tmpdir.join("error_pheno.tsv")
+    pheno_file = open("error_pheno.tsv", 'w')
+    with pheno_file as pf:
+        fnames = ['entrez-gene-id','entrez-gene-symbol','ERROR HPO-Term-ID','HPO-Term-Name']
+        writer = csv.DictWriter(pf, fieldnames=fnames, delimiter='\t')
+        writer.writeheader()
+        writer.writerow({'entrez-gene-id':'8192', 'entrez-gene-symbol':'CLPP', 'ERROR HPO-Term-ID':'HP:0004322', 'HPO-Term-Name':'Short stature'})
+        writer.writerow({'entrez-gene-id':'8192', 'entrez-gene-symbol':'CLPP', 'ERROR HPO-Term-ID':'HP:0000007', 'HPO-Term-Name':'Autosomal recessive inheritance'})
+        writer.writerow({'entrez-gene-id':'8192', 'entrez-gene-symbol':'CLPP', 'ERROR HPO-Term-ID':'HP:0000013', 'HPO-Term-Name':'Hypoplasia of the uterus'})
+        writer.writerow({'entrez-gene-id':'8192', 'entrez-gene-symbol':'CLPP', 'ERROR HPO-Term-ID':'HP:0000252', 'HPO-Term-Name':'Microcephaly'})
+    return 'error_pheno.tsv'

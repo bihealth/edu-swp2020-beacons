@@ -7,25 +7,43 @@ def test_parse_vcf(demo_vcf_file, demo_pop_file, demo_pheno_file, demo_empty_db)
     con = database.ConnectDatabase(demo_empty_db)
     infile = [demo_vcf_file,demo_pop_file,demo_pheno_file]
     out = admin_tools.parse_vcf(infile, con)
+
     # insertion in demo_empty_db
     out_allel = con.parse_statement("SELECT chr FROM allel", ())
-    out_populations = con.parse_statement("SELECT chr FROM populations", ())
+    out_populations = con.parse_statement("SELECT pos FROM populations WHERE population = 'FIN'", ())
     out_phenotype = con.parse_statement("SELECT phenotype FROM phenotype WHERE pos = 14370", ())
-    od = admin_tools.OperateDatabase()
-    od.print_db(con)
+    out_aut_wild = con.parse_statement("SELECT hemi_ref FROM allel", ())
+    out_aut_f_alt_homo = con.parse_statement("SELECT alt_homo FROM allel", ())
+
     con.connection.close()   
     
     assert out is True
-    assert out_allel == [('20',), ('20',), ('X',)]
-    assert out_populations == [('20',), ('20',), ('20',), ('20',), ('X',), ('X',)]
+    assert out_allel == [('20',), ('20',), ('X',), ('Y',)]
+    assert out_populations == [(14370,), (17330,), (1110696,), (2655180,)]
     assert out_phenotype ==  [('HP:0004322; Short stature',)]
+    assert out_aut_wild == [(0,), (0,), (0,), (1,)]
+    assert out_aut_f_alt_homo ==  [(1,), (0,), (2,), (2,)]
 
-
-# def test_parse_vcf_error(demo_vcf_file, error_pop_file, demo_pheno_file, demo_empty_db):
-#     con = database.ConnectDatabase(demo_empty_db)
-#     infile = [demo_vcf_file,error_pop_file,demo_pheno_file]
-#     out = admin_tools.parse_vcf(infile,con )
-#     assert "An error has occured:" in out
+def test_parse_vcf_error(demo_vcf_file, error_pop_file, demo_pheno_file, demo_pop_file, error_pheno_file, demo_empty_db):
+    con = database.ConnectDatabase(demo_empty_db)
+    
+    infile = [demo_vcf_file,error_pop_file,demo_pheno_file]
+    out = admin_tools.parse_vcf(infile,con) 
+    infile2 = [demo_vcf_file,demo_pop_file,error_pheno_file]
+    out2 = admin_tools.parse_vcf(infile2,con)
+    infile3 = [demo_vcf_file,open(demo_pop_file),demo_pheno_file]
+    out3 = admin_tools.parse_vcf(infile3,con)
+    infile4 = [open(demo_vcf_file),demo_pop_file,demo_pheno_file]
+    out4 = admin_tools.parse_vcf(infile4,con)
+    con.connection.close()
+    assert out is not True
+    assert out2 is not True
+    assert out3 is not True
+    assert out4 is not True
+    assert "An error has occured: " in out
+    assert "An error has occured: " in out2
+    assert "An error has occured: " in out3
+    assert "An error has occured: " in out4
 
 def test_create_tables(tmpdir):
     path_db = str(tmpdir.join("test.sqlite3"))
