@@ -127,7 +127,7 @@ def print_results(outp_dict):
             figure = base64.b64decode(stat_byte)
             img = mpimg.imread(io.BytesIO(figure))
             imgplot = plot.imshow(img)
-            plot.savefig('stat_population_'+outp_dict['chr']+'_'+str(outp_dict['pos'])+'_'+outp_dict['ref']+'_'+outp_dict['alt'])
+            plot.savefig('stat_population_'+outp_dict['chr']+'_'+str(outp_dict['pos'])+'_'+outp_dict['ref']+'_'+outp_dict['alt']+ '.png')
 
 
 def init():
