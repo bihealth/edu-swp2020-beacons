@@ -1,14 +1,100 @@
 {% extends "layout.html" %} 
 {% block contennt %}
     <h1>Results</h1>
-    {% if occ == True or occ == False%}
-        {%if occ == True%}
-            <p>Your variant {{inp}} was found.</p>
+    <style>
+        table{
+            margin-top: 10px;
+            margin-bottom: 40px;
+            padding: 20px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+            border-spacing:0px 20px;
+            width: 900px;
+        }
+
+        th,td {
+            border: 1px solid Silver;
+            border-collapse: collapse;
+            padding: 5px;
+            margin-left: auto;
+            margin-right: auto;
+            width: 900px;
+            text-align: center;
+        }
+
+        .pr{
+            color: white; 
+            border: 5px solid red;
+            background-color: red;
+            border-radius: 40px; width: 350px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        .pg{
+            color: white; 
+            border: 5px solid rgb(6, 156, 6);
+            background-color: rgb(6, 156, 6);
+            border-radius: 40px; width: 350px;
+            margin-top: 40px;
+            margin-bottom: 40px;
+        }
+
+        img{
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+
+    {% if res['occ'] == None %}
+        {% if res['error'] == None %}
+            <p class="pr" >You are not allowed to make more requests from this IP-address.</p>
         {% else %}
-            <p>Your variant {{inp}} was not found.</p>
+            <p>An Error has occured:</p>
+            <p class="pr" >An Error has occured: {{res['error']}}</p>
         {% endif %}
     {% else %}
-        <p>An Error has occured: {{occ}}</p>
+        {% if res['occ'] == True %}
+            <p class="pg">Your variant {{res['chr']}}-{{res['pos']}}-{{res['ref']}}-{{res['alt']}} was found.</p>
+                {% if atable == True %}
+                    <table>
+                    <thead>
+                        <tr>
+                            <th>Variant</th>
+                            <th>Frequenzy</th>
+                            <th>Phenotype</th>
+                            <th>Population</th>
+                            <th>Variant Count</th>
+                        </tr>
+                    <thead>
+                    <tbody>
+                        <tr>
+                            <th>{{res['chr']}}-{{res['pos']}}-{{res['ref']}}-{{res['alt']}} </th>
+                            <td>{{res['frequency']}}</td>
+                            <td>{{res['phenotype']}}</td>
+                            <td>{{res['population']}}</td>
+                            <td>{{res['varCount']}}</td>
+                        </tr>
+                    </tbody>
+                    </table>
+                    {% if res['statistic'] %}
+                        <img src="data:image/png;base64, {{res['statistic']}}"/>
+                    {% else %}
+                    {% endif %}
+                {% else %}
+                {% endif %}
+        {% else %}
+            <p class="pr" >Your variant {{res['chr']}}-{{res['pos']}}-{{res['ref']}}-{{res['alt']}} was not found.</p>
+        {% endif %}
     {% endif %}
-    <button onclick="window.location.href='/'">go Home</button>
+    {% if token == None %}
+        <button onclick="window.location.href='/'">go Home</button>
+    {% else %} 
+        <form style="border-color: white;" enctype='application/json' action = "{{ url_for('login') }}" method = "POST">
+            <input type="hidden" id="token" name="token" value="{{token}}">
+            <button type="submit">go Home</button>
+        </form>
+    {% endif %}
 {% endblock %}
