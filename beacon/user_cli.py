@@ -57,7 +57,7 @@ def verify_token(inp):
     elif resp.json()["verified"]:
         return (True, resp.json()["user"])
     else:
-        print("This is not a valid token")
+        print("This is not a valid token.")
         return (False, None)
 
 
@@ -110,19 +110,19 @@ def query_request(inp, cookie):
             outp_dict = rep.json()
             print_results(outp_dict)
     else:
-        print("Your input has the wrong format. For futher information tipp --help.")
+        print("Your input has the wrong format.")
 
 
 def print_results(outp_dict):
-    print(outp_dict)
+    #print(outp_dict)
     if outp_dict['occ'] == None:
         if outp_dict['error'] == None:
             print("You are not allowed to make more requests from this IP-address.")
         else:
             print(  # pragma: nocover
-                "\nWe have troubles with the database, please ask your admin for help.\n"
+                "We have troubles with the database, please ask your admin for help."
             )
-            print("The occuring error is: '", outp_dict['error'], "'\n")  # pragma: nocover
+            print("The occuring error is: '", outp_dict['error'], "'")  # pragma: nocover
     else:
         print_dict = {x: outp_dict[x] for x in outp_dict if x != 'statistic'}
         print("The result of your request is:")
