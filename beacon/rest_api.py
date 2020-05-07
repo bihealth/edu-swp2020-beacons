@@ -41,7 +41,7 @@ def get_api(): #gets json/dict as POST request : done
             else:
                 ann_var = con.handle_request(var, auth[0])
                 a_dict = ann_var.__dict__
-                if a_dict['error'] is None and len(a_dict) > 6:
+                if a_dict['error'] is None and len(a_dict) > 6 and a_dict['statistic'] is not None:
                     figfile = BytesIO()
                     fig = ann_var.statistic
                     fig.figure.savefig(figfile, format='png')
@@ -66,7 +66,7 @@ def request_permission(ip_addr,token):
             auth = con.parse_statement("SELECT count_req FROM ip WHERE ip_addr = ?", [ip_addr])
             if not auth:
                 con.parse_statement("INSERT INTO ip(count_req, ip_addr) VALUES(1,?)", [ip_addr]) 
-            elif auth[0][0] > 100:
+            elif auth[0][0] > 50:
                 return (0,None)
             else:
                 con.parse_statement("UPDATE ip SET count_req = count_req + 1 WHERE ip_addr = ?",[ip_addr])
