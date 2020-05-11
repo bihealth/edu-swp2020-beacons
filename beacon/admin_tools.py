@@ -456,7 +456,7 @@ class UserDB:
     def __init__(self):
         self.data = []
 
-    def create_tables(self, con):
+    def create_tables_user(self, con):
         """
         Creates variant table in database.
 
@@ -482,10 +482,10 @@ class UserDB:
             output = con.parse_statement(sql_create_login_table, ())
             output2 = con.parse_statement(sql_create_ip_table, ())
             return True
-        except sqlite3.Error as e:
+        except sqlite3.Error as e:      # pragma: nocover
             return "An error has occured: " + str(e)
 
-    def addusers(self, acc, con):
+    def insert_user(self, acc, con):
         """
         Adds user to database with a token and authorization number and prevents duplication of usernames.
 
@@ -529,7 +529,7 @@ class UserDB:
         except sqlite3.Error as e:
             return "An error has occured: " + str(e)
 
-    def print_db(self, con):
+    def print_db_user(self, con):
         """
         Prints whole database.
 

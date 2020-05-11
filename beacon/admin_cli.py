@@ -108,32 +108,32 @@ def parse_args(args):
     )
     parser.add_argument(
         "-ctu",
-        "--create_table_user",
+        "--create_tables_user",
         action="store_true",
         help="Createing two new tables in 'user'-database.",
     )
     parser.add_argument(
-        "-add", "--insert_user_data", help="Adding an user in the database.", nargs=2,
+        "-add", "--insert_user", help="Adding an user in the database.", nargs=2,
     )
     parser.add_argument(
         "-t",
-        "--find_token",
+        "--find_user_token",
         help="Finding the token for the associated username in database.",
     )
     parser.add_argument(
         "-pu",
-        "--print_user_db",
+        "--print_db_user",
         action="store_true",
         help="Printing the user database.",
     )
     parser.add_argument(
-        "-du", "--delete_user_db", help="Deleting the user database.",
+        "-du", "--delete_user", help="Deleting the user database.",
     )
     parser.add_argument(
-        "-pi", "--print_ip_db", action="store_true", help="Printing the ip database.",
+        "-pi", "--print_ip", action="store_true", help="Printing the ip database.",
     )
     parser.add_argument(
-        "-di", "--delete_ip_db", help="Deleting the ip database.",
+        "-di", "--delete_ip", help="Deleting the ip database.",
     )
     return parser.parse_args(args)
 
