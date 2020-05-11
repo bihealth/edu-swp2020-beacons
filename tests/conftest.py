@@ -1,6 +1,6 @@
 import sqlite3
 import pytest
-from beacon import flask_app
+from beacon import web_ui
 import csv
 
 
@@ -156,7 +156,7 @@ def demo_db_path(tmpdir):
 def demo_vcf_file(tmpdir):
     # create vcf file
     tmpdir.join("demo.vcf")
-    with open("demo2.vcf",'w') as vcf_file:
+    with open("demo.vcf",'w') as vcf_file:
 
         vcf_file.write("##fileformat=VCFv4.3\n")
         vcf_file.write("##fileDate=20090805\n")
@@ -209,12 +209,12 @@ def demo_vcf_file(tmpdir):
         vcf_file.write(
             "Y     2655180  rs6040355   G     A     67    PASS    NS=2;DP=10;AF=0.333,0.667;AA=T;DB  GT           0               1                0                 1\n"
         )
-    return 'demo2.vcf'
+    return 'demo.vcf'
 
 @pytest.fixture
 def client():
     # flask_app.app.config['TESTING'] = True
-    return flask_app.app.test_client()
+    return web_ui.app.test_client()
 
 
 @pytest.fixture
