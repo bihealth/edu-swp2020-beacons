@@ -33,7 +33,15 @@ def main():
     while cont:
         inp = input("Please enter your variant (chr-pos-ref-alt):\n")
         # if input is valid - communication to database and send answer
-        query_request(inp, cookie)
+
+        if _check_input(inp):
+            inp_dict = string_to_dict(inp)
+            out = query_request(inp_dict, cookie)
+            if out[0]:
+                print_results(out[1])
+        else:
+            print("Your input has the wrong format.")
+
 
         inp = input(
             "If you like to continue: Press [c]\nIf you like to quit: Press [q]\n"
@@ -91,12 +99,10 @@ def string_to_dict(inp):
     return inp_dict
 
 
-def query_request(inp, cookie):
+def query_request(inp_dict, cookie):
 
-    if _check_input(inp):
         connection_established = False
         try:
-            inp_dict = string_to_dict(inp)
             rep = requests.post(
                 "http://localhost:5000/query", json=inp_dict, headers={"token": cookie}
             )
@@ -108,10 +114,9 @@ def query_request(inp, cookie):
             # print(e.argv[0])  # pragma: nocover
         if connection_established:
             outp_dict = rep.json()
-            print_results(outp_dict)
-    else:
-        print("Your input has the wrong format.")
-
+            return (True, outp_dict)
+        else:
+            return (False, None)
 
 def print_results(outp_dict):
     #print(outp_dict)
