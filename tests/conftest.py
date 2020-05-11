@@ -98,7 +98,23 @@ SQL_INSERT_IP = r"""
 INSERT INTO ip (count_req, ip_addr)
 VALUES (?, ?);
 """
-
+@pytest.fixture
+def demo_empty_db(tmpdir):
+    path_db = str(tmpdir.join("test.sqlite3"))
+    conn = sqlite3.connect(path_db)
+    with conn:
+        # Creates tables.
+        c = conn.cursor()
+        c.execute(SQL_CREATE1)
+        c.execute(SQL_CREATE2)
+        c.execute(SQL_CREATE3)
+        c.execute(SQL_IDX1)
+        c.execute(SQL_IDX2)
+        c.execute(SQL_IDX3)
+        conn.commit()
+        c.close()
+    conn.close()
+    return path_db
 
 @pytest.fixture
 def demo_db_path(tmpdir):
