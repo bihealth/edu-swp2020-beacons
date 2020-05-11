@@ -133,9 +133,18 @@ def test_parse_args(demo_vcf_file):
             "1",
             "-dpt",
             "1",
-            # new arguments
-        ]
-    )
+            "-ctu",
+            "-add", 
+            "Julia", 
+            "1",
+            "-t", 
+            "Julia",
+            "-pu",
+            "-du", 
+            "1",
+            "-pi",
+            "-di", 
+            "1"])
     ct = parser.create_tables
     # vcf = parser.insert_data
     p = parser.print_db
@@ -146,6 +155,13 @@ def test_parse_args(demo_vcf_file):
     da = parser.delete_allel
     dp = parser.delete_populations
     dpt = parser.delete_phenotype
+    ctu = parser.create_tables_user
+    add = parser.insert_user
+    t = parser.find_user_token
+    pu = parser.print_db_user
+    du = parser.delete_user
+    pi = parser.print_ip
+    di = parser.delete_ip
     assert ct is True
     #     assert vcf is not None
     assert p is True
@@ -156,6 +172,13 @@ def test_parse_args(demo_vcf_file):
     assert da == "1"
     assert dp == "1"
     assert dpt == "1"
+    assert ctu is True
+    assert isinstance(add, list)
+    assert isinstance(t, str)
+    assert pu is True
+    assert du == "1"
+    assert pi is True
+    assert di == "1"
 
 
 def test_main(demo_db_path, demo_vcf_file, monkeypatch):
