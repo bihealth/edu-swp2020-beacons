@@ -48,6 +48,19 @@ def test_path_not_exist_exit(monkeypatch):
     assert out[1] == ""
 
 
+def test_path_not_exist_x(monkeypatch):
+    def mock_input(x):
+        if x == "DB Name: ":
+            return "test.sqlite3"
+        else:
+            return "x"
+
+    monkeypatch.setattr("builtins.input", mock_input)
+    out = admin_cli.path()
+    assert out[0] is False
+    assert out[1] == ""
+
+
 def test_path_not_exist_continue(monkeypatch, capsys):
     def mock_input(x):
         if x == "DB Name: ":
@@ -89,12 +102,12 @@ def test_path_not_exist_wrong_input(monkeypatch, capsys):
     )
 
 
-def test_parse_args(demo_vcf_file):
+def test_parse_args(demo_vcf_file, demo_pop_file, demo_pheno_file):
     parser = admin_cli.parse_args(
         [
             "-ct",
-            # "-vcf",
-            # str(demo_vcf_file),
+            "-vcf",
+            str([demo_vcf_file, demo_pop_file, demo_pheno_file]),
             "-p",
             "-c",
             "-ua",
@@ -134,19 +147,21 @@ def test_parse_args(demo_vcf_file):
             "-dpt",
             "1",
             "-ctu",
-            "-add", 
-            "Julia", 
+            "-add",
+            "Julia",
             "1",
-            "-t", 
+            "-t",
             "Julia",
             "-pu",
-            "-du", 
+            "-du",
             "1",
             "-pi",
-            "-di", 
-            "1"])
+            "-di",
+            "1",
+        ]
+    )
     ct = parser.create_tables
-    # vcf = parser.insert_data
+    vcf = parser.insert_data
     p = parser.print_db
     c = parser.count_variants
     ua = parser.update_allel
@@ -163,7 +178,7 @@ def test_parse_args(demo_vcf_file):
     pi = parser.print_ip
     di = parser.delete_ip
     assert ct is True
-    #     assert vcf is not None
+    assert isinstance(vcf, list)
     assert p is True
     assert isinstance(c, int)
     assert isinstance(ua, list)
@@ -181,7 +196,7 @@ def test_parse_args(demo_vcf_file):
     assert di == "1"
 
 
-def test_main(demo_db_path, demo_vcf_file, monkeypatch):
+def test_main(demo_db_path, demo_vcf_file, demo_pop_file, demo_pheno_file, monkeypatch):
     def mock_input(x):
         if x == "DB Name: ":
             return "test.sqlite3"
@@ -195,6 +210,13 @@ def test_main(demo_db_path, demo_vcf_file, monkeypatch):
     sys.argv.append("-ct")
     out = admin_cli.main(sys.argv)
     assert isinstance(out, str)
+
+    sys.argv = []
+    sys.argv.append("f")
+    sys.argv.append("-vcf")
+    sys.argv.append([demo_vcf_file, demo_pop_file, demo_pheno_file])
+    out = admin_cli.main(sys.argv)
+    assert out is True
 
     sys.argv = []
     sys.argv.append("f")
@@ -254,7 +276,7 @@ def test_main(demo_db_path, demo_vcf_file, monkeypatch):
 
     sys.argv = ["f", "-du", "1"]
     out = admin_cli.main(sys.argv)
-    assert out is True
+    assert isinstance(out, str)
 
     sys.argv = ["f", "-pi"]
     out = admin_cli.main(sys.argv)
@@ -262,4 +284,10 @@ def test_main(demo_db_path, demo_vcf_file, monkeypatch):
 
     sys.argv = ["f", "-di", "1"]
     out = admin_cli.main(sys.argv)
-    assert out is True
+    assert isinstance(out, str)
+
+    sys.argv = ["f"]
+    out = admin_cli.main(sys.argv)
+    assert (
+        "Please enter a flag. To see which flags you can use, use -h or --help" in out
+    )

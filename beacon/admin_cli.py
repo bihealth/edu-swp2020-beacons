@@ -19,7 +19,7 @@ def path():
         exist = False
         try_count = 0
         while exist is False:
-            if  try_count > 10:
+            if try_count > 10:
                 print("You tried more then ten times. Your session is quitted now.")
                 return False, ""
             try_count = try_count + 1
@@ -31,7 +31,7 @@ def path():
                 inp = input(
                     "Given database does not exist. Do you want to create a new one? [y/n]"
                 )
-                if inp == "y": 
+                if inp == "y":
                     return True, os.path.join(path, db)
                 elif inp == "n":
                     ex = input("Do you want to exit the process? [y/n]")
@@ -47,8 +47,7 @@ def path():
                     print(
                         "Your input has the wrong format. The process is starting from the beginning."
                     )
-    except: # pragma nocover
-        e = sys.exc_info()[0]
+    except Exception as e:  # pragma nocover
         return False, e
 
 
@@ -70,8 +69,7 @@ def parse_args(args):
         "-vcf",
         "--insert_data",
         help="Inserting data from a tsv and vcf file in database",
-        type=argparse.FileType("r"),
-        nargs=3,
+        nargs=1,
     )
     parser.add_argument(
         "-p", "--print_db", action="store_true", help="Printing the database",
@@ -149,7 +147,7 @@ def main(argv):
     if pfad_test[0] is True:
         pfad = pfad_test[1]
     else:
-        return pfad_test[1]
+        return pfad_test[1]  # pragma: nocover
     args = parse_args(sys.argv[1:])
     try:
         connect = database.ConnectDatabase(pfad)
@@ -161,7 +159,7 @@ def main(argv):
             output = create.create_tables(connect)
         elif args.insert_data:
             print("inserting data is activated")
-            output = admin_tools.parse_vcf(args.insert_data, connect)
+            output = admin_tools.parse_vcf(args.insert_data[0], connect)
         elif args.print_db:
             print("print_db is activated")
             output = od.print_db(connect)
@@ -208,10 +206,11 @@ def main(argv):
             print("delete_ip is activated")
             output = us.delete_ip(connect, args.delete_ip)
         else:
-            output = "Please enter a flag. To see which flags you can use, use -h or --help"
+            output = (
+                "Please enter a flag. To see which flags you can use, use -h or --help"
+            )
         return output
-    except:     # pragma: nocover
-        e = sys.exc_info()[0]
+    except Exception as e:  # pragma: nocover
         return "An error has occured: " + str(e)
 
 
