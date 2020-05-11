@@ -45,6 +45,23 @@ CREATE TABLE IF NOT EXISTS phenotype (
 );
 """
 
+SQL_CREATE4 = r"""
+CREATE TABLE IF NOT EXISTS login (
+    id integer PRIMARY KEY,
+    name text NOT NULL,
+    token text NOT NULL,
+    authorization integer NOT NULL
+);
+"""
+
+SQL_CREATE5 = r"""
+CREATE TABLE IF NOT EXISTS ip (
+    id integer PRIMARY KEY,
+    count_req integer NOT NULL,
+    ip_addr text NOT NULL
+);
+"""
+
 SQL_IDX1 = r"""
 CREATE INDEX allel_idx ON allel(chr,pos,ref,alt);
 """
@@ -71,6 +88,16 @@ INSERT INTO phenotype (chr, pos, ref, alt, phenotype)
 VALUES (?, ?, ?, ?, ?);
 """
 
+SQL_INSERT_LOG = r"""
+INSERT INTO login (name, token, authorization)
+VALUES (?, ?, ?);
+"""
+
+SQL_INSERT_IP = r"""
+INSERT INTO ip (count_req, ip_addr)
+VALUES (?, ?);
+"""
+
 
 @pytest.fixture
 def demo_db_path(tmpdir):
@@ -82,6 +109,8 @@ def demo_db_path(tmpdir):
         c.execute(SQL_CREATE1)
         c.execute(SQL_CREATE2)
         c.execute(SQL_CREATE3)
+        c.execute(SQL_CREATE4)
+        c.execute(SQL_CREATE5)
         c.execute(SQL_IDX1)
         c.execute(SQL_IDX2)
         c.execute(SQL_IDX3)
@@ -128,6 +157,23 @@ def demo_db_path(tmpdir):
                     ["neuronal", "epidermis", "muskulär", None][(i + 1) % 4],
                 ),
             )
+        for i in range(2):
+            c.execute(
+                SQL_INSERT_LOG,
+                (
+                    ["Peter", "Lilly", "UndercoverDog"][i],
+                    ["pete", "lil", "doggy"][i],
+                    i,
+                ),
+            )
+        for i in range(2):
+           c.execute(
+                SQL_INSERT_IP,
+                (
+                    i,
+                    ("192.0.2.4%d"%i)
+                ),
+            ) 
         conn.commit()
         c.close()
     conn.close()
