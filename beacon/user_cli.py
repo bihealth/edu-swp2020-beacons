@@ -4,7 +4,10 @@ Provides command line interface for beacon
 import sys
 import re
 import requests
-
+import base64
+import matplotlib.pyplot as plot
+import matplotlib.image as mpimg
+import io
 
 def main():
     """
@@ -12,11 +15,14 @@ def main():
 
     """
     print("Welcome to our project beacon software!\n")
-    ver = (False,)
-    while ver[0] == False:
+    ver = (False,None)
+    while ver[0] is not True:
         inp = input("Please enter your secret token or enter nothing to continue as not registered user: ")
         if inp:
             ver = verify_token(inp)
+            if ver[0] is None:
+                print("There are troubles with the user database.")
+                print("The occuring error is: '", ver[1],"'")
         else:
             inp = None
             ver = (True, "Unregistered user")
@@ -46,11 +52,13 @@ def main():
 
 def verify_token(inp):
     resp = requests.post("http://localhost:5000/api/verify", headers={"token": inp})
-    if resp.json()["verified"]:
+    if resp.json()["verified"] is None:
+        return(None, resp.json()["error"])
+    elif resp.json()["verified"]:
         return (True, resp.json()["user"])
     else:
-        print("This is not a valid token")
-        return (False,)
+        print("This is not a valid token.")
+        return (False, None)
 
 
 def _check_input(var_str):  # maybe better to check each input seperately
@@ -95,29 +103,36 @@ def query_request(inp, cookie):
             connection_established = True
         except Exception as e:  # pragma: nocover
             print(  # pragma: nocover
-                "\nWe have troubles reaching the server, please ask your local administrator or start 'rest_apy.py' in a seperate terminal.",
-                e,
+                    "\nWe have troubles reaching the server, please ask your local administrator."
             )
             # print(e.argv[0])  # pragma: nocover
         if connection_established:
             outp_dict = rep.json()
             print_results(outp_dict)
     else:
-        print("Your input has the wrong format. For futher information tipp --help.")
+        print("Your input has the wrong format.")
 
 
 def print_results(outp_dict):
+    #print(outp_dict)
     if outp_dict['occ'] == None:
         if outp_dict['error'] == None:
             print("You are not allowed to make more requests from this IP-address.")
         else:
             print(  # pragma: nocover
-                "\nWe have troubles with the database, please ask your admin for help.\n"
+                "We have troubles with the database, please ask your admin for help."
             )
-            print("The occuring error is: '", outp_dict['error'], "'\n")  # pragma: nocover
+            print("The occuring error is: '", outp_dict['error'], "'")  # pragma: nocover
     else:
+        print_dict = {x: outp_dict[x] for x in outp_dict if x != 'statistic'}
         print("The result of your request is:")
-        print(outp_dict)
+        print(print_dict)
+        if 'statistic' in outp_dict and outp_dict['statistic']:
+            stat_byte = outp_dict['statistic'].encode('ascii')
+            figure = base64.b64decode(stat_byte)
+            img = mpimg.imread(io.BytesIO(figure))
+            imgplot = plot.imshow(img)
+            plot.savefig('stat_population_'+outp_dict['chr']+'_'+str(outp_dict['pos'])+'_'+outp_dict['ref']+'_'+outp_dict['alt']+ '.png')
 
 
 def init():
