@@ -36,7 +36,6 @@ def parse_args(args):
         "-vcf",
         "--insert_data",
         help="according to a given sql command it inserts data from a vcf file in database",
-        type=argparse.FileType("r"),
         nargs=3,
     )
     parser.add_argument(
