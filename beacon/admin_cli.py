@@ -5,196 +5,214 @@
 from . import admin_tools
 import argparse
 from . import database
-import sys, os  # vcf, sys, os
+import sys
+import os
 
 
 def path():
     """
     Asks for a path to the database.db for maintaining the Database.
-    :return: path
+
+    :return: bool if succeeded, path or error string
     """
-    path = os.path.dirname(__file__)
-    db = input("DB Name: ")
-    db_path = os.path.join(path, db)
-    return db_path
+    try:
+        exist = False
+        try_count = 0
+        while exist is False:
+            if try_count > 10:
+                print("You tried more then ten times. Your session is quitted now.")
+                return False, ""
+            try_count = try_count + 1
+            db = input("DB Name: ")
+            path = os.path.dirname(__file__)
+            if os.path.exists(os.path.join(path, db)) is True:
+                return True, os.path.join(path, db)
+            else:
+                inp = input(
+                    "Given database does not exist. Do you want to create a new one? [y/n]"
+                )
+                if inp == "y":
+                    return True, os.path.join(path, db)
+                elif inp == "n":
+                    ex = input("Do you want to exit the process? [y/n]")
+                    if ex == "y":
+                        return False, ""
+                    elif ex == "n":
+                        print("The process is starting from the beginning.")
+                    else:
+                        print(
+                            "Your input has the wrong format. The process is starting from the beginning."
+                        )
+                else:
+                    print(
+                        "Your input has the wrong format. The process is starting from the beginning."
+                    )
+    except Exception as e:  # pragma nocover
+        return False, e
 
 
 def parse_args(args):
     """
     Defines the flags.
+
     :param args: the flag which was entered in the command line
     :return: parser
     """
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "-ct",
-        "--create_table",
+        "--create_tables",
         action="store_true",
-        help="according to a given sql command it creates new table in database",
+        help="Creating new tables in database.",
     )
     parser.add_argument(
         "-vcf",
         "--insert_data",
-        help="according to a given sql command it inserts data from a vcf file in database",
-        type=argparse.FileType("r"),
-        nargs=3,
+        help="Inserting data from a tsv and vcf file in database",
+        nargs=1,
     )
     parser.add_argument(
-        "-p",
-        "--print_db",
-        action="store_true",
-        help="according to a given sql command it prints the database",
+        "-p", "--print_db", action="store_true", help="Printing the database",
     )
     parser.add_argument(
         "-c",
         "--count_variants",
         action="store_true",
-        help="according to a given sql command it counts the variants in database",
+        help="Counting the variants in database.",
     )
     parser.add_argument(
-        "-ua",
-        "--update_allel",
-        help="according to a given sql command it update data in database",
-        nargs=9,
+        "-ua", "--update_allel", help="Updating the allel data in database.", nargs=10,
     )
     parser.add_argument(
         "-up",
         "--update_populations",
-        help="according to a given sql command it update data in database",
-        nargs=10,
+        help="Updating the population data in database.",
+        nargs=11,
     )
     parser.add_argument(
         "-upt",
         "--update_phenotype",
-        help="according to a given sql command it update data in database",
-        nargs=5,
+        help="Updating the phenotype data in database.",
+        nargs=6,
     )
     parser.add_argument(
-        "-da",
-        "--delete_allel",
-        help="according to a given sql command it deletes data in database",
+        "-da", "--delete_allel", help="Deleting allel data in database.",
     )
     parser.add_argument(
-        "-dp",
-        "--delete_populations",
-        help="according to a given sql command it deletes data in database",
+        "-dp", "--delete_populations", help="Deleting population data in database.",
     )
     parser.add_argument(
-        "-dpt",
-        "--delete_phenotype",
-        help="according to a given sql command it deletes data in database",
+        "-dpt", "--delete_phenotype", help="Deleting phenotype data in database.",
     )
     parser.add_argument(
         "-ctu",
-        "--create_table_user",
+        "--create_tables_user",
         action="store_true",
-        help="according to a given sql command it creates two new tables in 'user'-database",
+        help="Creating two new tables in 'user'-database.",
     )
     parser.add_argument(
-        "-add",
-        "--insert_user_data",
-        help="according to a given sql command it adds the user in the database",
-        nargs=2
+        "-add", "--insert_user", help="Adding an user in the database.", nargs=2,
     )
     parser.add_argument(
         "-t",
-        "--find_token",
-        help="according to a given sql command it finds the token for the associated username in database",
+        "--find_user_token",
+        help="Finding the token for the associated username in database.",
     )
     parser.add_argument(
         "-pu",
-        "--print_user_db",
+        "--print_db_user",
         action="store_true",
-        help="according to a given sql command it prints the user database",
+        help="Printing the user database.",
     )
     parser.add_argument(
-        "-du",
-        "--delete_user_db",
-        help="according to a given sql command it prints the user database"
+        "-du", "--delete_user", help="Deleting the user database.",
     )
     parser.add_argument(
-        "-pi",
-        "--print_ip_db",
-        action="store_true",
-        help="according to a given sql command it prints the ip database",
+        "-pi", "--print_ip", action="store_true", help="Printing the ip database.",
     )
     parser.add_argument(
-        "-di",
-        "--delete_ip_db",
-        help="according to a given sql command it prints the ip database"
+        "-di", "--delete_ip", help="Deleting the ip database.",
     )
     return parser.parse_args(args)
 
 
-def main(pfad, args):
+def main(argv):
     """
     Maintaining the Database.
-    :param pfad: the path to the database.db
-    :param args: the flag which was entered in the command line
+
+    :param argv: the name to the database.db and the flag which was entered in the command line
     :return: Whether the maintenance of the database was successful
     """
-    connect = database.ConnectDatabase(pfad)
-    od = admin_tools.OperateDatabase()
-    us = admin_tools.UserDB()
-    if args.create_table:
-        print("create table is activated")
-        create = admin_tools.CreateDbCommand()
-        output = create.create_tables(connect)
-    elif args.insert_data:
-        print("inserting data is activated")
-        output = admin_tools.parse_vcf(args.insert_data, connect)
-    elif args.print_db:
-        print("print_db is activated")
-        output = od.print_db(connect)
-    elif args.count_variants:
-        print("count_variants is activated")
-        output = od.count_variants(connect)
-    elif args.update_allel:
-        print("update is activated")
-        output = od.updating_allel(connect, args.update)
-    elif args.update_populations:
-        print("update is activated")
-        output = od.updating_populations(connect, args.update)
-    elif args.update_phenotype:
-        print("update is activated")
-        output = od.updating_phenotype(connect, args.update)
-    elif args.delete_allel:
-        print("delete is activated")
-        output = od.delete_allel(connect, args.delete)
-    elif args.delete_populations:
-        print("delete is activated")
-        output = od.delete_populations(connect, args.delete)
-    elif args.delete_phenotype:
-        print("delete is activated")
-        output = od.delete_phenotype(connect, args.delete)
-    elif args.create_table_user:
-        print("create user table is activated")
-        output = us.create_tables(connect)
-    elif args.insert_user_data:
-        print("inserting user data is activated")
-        output = us.addusers(args.insert_user_data, connect)
-    elif args.find_token:
-        print("find_token is activated")
-        output = us.find_user_token(connect, args.find_token)
-    elif args.print_user_db:
-        print("print_user_db is activated")
-        output = us.print_db(connect)
-    elif args.delete_user_db:
-        print("delete_user_db is activated")
-        output = us.delete_user(connect, args.delete_user_db)
-    elif args.print_ip_db:
-        print("print_ip_db is activated")
-        output = us.print_ip(connect)
-    elif args.delete_ip_db:
-        print("delete_ip_db is activated")
-        output = us.delete_ip(connect, args.delete_ip_db)
+    pfad_test = path()
+    if pfad_test[0] is True:
+        pfad = pfad_test[1]
     else:
-        output = "Please enter a flag. To see which flags you can use, use -h or --help"
-    connect.connection.close()  # pragma: nocover
-    return output
+        return pfad_test[1]  # pragma: nocover
+    args = parse_args(sys.argv[1:])
+    try:
+        connect = database.ConnectDatabase(pfad)
+        od = admin_tools.OperateDatabase()
+        us = admin_tools.UserDB()
+        if args.create_tables:
+            print("create tables is activated")
+            create = admin_tools.CreateDbCommand()
+            output = create.create_tables(connect)
+        elif args.insert_data:
+            print("inserting data is activated")
+            output = admin_tools.parse_vcf(args.insert_data[0], connect)
+        elif args.print_db:
+            print("print_db is activated")
+            output = od.print_db(connect)
+        elif args.count_variants:
+            print("count_variants is activated")
+            output = od.count_variants(connect)
+        elif args.update_allel:
+            print("update is activated")
+            output = od.updating_allel(connect, args.update)
+        elif args.update_populations:
+            print("update is activated")
+            output = od.updating_populations(connect, args.update)
+        elif args.update_phenotype:
+            print("update is activated")
+            output = od.updating_phenotype(connect, args.update)
+        elif args.delete_allel:
+            print("delete is activated")
+            output = od.delete_allel(connect, args.delete)
+        elif args.delete_populations:
+            print("delete is activated")
+            output = od.delete_populations(connect, args.delete)
+        elif args.delete_phenotype:
+            print("delete is activated")
+            output = od.delete_phenotype(connect, args.delete)
+        elif args.create_tables_user:
+            print("create user table is activated")
+            output = us.create_tables_user(connect)
+        elif args.insert_user:
+            print("inserting user data is activated")
+            output = us.insert_user(args.insert_user, connect)
+        elif args.find_user_token:
+            print("find_user_token is activated")
+            output = us.find_user_token(connect, args.find_user_token)
+        elif args.print_db_user:
+            print("print_db_user is activated")
+            output = us.print_db_user(connect)
+        elif args.delete_user:
+            print("delete_user is activated")
+            output = us.delete_user(connect, args.delete_user)
+        elif args.print_ip:
+            print("print_ip is activated")
+            output = us.print_ip(connect)
+        elif args.delete_ip:
+            print("delete_ip is activated")
+            output = us.delete_ip(connect, args.delete_ip)
+        else:
+            output = (
+                "Please enter a flag. To see which flags you can use, use -h or --help"
+            )
+        return output
+    except Exception as e:  # pragma: nocover
+        return "An error has occured: " + str(e)
 
 
 if __name__ == "__main__":  # pragma: nocover
-    pfad = path()
-    args = parse_args(sys.argv[1:])
-    sys.exit(print(main(pfad, args)))
+    main(sys.argv)
