@@ -75,5 +75,5 @@ def parse_var(inp):
     :param inp: variant string
     :return: variant object
     """
-    new_var = Variant(inp['chr'], inp['pos'], inp['ref'], inp['alt'])
+    new_var = Variant(inp["chr"], inp["pos"], inp["ref"], inp["alt"])
     return new_var
