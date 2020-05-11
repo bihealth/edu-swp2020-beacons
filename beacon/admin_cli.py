@@ -110,7 +110,7 @@ def parse_args(args):
         "-ctu",
         "--create_tables_user",
         action="store_true",
-        help="Createing two new tables in 'user'-database.",
+        help="Creating two new tables in 'user'-database.",
     )
     parser.add_argument(
         "-add", "--insert_user", help="Adding an user in the database.", nargs=2,
@@ -186,27 +186,27 @@ def main(argv):
         elif args.delete_phenotype:
             print("delete is activated")
             output = od.delete_phenotype(connect, args.delete)
-        elif args.create_table_user:
+        elif args.create_tables_user:
             print("create user table is activated")
-            output = us.create_tables(connect)
-        elif args.insert_user_data:
+            output = us.create_tables_user(connect)
+        elif args.insert_user:
             print("inserting user data is activated")
-            output = us.addusers(args.insert_user_data, connect)
-        elif args.find_token:
-            print("find_token is activated")
-            output = us.find_user_token(connect, args.find_token)
-        elif args.print_user_db:
-            print("print_user_db is activated")
-            output = us.print_db(connect)
-        elif args.delete_user_db:
-            print("delete_user_db is activated")
-            output = us.delete_user(connect, args.delete_user_db)
-        elif args.print_ip_db:
-            print("print_ip_db is activated")
+            output = us.insert_user(args.insert_user, connect)
+        elif args.find_user_token:
+            print("find_user_token is activated")
+            output = us.find_user_token(connect, args.find_user_token)
+        elif args.print_db_user:
+            print("print_db_user is activated")
+            output = us.print_db_user(connect)
+        elif args.delete_user:
+            print("delete_user is activated")
+            output = us.delete_user(connect, args.delete_user)
+        elif args.print_ip:
+            print("print_ip is activated")
             output = us.print_ip(connect)
-        elif args.delete_ip_db:
-            print("delete_ip_db is activated")
-            output = us.delete_ip(connect, args.delete_ip_db)
+        elif args.delete_ip:
+            print("delete_ip is activated")
+            output = us.delete_ip(connect, args.delete_ip)
         else:
             output = "Please enter a flag. To see which flags you can use, use -h or --help"
         return output
