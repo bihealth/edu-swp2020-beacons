@@ -3,12 +3,12 @@ from beacon import database
 import pytest  # noqa
 
 
-def test_parse_vcf(demo_vcf_file, demo_db_path):
-    con = database.ConnectDatabase(demo_db_path)
-    inflie = open(demo_vcf_file, "r")
-    out = admin_tools.parse_vcf(inflie, con)
-    assert out is not None
-    assert out is True
+#def test_parse_vcf(demo_vcf_file, demo_db_path):
+#    con = database.ConnectDatabase(demo_db_path)
+#    inflie = open(demo_vcf_file, "r")
+#    out = admin_tools.parse_vcf(inflie, con)
+#    assert out is not None
+#    assert out is True
 
 
 def test_create_tables(tmpdir):
@@ -90,9 +90,8 @@ def test_updating_allel(demo_db_path, capsys):
     con = database.ConnectDatabase(demo_db_path)
     od = admin_tools.OperateDatabase()
     allel = (1, 1, "A", "T", 4, 3, 4, 0, 0, 3)
-    od.updating_allel(con, allel)
-    out = capsys.readouterr()
-    assert "The table allel has been updated. Call -p to see the changes." in out[0]
+    out = od.updating_allel(con, allel)
+    assert "The table allel has been updated. Call -p to see the changes." in out
 
 
 def test_updating_allel_error(tmpdir):
@@ -108,10 +107,9 @@ def test_updating_populations(demo_db_path, capsys):
     con = database.ConnectDatabase(demo_db_path)
     od = admin_tools.OperateDatabase()
     populations = (1, 1, "A", "T", 4, 3, 4, 0, 0, 3, "GER", 1)
-    od.updating_populations(con, populations)
-    out = capsys.readouterr()
+    out = od.updating_populations(con, populations)
     assert (
-        "The table populations has been updated. Call -p to see the changes." in out[0]
+        "The table populations has been updated. Call -p to see the changes." in out
     )
 
 
@@ -124,13 +122,12 @@ def test_updating_populations_error(tmpdir):
     assert "An error has occured:" in out
 
 
-def test_updating_phenotype(demo_db_path, capsys):
+def test_updating_phenotype(demo_db_path):
     con = database.ConnectDatabase(demo_db_path)
     od = admin_tools.OperateDatabase()
     phenotype = (1, 1, "A", "T", "synaptical", 1)
-    od.updating_phenotype(con, phenotype)
-    out = capsys.readouterr()
-    assert "The table phenotype has been updated. Call -p to see the changes." in out[0]
+    out = od.updating_phenotype(con, phenotype)
+    assert "The table phenotype has been updated. Call -p to see the changes." in out
 
 
 def test_updating_phenotype_error(tmpdir):
@@ -140,3 +137,22 @@ def test_updating_phenotype_error(tmpdir):
     od = admin_tools.OperateDatabase()
     out = od.updating_phenotype(con, phenotype)
     assert "An error has occured:" in out
+
+
+def test_create_tables_user(tmpdir):
+    path_db = str(tmpdir.join("test.sqlite3"))
+    con = database.ConnectDatabase(path_db)
+    user_data = admin_tools.UserDB()
+    out = user_data.create_tables_user(con)
+    out_ip = con.parse_statement("SELECT * FROM ip", ())
+    out_login = con.parse_statement("SELECT * FROM login", ())
+    assert out is True
+    assert out_ip == []
+    assert out_login == []
+
+
+def test_insert_user(demo_db_path):
+    con = database.ConnectDatabase(demo_db_path)
+    user_data = admin_tools.UserDB()
+    out = user_data.create_tables_user(con)
+
