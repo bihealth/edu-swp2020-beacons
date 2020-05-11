@@ -174,7 +174,7 @@ def demo_db_path(tmpdir):
                     ["neuronal", "epidermis", "muskulär", None][(i + 1) % 4],
                 ),
             )
-        for i in range(2):
+        for i in range(3):
             c.execute(
                 SQL_INSERT_LOG,
                 (
@@ -183,7 +183,7 @@ def demo_db_path(tmpdir):
                     i,
                 ),
             )
-        for i in range(2):
+        for i in range(3):
            c.execute(
                 SQL_INSERT_IP,
                 (

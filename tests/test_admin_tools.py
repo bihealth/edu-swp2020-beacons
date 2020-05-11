@@ -120,7 +120,7 @@ def test_count_variants_error(tmpdir):
     assert "An error has occured:" in out
 
 
-def test_updating_allel(demo_db_path, capsys):
+def test_updating_allel(demo_db_path):
     con = database.ConnectDatabase(demo_db_path)
     od = admin_tools.OperateDatabase()
     allel = (1, 1, "A", "T", 4, 3, 4, 0, 0, 3)
@@ -137,7 +137,7 @@ def test_updating_allel_error(tmpdir):
     assert "An error has occured:" in out
 
 
-def test_updating_populations(demo_db_path, capsys):
+def test_updating_populations(demo_db_path):
     con = database.ConnectDatabase(demo_db_path)
     od = admin_tools.OperateDatabase()
     populations = (1, 1, "A", "T", 4, 3, 4, 0, 0, 3, "GER", 1)
@@ -188,5 +188,66 @@ def test_create_tables_user(tmpdir):
 def test_insert_user(demo_db_path):
     con = database.ConnectDatabase(demo_db_path)
     user_data = admin_tools.UserDB()
-    out = user_data.create_tables_user(con)
+    acc_not_exist = ["Susi", 2]
+    acc_exist = ["Lilly", 1]
+    out_not = user_data.insert_user(acc_not_exist, con)
+    out_exist = user_data.insert_user(acc_exist, con)
+    assert out_not is True
+    assert "Username already exists" in out_exist
 
+
+def test_insert_user_error(tmpdir):
+    path_db = str(tmpdir.join("test.sqlite3"))
+    con = database.ConnectDatabase(path_db)
+    user_data = admin_tools.UserDB()
+    acc_not_exist = ["Susi", 2]
+    out_not = user_data.insert_user(acc_not_exist, con)
+    assert "An error has occured:" in out_not
+
+
+def test_find_user_token(demo_db_path, capsys):
+    con = database.ConnectDatabase(demo_db_path)
+    user_data = admin_tools.UserDB()
+    name = "Lilly"
+    out = user_data.find_user_token(con, name)
+    out_print = capsys.readouterr()
+    assert out == "lil"
+    assert "Token:" in out_print[0]
+
+
+def test_find_user_token_error(tmpdir):
+    path_db = str(tmpdir.join("test.sqlite3"))
+    con = database.ConnectDatabase(path_db)
+    user_data = admin_tools.UserDB()
+    name = "Lilly"
+    out = user_data.find_user_token(con, name)
+    assert "An error has occured:" in out
+
+
+def test_print_db_user(demo_db_path, capsys):
+    conn = database.ConnectDatabase(demo_db_path)
+    ud = admin_tools.UserDB()
+    out_return = ud.print_db_user(conn)
+    out = capsys.readouterr()
+    assert out_return == ""
+    assert "TABLE login:" in out[0]
+    assert "(2, 'Lilly', 'lil', 1)" in out[0]
+    
+
+def test_print_db_user_error(tmpdir):
+    path_db = str(tmpdir.join("test.sqlite3"))
+    conn = database.ConnectDatabase(path_db)
+    ud = admin_tools.UserDB()
+    out = ud.print_db_user(conn)
+    assert "An error has occured:" in out
+    #user_data.print_db_user(con)
+   # out = user_data.create_tables_user(con)
+
+def test_print_ip(demo_db_path, capsys):
+    conn = database.ConnectDatabase(demo_db_path)
+    ud = admin_tools.UserDB()
+    out_return = ud.print_ip(conn)
+    out = capsys.readouterr()
+    assert out_return == ""
+    assert "TABLE ip:" in out[0]
+    assert "(2, 1, '192.0.2.41')" in out[0]

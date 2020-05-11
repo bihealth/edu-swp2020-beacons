@@ -490,10 +490,15 @@ class UserDB:
         :return: database
         """
         try:
-            sql_print = "SELECT * FROM login"
-            output = con.parse_statement(sql_print, ())
-            print("TABLE login: \n")
-            for out in output:
+            sql_print_login = "SELECT * FROM login"
+            output_login = con.parse_statement(sql_print_login, ())
+            print("\nTABLE login: \n")
+            for out in output_login:
+                print(out)
+            sql_print_ip = "SELECT * FROM ip"
+            output_ip = con.parse_statement(sql_print_ip, ())
+            print("\nTABLE ip: \n")
+            for out in output_ip:
                 print(out)
             return ""
         except sqlite3.Error as e:
