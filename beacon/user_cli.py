@@ -24,7 +24,7 @@ def main():
                 print("There are troubles with the user database.")
                 print("The occuring error is: '", ver[1],"'")
         else:
-            inp = None
+            inp = ""
             ver = (True, "Unregistered user")
     print("Hello", ver[1])
     cookie = inp
@@ -111,7 +111,6 @@ def query_request(inp_dict, cookie):
             print(  # pragma: nocover
                     "\nWe have troubles reaching the server, please ask your local administrator."
             )
-            # print(e.argv[0])  # pragma: nocover
         if connection_established:
             outp_dict = rep.json()
             return (True, outp_dict)
