@@ -77,9 +77,6 @@ def login():
         token = request.form['token']
         resp = requests.post("http://localhost:5000/api/verify", headers = {'token': token})
         if resp.json()['verified']:
-            # con = database.ConnectDatabase(settings.PATH_LOGIN)
-            # sql = "SELECT name FROM login WHERE token = ?"
-            # username =  con.parse_statement(sql, [token])  user = username[0][0]
             username = resp.json()['user']
             return render_template('home.html', token = token, user = username)
         else:
@@ -90,4 +87,4 @@ def login():
 
 if __name__ == "__main__":
     webbrowser.open_new("http://localhost:4000/")
-    app.run(debug=True,port = "4000")
+    app.run(debug=True,port = "4000") 
