@@ -33,7 +33,7 @@ def get_api(): #gets json/dict as POST request : done
             var = common.parse_var(request.json) #need to change common.parse_var to convert from dict to variant object
             if auth[0] is None:
                 raise Exception(auth[1])
-            elif auth[0] == 0:
+            if auth[0] == 0:
                 un_ann = request.json
                 un_ann['occ'] = None
                 un_ann['error'] = None
@@ -66,17 +66,18 @@ def request_permission(ip_addr,token):
             auth = con.parse_statement("SELECT count_req FROM ip WHERE ip_addr = ?", [ip_addr])
             if not auth:
                 con.parse_statement("INSERT INTO ip(count_req, ip_addr) VALUES(1,?)", [ip_addr]) 
+
             elif auth[0][0] > 50:
                 return (0,None)
             else:
                 con.parse_statement("UPDATE ip SET count_req = count_req + 1 WHERE ip_addr = ?",[ip_addr])
-            
-            if token == None:
+            if token == "":
                 return (1,None)
             else:
                 auth = con.parse_statement("SELECT authorization FROM login WHERE token = ?", [token])
                 return (auth[0][0],None)
-    except sqlite3.Error as e:
+
+    except (sqlite3.Error, Exception) as e:
         return (None,e.args[0])
 
 
