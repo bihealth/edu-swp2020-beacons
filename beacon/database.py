@@ -22,6 +22,18 @@ class ConnectDatabase:
         """
         self.connection = sqlite3.connect(database)
 
+    def close(self):
+        """
+        Closes connection to database of ConnectDatabase Object.
+
+        :return: True if succeeded else False
+        """
+        try:
+            self.connection.close()
+            return True
+        except sqlite3.error:
+            return False
+
     def parse_statement(self, sql_str, parameters, annV_bool=False):
         """
         Creates cursor object and requests database and gives “answer” back.
