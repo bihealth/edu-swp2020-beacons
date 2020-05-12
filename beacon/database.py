@@ -22,17 +22,25 @@ class ConnectDatabase:
         """
         self.connection = sqlite3.connect(database)
 
-    def close(self):
+    def __enter__(self):
         """
-        Closes connection to database of ConnectDatabase Object.
+        Returns connection to database as ConnectDatabase Object.
 
-        :return: True if succeeded else False
+        :return: ConnectDatabase Object
         """
-        try:
-            self.connection.close()
-            return True
-        except sqlite3.Error:
-            return False
+        return self
+
+    def __exit__(self, exc_type, exc_value, tb):
+        """
+        Closes connection to database of ConnectDatabase Object and raises Exception
+        if Error occured.
+
+        :return: True if succeeded
+        """
+        self.connection.close()
+        if exc_type is not None:
+            raise Exception(exc_value)
+        return True
 
     def parse_statement(self, sql_str, parameters, annV_bool=False):
         """
