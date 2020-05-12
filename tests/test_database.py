@@ -42,8 +42,10 @@ def test_with_connection_catch(demo_db_path, capsys):
                 "SELECT chr, pos, ref, alt FROM hello WHERE chr = ? AND pos = ? AND ref = ? AND pos = ?;",
                 parameters,
             )
+            assert output is not None
     except Exception:
         error = True
+
     assert error is True
 
 
@@ -52,11 +54,12 @@ def test_close_connection(demo_db_path, capsys):
     with conn:
         error = False
     try:
-        parameters1 = ("X", 10000000, "C", "G")
-        output1 = conn.parse_statement(
+        parameters = ("X", 10000000, "C", "G")
+        output = conn.parse_statement(
             "SELECT chr, pos, ref, alt FROM allel WHERE chr = ? AND pos = ? AND ref = ? AND pos = ?;",
-            parameters1,
+            parameters,
         )
+        assert output is not None
     except sqlite3.Error:
         error = True
     assert error is True
