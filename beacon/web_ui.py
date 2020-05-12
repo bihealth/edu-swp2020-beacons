@@ -1,6 +1,4 @@
-from . import settings
-from . import database
-from flask import Flask, request, render_template, url_for  # json
+from flask import Flask, request, render_template
 import requests
 import webbrowser
 import base64
@@ -97,13 +95,13 @@ def login():
             if resp.json()["verified"]:
                 username = resp.json()["user"]
                 return render_template("home.html", token=token, user=username)
-            elif resp.json()["verified"] == False:
+            elif resp.json()["verified"] is False:
                 error = "This is not a valid token"
                 return render_template("login.html", title="Login", error=error)
             else:
                 error = resp.json()["error"]
                 return render_template("login.html", title="Login", error=error)
-        except Exception as e:
+        except Exception:
             error = "We have troubles reaching the server"
             return render_template("login.html", title="Login", error=error)
 
