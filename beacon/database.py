@@ -31,7 +31,7 @@ class ConnectDatabase:
         try:
             self.connection.close()
             return True
-        except sqlite3.error:
+        except sqlite3.Error:
             return False
 
     def parse_statement(self, sql_str, parameters, annV_bool=False):
