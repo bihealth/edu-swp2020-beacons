@@ -200,8 +200,8 @@ def demo_db_path(tmpdir):
 @pytest.fixture
 def demo_vcf_file(tmpdir):
     # create vcf file
-    tmpdir.join("demo.vcf")
-    with open("demo.vcf",'w') as vcf_file:
+    vcff = tmpdir.join("demo.vcf")
+    with open(vcff,'w') as vcf_file:
 
         vcf_file.write("##fileformat=VCFv4.3\n")
         vcf_file.write("##fileDate=20090805\n")
@@ -254,7 +254,7 @@ def demo_vcf_file(tmpdir):
         vcf_file.write(
             "Y     2655180  rs6040355   G     A     67    PASS    NS=2;DP=10;AF=0.333,0.667;AA=T;DB  GT           0               1                0                 1\n"
         )
-    return 'demo.vcf'
+    return vcff
 
 @pytest.fixture
 def client():
@@ -265,8 +265,8 @@ def client():
 @pytest.fixture
 def demo_pop_file(tmpdir):
     # create pop file
-    tmpdir.join("demo_pop.tsv")
-    pop_file = open("demo_pop.tsv", 'w')
+    dpo = tmpdir.join("demo_pop.tsv")
+    pop_file = open(dpo, 'w')
     with pop_file as pf:
         fnames = ['Sample name', 'Sex', 'Population code']
         writer = csv.DictWriter(pf, fieldnames=fnames, delimiter='\t')
@@ -274,13 +274,13 @@ def demo_pop_file(tmpdir):
         writer.writerow({'Sample name':'HG00174', 'Sex':'female', 'Population code':'FIN'})
         writer.writerow({'Sample name':'HG00179', 'Sex':'female', 'Population code':'FIN'})
         writer.writerow({'Sample name':'HG00148', 'Sex':'male', 'Population code':'GBR'})
-    return 'demo_pop.tsv'
+    return dpo
 
 @pytest.fixture
 def error_pop_file(tmpdir):
-    # create pop file
-    tmpdir.join("error_pop.tsv")
-    pop_file = open("error_pop.tsv", 'w')
+    # create error pop file
+    epo = tmpdir.join("error_pop.tsv")
+    pop_file = open(epo, 'w')
     with pop_file as pf:
         fnames = ['ERROR Sample name', 'Sex', 'Population code']
         writer = csv.DictWriter(pf, fieldnames=fnames, delimiter='\t')
@@ -288,13 +288,13 @@ def error_pop_file(tmpdir):
         writer.writerow({'ERROR Sample name':'HG00174', 'Sex':'female', 'Population code':'FIN'})
         writer.writerow({'ERROR Sample name':'HG00179', 'Sex':'female', 'Population code':'FIN'})
         writer.writerow({'ERROR Sample name':'HG00148', 'Sex':'male', 'Population code':'GBR'})
-    return 'error_pop.tsv'
+    return epo
 
 @pytest.fixture
 def demo_pheno_file(tmpdir):
-    # create pop file
-    tmpdir.join("demo_pheno.tsv")
-    pheno_file = open("demo_pheno.tsv", 'w')
+    # create pheno file
+    dph = tmpdir.join("demo_pheno.tsv")
+    pheno_file = open(dph, 'w')
     with pheno_file as pf:
         fnames = ['entrez-gene-id','entrez-gene-symbol','HPO-Term-ID','HPO-Term-Name']
         writer = csv.DictWriter(pf, fieldnames=fnames, delimiter='\t')
@@ -303,13 +303,13 @@ def demo_pheno_file(tmpdir):
         writer.writerow({'entrez-gene-id':'8192', 'entrez-gene-symbol':'CLPP', 'HPO-Term-ID':'HP:0000007', 'HPO-Term-Name':'Autosomal recessive inheritance'})
         writer.writerow({'entrez-gene-id':'8192', 'entrez-gene-symbol':'CLPP', 'HPO-Term-ID':'HP:0000013', 'HPO-Term-Name':'Hypoplasia of the uterus'})
         writer.writerow({'entrez-gene-id':'8192', 'entrez-gene-symbol':'CLPP', 'HPO-Term-ID':'HP:0000252', 'HPO-Term-Name':'Microcephaly'})
-    return 'demo_pheno.tsv'
+    return dph
 
 @pytest.fixture
 def error_pheno_file(tmpdir):
-    # create pop file
-    tmpdir.join("error_pheno.tsv")
-    pheno_file = open("error_pheno.tsv", 'w')
+    # create error pheno file
+    eph = tmpdir.join("error_pheno.tsv")
+    pheno_file = open(eph, 'w')
     with pheno_file as pf:
         fnames = ['entrez-gene-id','entrez-gene-symbol','ERROR HPO-Term-ID','HPO-Term-Name']
         writer = csv.DictWriter(pf, fieldnames=fnames, delimiter='\t')
@@ -318,4 +318,4 @@ def error_pheno_file(tmpdir):
         writer.writerow({'entrez-gene-id':'8192', 'entrez-gene-symbol':'CLPP', 'ERROR HPO-Term-ID':'HP:0000007', 'HPO-Term-Name':'Autosomal recessive inheritance'})
         writer.writerow({'entrez-gene-id':'8192', 'entrez-gene-symbol':'CLPP', 'ERROR HPO-Term-ID':'HP:0000013', 'HPO-Term-Name':'Hypoplasia of the uterus'})
         writer.writerow({'entrez-gene-id':'8192', 'entrez-gene-symbol':'CLPP', 'ERROR HPO-Term-ID':'HP:0000252', 'HPO-Term-Name':'Microcephaly'})
-    return 'error_pheno.tsv'
+    return eph

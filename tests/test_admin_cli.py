@@ -214,7 +214,7 @@ def test_main(demo_db_path, demo_vcf_file, demo_pop_file, demo_pheno_file, monke
     sys.argv = []
     sys.argv.append("f")
     sys.argv.append("-vcf")
-    sys.argv.append([demo_vcf_file, demo_pop_file, demo_pheno_file])
+    sys.argv.append([str(demo_vcf_file), str(demo_pop_file), str(demo_pheno_file)])
     out = admin_cli.main(sys.argv)
     assert out is True
 
