@@ -6,6 +6,8 @@ import requests_mock
 import pytest  # noqa
 import re
 import json
+from . import test_image
+
 
 def test_home(client):
     rv = client.get("http://localhost:4000/")
@@ -32,52 +34,93 @@ def test_home(client):
     assert "Submit" in rv.data.decode("utf-8")
     assert rv.status_code == 200
 
-#@requests_mock.Mocker(kw = "mock")
-def test_handle_correct(client, monkeypatch, demo_db_path, **kwargs):
 
-    monkeypatch.setattr(settings, "PATH_LOGIN", demo_db_path)
-    #assert b"Results" in rg.data
+input_handle_correct = [
+    ({"chr": "1", "pos": "1", "ref": "A", "alt": "A", "occ": True, "error": None}),
+    ({"chr": "1", "pos": "1", "ref": "A", "alt": "A", "occ": False, "error": None}),
+    ({"chr": "1", "pos": "1", "ref": "A", "alt": "A", "occ": None, "error": None}),
+    (
+        {
+            "chr": "1",
+            "pos": "1",
+            "ref": "A",
+            "alt": "A",
+            "occ": True,
+            "error": None,
+            "statistic": test_image.IMG_B64
+        }
+    ),
+    (
+        {
+            "chr": "1",
+            "pos": "1",
+            "ref": "A",
+            "alt": "A",
+            "occ": True,
+            "error": None,
+            "statistic": None,
+        }
+    ),
+]
 
-    #rv = client.post("http://localhost:4000/results", data = {"token": "", "chr": "1", "pos": "1", "ref": "A", "alt": "A"}) # follow_redirects = True
-    #assert rv.status_code == 200
-    #kwargs["mock"].post(requests_mock.ANY, json={'chr': "1", 'pos': "1", "ref": "A", "alt": "A", "occ": True, "error": None})
 
-    #print(json.loads(rv.data.decode("utf-8")))
-    #print(rv.data)
-    #assert True == False
-    #assert b"Results" in rv.data
-    # assert (
-    #     b"Your variant 1-1-A-A was found."
-    #     or b"Your variant 1-1-A-A was not found."
-    #     or b"An Error has occured: no such table: variants" in rv.data
-    # )
-    # assert b"go Home" in rv.data
-    
-    #rt = client.post("/results", data={"token":"doggy", "chr": "1", "pos": "1", "ref": "A", "alt": "A"})
-    #assert b"Results" in rt.data
-    # assert (
-    #     b"Your variant 1-1-A-A was found."
-    #     or b"Your variant 1-1-A-A was not found."
-    #     or b"An Error has occured: no such table: variants" in rt.data
-    # )
-    # assert b"go Home" in rt.data
-    # assert rt.status_code == 200
+@pytest.mark.parametrize("outdic", input_handle_correct)
+@requests_mock.Mocker(kw="mock")
+def test_handle_correct(outdic, client, monkeypatch, demo_db_path, **kwargs):
+    kwargs["mock"].post("http://localhost:5000/query", json=outdic)
 
-input_login = [("Peter", "pete"), ("Lilly", "lil"), ("UndercoverDog", "doggy")]
-@pytest.mark.parametrize("username,token", input_login)
-@requests_mock.Mocker(kw = "mock")
-def test_login(username, token, client, **kwargs):
+    rv = client.post(
+        "http://localhost:4000/results",
+        data={"token": "", "chr": "1", "pos": "1", "ref": "A", "alt": "A"},
+        follow_redirects=True,
+    )
+    assert rv.status_code == 200
+    assert b"Results" in rv.data
+    assert (
+        b"Your variant 1-1-A-A was found."
+        or b"Your variant 1-1-A-A was not found."
+        or b"An Error has occured: no such table: variants" in rv.data
+    )
+    assert b"go Home" in rv.data
+
+    rt = client.post(
+        "/results",
+        data={"token": "ValidToken", "chr": "1", "pos": "1", "ref": "A", "alt": "A"},
+    )
+    assert b"Results" in rt.data
+    assert (
+        b"Your variant 1-1-A-A was found."
+        or b"Your variant 1-1-A-A was not found."
+        or b"An Error has occured: no such table: variants" in rt.data
+    )
+    assert b"go Home" in rt.data
+    assert rt.status_code == 200
+
+
+input_login = [
+    ("Valid", "ValidToken", True, None),
+    (None, "NoneValidToken", False, None),
+    (None, "ErrorToken", None, "Error"),
+    (None, None, None, "Error"),
+]
+
+
+@pytest.mark.parametrize("username,token,valid,error", input_login)
+@requests_mock.Mocker(kw="mock")
+def test_login(username, token, valid, error, client, **kwargs):
+    resp = kwargs["mock"].post(
+        "http://localhost:5000/api/verify",
+        json={"verified": valid, "user": username, "error": error},
+    )
+    rv = client.post("/login", data=dict(token=token), follow_redirects=True)
+    assert rv.status_code == 200
+    assert b"SWP" in rv.data
+    assert b"Beacon" in rv.data
+    assert b"Login" in rv.data
+
     rg = client.get("/login")
     assert rg.status_code == 200
     assert b"SWP" in rg.data
     assert b"Beacon" in rg.data
     assert b"Login" in rg.data
-    assert b"Login" in rg.data
     assert b"Cancel" in rg.data
-
-    rv = client.post("/login" , data = dict (token = token), follow_redirects = True)
-    resp = kwargs["mock"].post("http://localhost:5000/api/verify", json = {"verified": True, "user": username, "error": None })
-    assert rv.status_code == 200
-    
-
-
