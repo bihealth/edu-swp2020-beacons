@@ -89,7 +89,7 @@
             <p class="pr" >Your variant {{res['chr']}}-{{res['pos']}}-{{res['ref']}}-{{res['alt']}} was not found.</p>
         {% endif %}
     {% endif %}
-    {% if token == None %}
+    {% if token == "" %}
         <button onclick="window.location.href='/'">go Home</button>
     {% else %} 
         <form style="border-color: white;" enctype='application/json' action = "{{ url_for('login') }}" method = "POST">
