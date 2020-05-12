@@ -150,8 +150,7 @@ def main(argv):
         return pfad_test[1]  # pragma: nocover
     args = parse_args(sys.argv[1:])
     try:
-        connect = database.ConnectDatabase(pfad)
-        with connect:
+        with database.ConnectDatabase(pfad) as connect:
             od = admin_tools.OperateDatabase()
             us = admin_tools.UserDB()
             if args.create_tables:

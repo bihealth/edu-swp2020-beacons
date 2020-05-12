@@ -28,7 +28,7 @@ class ConnectDatabase:
 
         :return: ConnectDatabase Object
         """
-        return self.connection
+        return self
 
     def __exit__(self, exc_type, exc_value, tb):
         """
