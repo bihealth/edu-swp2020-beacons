@@ -29,7 +29,7 @@ class ConnectDatabase:
         :return: ConnectDatabase Object
         """
         return self.connection
-    
+
     def __exit__(self, exc_type, exc_value, tb):
         """
         Closes connection to database of ConnectDatabase Object and raises Exception

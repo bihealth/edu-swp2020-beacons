@@ -151,64 +151,63 @@ def main(argv):
     args = parse_args(sys.argv[1:])
     try:
         connect = database.ConnectDatabase(pfad)
-        od = admin_tools.OperateDatabase()
-        us = admin_tools.UserDB()
-        if args.create_tables:
-            print("create tables is activated")
-            create = admin_tools.CreateDbCommand()
-            output = create.create_tables(connect)
-        elif args.insert_data:
-            print("inserting data is activated")
-            output = admin_tools.parse_vcf(args.insert_data[0], connect)
-        elif args.print_db:
-            print("print_db is activated")
-            output = od.print_db(connect)
-        elif args.count_variants:
-            print("count_variants is activated")
-            output = od.count_variants(connect)
-        elif args.update_allel:
-            print("update is activated")
-            output = od.updating_allel(connect, args.update)
-        elif args.update_populations:
-            print("update is activated")
-            output = od.updating_populations(connect, args.update)
-        elif args.update_phenotype:
-            print("update is activated")
-            output = od.updating_phenotype(connect, args.update)
-        elif args.delete_allel:
-            print("delete is activated")
-            output = od.delete_allel(connect, args.delete)
-        elif args.delete_populations:
-            print("delete is activated")
-            output = od.delete_populations(connect, args.delete)
-        elif args.delete_phenotype:
-            print("delete is activated")
-            output = od.delete_phenotype(connect, args.delete)
-        elif args.create_tables_user:
-            print("create user table is activated")
-            output = us.create_tables_user(connect)
-        elif args.insert_user:
-            print("inserting user data is activated")
-            output = us.insert_user(args.insert_user, connect)
-        elif args.find_user_token:
-            print("find_user_token is activated")
-            output = us.find_user_token(connect, args.find_user_token)
-        elif args.print_db_user:
-            print("print_db_user is activated")
-            output = us.print_db_user(connect)
-        elif args.delete_user:
-            print("delete_user is activated")
-            output = us.delete_user(connect, args.delete_user)
-        elif args.print_ip:
-            print("print_ip is activated")
-            output = us.print_ip(connect)
-        elif args.delete_ip:
-            print("delete_ip is activated")
-            output = us.delete_ip(connect, args.delete_ip)
-        else:
-            output = (
-                "Please enter a flag. To see which flags you can use, use -h or --help"
-            )
+        with connect:
+            od = admin_tools.OperateDatabase()
+            us = admin_tools.UserDB()
+            if args.create_tables:
+                print("create tables is activated")
+                create = admin_tools.CreateDbCommand()
+                output = create.create_tables(connect)
+            elif args.insert_data:
+                print("inserting data is activated")
+                output = admin_tools.parse_vcf(args.insert_data[0], connect)
+            elif args.print_db:
+                print("print_db is activated")
+                output = od.print_db(connect)
+            elif args.count_variants:
+                print("count_variants is activated")
+                output = od.count_variants(connect)
+            elif args.update_allel:
+                print("update is activated")
+                output = od.updating_allel(connect, args.update)
+            elif args.update_populations:
+                print("update is activated")
+                output = od.updating_populations(connect, args.update)
+            elif args.update_phenotype:
+                print("update is activated")
+                output = od.updating_phenotype(connect, args.update)
+            elif args.delete_allel:
+                print("delete is activated")
+                output = od.delete_allel(connect, args.delete)
+            elif args.delete_populations:
+                print("delete is activated")
+                output = od.delete_populations(connect, args.delete)
+            elif args.delete_phenotype:
+                print("delete is activated")
+                output = od.delete_phenotype(connect, args.delete)
+            elif args.create_tables_user:
+                print("create user table is activated")
+                output = us.create_tables_user(connect)
+            elif args.insert_user:
+                print("inserting user data is activated")
+                output = us.insert_user(args.insert_user, connect)
+            elif args.find_user_token:
+                print("find_user_token is activated")
+                output = us.find_user_token(connect, args.find_user_token)
+            elif args.print_db_user:
+                print("print_db_user is activated")
+                output = us.print_db_user(connect)
+            elif args.delete_user:
+                print("delete_user is activated")
+                output = us.delete_user(connect, args.delete_user)
+            elif args.print_ip:
+                print("print_ip is activated")
+                output = us.print_ip(connect)
+            elif args.delete_ip:
+                print("delete_ip is activated")
+                output = us.delete_ip(connect, args.delete_ip)
+            else:
+                output = "Please enter a flag. To see which flags you can use, use -h or --help"
         return output
     except Exception as e:  # pragma: nocover
         return "An error has occured: " + str(e)

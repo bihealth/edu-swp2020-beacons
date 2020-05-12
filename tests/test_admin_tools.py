@@ -297,7 +297,7 @@ def test_print_db_user(demo_db_path, capsys):
     assert out_return == ""
     assert "TABLE login:" in out[0]
     assert "(2, 'Lilly', 'lil', 1)" in out[0]
-    
+
 
 def test_print_db_user_error(tmpdir):
     path_db = str(tmpdir.join("test.sqlite3"))
