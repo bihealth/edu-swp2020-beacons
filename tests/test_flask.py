@@ -7,6 +7,7 @@ import pytest  # noqa
 import re
 import json
 
+
 def test_home(client):
     rv = client.get("http://localhost:4000/")
     b_true_chr = re.search(rv.data.decode("utf-8")[909:943], "1")
@@ -32,29 +33,30 @@ def test_home(client):
     assert "Submit" in rv.data.decode("utf-8")
     assert rv.status_code == 200
 
-#@requests_mock.Mocker(kw = "mock")
+
+# @requests_mock.Mocker(kw = "mock")
 def test_handle_correct(client, monkeypatch, demo_db_path, **kwargs):
 
     monkeypatch.setattr(settings, "PATH_LOGIN", demo_db_path)
-    #assert b"Results" in rg.data
+    # assert b"Results" in rg.data
 
-    #rv = client.post("http://localhost:4000/results", data = {"token": "", "chr": "1", "pos": "1", "ref": "A", "alt": "A"}) # follow_redirects = True
-    #assert rv.status_code == 200
-    #kwargs["mock"].post(requests_mock.ANY, json={'chr': "1", 'pos': "1", "ref": "A", "alt": "A", "occ": True, "error": None})
+    # rv = client.post("http://localhost:4000/results", data = {"token": "", "chr": "1", "pos": "1", "ref": "A", "alt": "A"}) # follow_redirects = True
+    # assert rv.status_code == 200
+    # kwargs["mock"].post(requests_mock.ANY, json={'chr': "1", 'pos': "1", "ref": "A", "alt": "A", "occ": True, "error": None})
 
-    #print(json.loads(rv.data.decode("utf-8")))
-    #print(rv.data)
-    #assert True == False
-    #assert b"Results" in rv.data
+    # print(json.loads(rv.data.decode("utf-8")))
+    # print(rv.data)
+    # assert True == False
+    # assert b"Results" in rv.data
     # assert (
     #     b"Your variant 1-1-A-A was found."
     #     or b"Your variant 1-1-A-A was not found."
     #     or b"An Error has occured: no such table: variants" in rv.data
     # )
     # assert b"go Home" in rv.data
-    
-    #rt = client.post("/results", data={"token":"doggy", "chr": "1", "pos": "1", "ref": "A", "alt": "A"})
-    #assert b"Results" in rt.data
+
+    # rt = client.post("/results", data={"token":"doggy", "chr": "1", "pos": "1", "ref": "A", "alt": "A"})
+    # assert b"Results" in rt.data
     # assert (
     #     b"Your variant 1-1-A-A was found."
     #     or b"Your variant 1-1-A-A was not found."
@@ -63,9 +65,12 @@ def test_handle_correct(client, monkeypatch, demo_db_path, **kwargs):
     # assert b"go Home" in rt.data
     # assert rt.status_code == 200
 
+
 input_login = [("Peter", "pete"), ("Lilly", "lil"), ("UndercoverDog", "doggy")]
+
+
 @pytest.mark.parametrize("username,token", input_login)
-@requests_mock.Mocker(kw = "mock")
+@requests_mock.Mocker(kw="mock")
 def test_login(username, token, client, **kwargs):
     rg = client.get("/login")
     assert rg.status_code == 200
@@ -75,9 +80,9 @@ def test_login(username, token, client, **kwargs):
     assert b"Login" in rg.data
     assert b"Cancel" in rg.data
 
-    rv = client.post("/login" , data = dict (token = token), follow_redirects = True)
-    resp = kwargs["mock"].post("http://localhost:5000/api/verify", json = {"verified": True, "user": username, "error": None })
+    rv = client.post("/login", data=dict(token=token), follow_redirects=True)
+    resp = kwargs["mock"].post(
+        "http://localhost:5000/api/verify",
+        json={"verified": True, "user": username, "error": None},
+    )
     assert rv.status_code == 200
-    
-
-

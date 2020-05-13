@@ -9,20 +9,23 @@ import matplotlib.pyplot as plot
 import matplotlib.image as mpimg
 import io
 
+
 def main():
     """
     Takes command line inputs from user, makes request for the variance and prints answer
 
     """
     print("Welcome to our project beacon software!\n")
-    ver = (False,None)
+    ver = (False, None)
     while ver[0] is not True:
-        inp = input("Please enter your secret token or enter nothing to continue as not registered user: ")
+        inp = input(
+            "Please enter your secret token or enter nothing to continue as not registered user: "
+        )
         if inp:
             ver = verify_token(inp)
             if ver[0] is None:
                 print("There are troubles with the user database.")
-                print("The occuring error is: '", ver[1],"'")
+                print("The occuring error is: '", ver[1], "'")
         else:
             inp = ""
             ver = (True, "Unregistered user")
@@ -42,7 +45,6 @@ def main():
         else:
             print("Your input has the wrong format.")
 
-
         inp = input(
             "If you like to continue: Press [c]\nIf you like to quit: Press [q]\n"
         )
@@ -61,7 +63,7 @@ def main():
 def verify_token(inp):
     resp = requests.post("http://localhost:5000/api/verify", headers={"token": inp})
     if resp.json()["verified"] is None:
-        return(None, resp.json()["error"])
+        return (None, resp.json()["error"])
     elif resp.json()["verified"]:
         return (True, resp.json()["user"])
     else:
@@ -101,42 +103,55 @@ def string_to_dict(inp):
 
 def query_request(inp_dict, cookie):
 
-        connection_established = False
-        try:
-            rep = requests.post(
-                "http://localhost:5000/query", json=inp_dict, headers={"token": cookie}
-            )
-            connection_established = True
-        except Exception as e:  # pragma: nocover
-            print(  # pragma: nocover
-                    "\nWe have troubles reaching the server, please ask your local administrator."
-            )
-        if connection_established:
-            outp_dict = rep.json()
-            return (True, outp_dict)
-        else:
-            return (False, None)
+    connection_established = False
+    try:
+        rep = requests.post(
+            "http://localhost:5000/query", json=inp_dict, headers={"token": cookie}
+        )
+        connection_established = True
+    except Exception as e:  # pragma: nocover
+        print(  # pragma: nocover
+            "\nWe have troubles reaching the server, please ask your local administrator."
+        )
+    if connection_established:
+        outp_dict = rep.json()
+        return (True, outp_dict)
+    else:
+        return (False, None)
+
 
 def print_results(outp_dict):
-    #print(outp_dict)
-    if outp_dict['occ'] == None:
-        if outp_dict['error'] == None:
+    # print(outp_dict)
+    if outp_dict["occ"] == None:
+        if outp_dict["error"] == None:
             print("You are not allowed to make more requests from this IP-address.")
         else:
             print(  # pragma: nocover
                 "We have troubles with the database, please ask your admin for help."
             )
-            print("The occuring error is: '", outp_dict['error'], "'")  # pragma: nocover
+            print(
+                "The occuring error is: '", outp_dict["error"], "'"
+            )  # pragma: nocover
     else:
-        print_dict = {x: outp_dict[x] for x in outp_dict if x != 'statistic'}
+        print_dict = {x: outp_dict[x] for x in outp_dict if x != "statistic"}
         print("The result of your request is:")
         print(print_dict)
-        if 'statistic' in outp_dict and outp_dict['statistic']:
-            stat_byte = outp_dict['statistic'].encode('ascii')
+        if "statistic" in outp_dict and outp_dict["statistic"]:
+            stat_byte = outp_dict["statistic"].encode("ascii")
             figure = base64.b64decode(stat_byte)
             img = mpimg.imread(io.BytesIO(figure))
             imgplot = plot.imshow(img)
-            plot.savefig('stat_population_'+outp_dict['chr']+'_'+str(outp_dict['pos'])+'_'+outp_dict['ref']+'_'+outp_dict['alt']+ '.png')
+            plot.savefig(
+                "stat_population_"
+                + outp_dict["chr"]
+                + "_"
+                + str(outp_dict["pos"])
+                + "_"
+                + outp_dict["ref"]
+                + "_"
+                + outp_dict["alt"]
+                + ".png"
+            )
 
 
 def init():
