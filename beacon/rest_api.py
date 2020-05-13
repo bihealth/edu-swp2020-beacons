@@ -9,14 +9,13 @@ from . import settings
 from io import BytesIO
 import base64
 import sqlite3
+
 matplotlib.use("Agg")
 
 app = Flask(__name__)
 
 
-@app.route(
-    "/query", methods=["POST"]
-)
+@app.route("/query", methods=["POST"])
 def get_api():
     """
     Takes variant string, hands it over to database module and returns the answer.
