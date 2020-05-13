@@ -142,7 +142,7 @@ def query_request(inp_dict, cookie):
 def print_results(outp_dict):
     """
     Prints the output received from the rest_api module
-    
+
     :param outp_dict: dictionary with the requested output
     """
     if outp_dict["occ"] is None:

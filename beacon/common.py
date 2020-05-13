@@ -13,6 +13,7 @@ class Variant:
     :param ref: ref of input variant
     :param alt: alt of input variant
     """
+
     def __init__(self, chr, pos, ref, alt):
         self.chr = chr
         self.pos = pos
@@ -30,6 +31,7 @@ class AnnVar:
     :param alt: alt of input variant
     :param occ: occurence of variant in database
     """
+
     def __init__(self, chr, pos, ref, alt, occ, error=None):
         self.chr = chr
         self.pos = pos
@@ -49,6 +51,7 @@ class Info(AnnVar):
     :param frequency: frequency of allels in variant
     :param phenotype: phenotype information
     """
+
     def __init__(
         self,
         chr,
