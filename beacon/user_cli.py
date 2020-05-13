@@ -18,7 +18,9 @@ def main():
     print("Welcome to our project beacon software!\n")
     ver = (False, None)
     while ver[0] is not True:
-        inp = input("Please enter your secret token or enter nothing to continue as not registered user: ")
+        inp = input(
+            "Please enter your secret token or enter nothing to continue as not registered user: "
+        )
         if inp:
             ver = verify_token(inp)
             if ver[0] is None:
@@ -64,14 +66,14 @@ def verify_token(inp):
     try:
         resp = requests.post("http://localhost:5000/api/verify", headers={"token": inp})
         if resp.json()["verified"] is None:
-            return(None, resp.json()["error"])
+            return (None, resp.json()["error"])
         elif resp.json()["verified"]:
             return (True, resp.json()["user"])
         else:
             print("This is not a valid token.")
             return (False, None)
     except Exception:  # pragma: nocover
-        return(None, "Connection to server couldn't be established")  # pragma: nocover
+        return (None, "Connection to server couldn't be established")  # pragma: nocover
 
 
 def _check_input(var_str):  # maybe better to check each input seperately
@@ -123,7 +125,9 @@ def query_request(inp_dict, cookie):
         )
         connection_established = True
     except Exception:
-        print("\nWe have troubles reaching the server, please ask your local administrator.")
+        print(
+            "\nWe have troubles reaching the server, please ask your local administrator."
+        )
     if connection_established:
         outp_dict = rep.json()
         return (True, outp_dict)
@@ -136,23 +140,32 @@ def print_results(outp_dict):
     Prints the output received from the rest_api module
     :param outp_dict: dictionary with the requested output
     """
-    if outp_dict['occ'] is None:
-        if outp_dict['error'] is None:
+    if outp_dict["occ"] is None:
+        if outp_dict["error"] is None:
             print("You are not allowed to make more requests from this IP-address.")
         else:
-            print(
-                "We have troubles with the database, please ask your admin for help."
-            )
-            print("The occuring error is: '", outp_dict['error'], "'")
+            print("We have troubles with the database, please ask your admin for help.")
+            print("The occuring error is: '", outp_dict["error"], "'")
     else:
-        print_dict = {x: outp_dict[x] for x in outp_dict if x != 'statistic'}
+        print_dict = {x: outp_dict[x] for x in outp_dict if x != "statistic"}
         print("The result of your request is:")
         print(print_dict)
-        if 'statistic' in outp_dict and outp_dict['statistic']:
-            stat_byte = outp_dict['statistic'].encode('ascii')
+        if "statistic" in outp_dict and outp_dict["statistic"]:
+            stat_byte = outp_dict["statistic"].encode("ascii")
             figure = base64.b64decode(stat_byte)
             img = mpimg.imread(io.BytesIO(figure))
-            plot.savefig('stat_population_' + outp_dict['chr'] + '_' + str(outp_dict['pos']) + '_' + outp_dict['ref'] + '_' + outp_dict['alt'] + '.png')
+            plot.imshow(img)
+            plot.savefig(
+                "stat_population_"
+                + outp_dict["chr"]
+                + "_"
+                + str(outp_dict["pos"])
+                + "_"
+                + outp_dict["ref"]
+                + "_"
+                + outp_dict["alt"]
+                + ".png"
+            )
 
 
 def init():
