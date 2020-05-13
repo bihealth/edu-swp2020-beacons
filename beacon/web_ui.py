@@ -1,3 +1,7 @@
+"""
+...provides the web user interface
+"""
+
 from flask import Flask, request, render_template
 import requests
 import webbrowser
