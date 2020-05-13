@@ -1,7 +1,7 @@
 # CUBI Education: SWP Bioinformatik Beacons
 The SWP Beacon Project is a Software which allows users to ask for the existence of given variants thereby it uses the Beacon protocol.
 
-## Getting Started
+## Getting Started for v.2.0.0
 
 These instructions will get you a copy of the project  and how to get the system running on your local machine for testing purposes. 
 
@@ -35,13 +35,18 @@ $ pytest .
 ### Web interface
 
 
-start flask_app.py
+start web_ui.py
 
 ```
-$ python -m beacon.flask_app
+$ python -m beacon.web_ui
+```
+start “rest_api.py” in another terminal
+
+```
+$ python -m beacon.rest_api
 ```
 
-fill in variant into the text field (format: chr-pos-ref-alt)
+fill in variant into the fields of the web interface
 
 click submit to see the results of the search
 
@@ -69,8 +74,11 @@ To see which flag you can use, call:
 
 ```
 $ python3 -m beacon.admin_cli -h 
-DB Path:*give the working directory of data.db file* 
+DB Path:*give "data.db" for maintaining the variant database*
+or
+DB Path:*give "login.db" for maintaining the user database*
 ```
+If you want to use a new database or a different one, go to settings.py and change manually the variants PATH_DATABASE and PATH_LOGIN accordingly. 
 
 ## Authors
 
