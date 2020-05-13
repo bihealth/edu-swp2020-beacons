@@ -1,0 +1,140 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>beacon.user_cli &#8212; edu-swp2020-beacons  documentation</title>
+    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script src="../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="beacon.settings" href="beacon.settings.html" />
+   
+  <link rel="stylesheet" href="../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="module-beacon.user_cli">
+<span id="beacon-user-cli"></span><h1>beacon.user_cli<a class="headerlink" href="#module-beacon.user_cli" title="Permalink to this headline">¶</a></h1>
+<p>Provides command line interface for beacon</p>
+<p class="rubric">Functions</p>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><code class="xref py py-obj docutils literal notranslate"><span class="pre">init</span></code>()</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../index.html#beacon.user_cli.main" title="beacon.user_cli.main"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main</span></code></a>()</p></td>
+<td><p>Takes command line inputs from user, makes request for the variance and prints answer</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../index.html#beacon.user_cli.print_results" title="beacon.user_cli.print_results"><code class="xref py py-obj docutils literal notranslate"><span class="pre">print_results</span></code></a>(outp_dict)</p></td>
+<td><p>Prints the output received from the rest_api module</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../index.html#beacon.user_cli.query_request" title="beacon.user_cli.query_request"><code class="xref py py-obj docutils literal notranslate"><span class="pre">query_request</span></code></a>(inp_dict, cookie)</p></td>
+<td><p>Sends a request with a variant and a token to the rest_api module</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="../index.html#beacon.user_cli.string_to_dict" title="beacon.user_cli.string_to_dict"><code class="xref py py-obj docutils literal notranslate"><span class="pre">string_to_dict</span></code></a>(inp)</p></td>
+<td><p>Converts a variant string into a dictionary</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="../index.html#beacon.user_cli.verify_token" title="beacon.user_cli.verify_token"><code class="xref py py-obj docutils literal notranslate"><span class="pre">verify_token</span></code></a>(inp)</p></td>
+<td><p>Checks wether the given string is a valid token by sending it to the rest_api module</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../index.html">edu-swp2020-beacons</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="beacon.admin_cli.html">beacon.admin_cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="beacon.admin_tools.html">beacon.admin_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="beacon.common.html">beacon.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="beacon.database.html">beacon.database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="beacon.web_ui.html">beacon.web_ui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="beacon.rest_api.html">beacon.rest_api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="beacon.settings.html">beacon.settings</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">beacon.user_cli</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="beacon.settings.html" title="previous chapter">beacon.settings</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Namuun, Leylanur, Julia, Jin Soo, Leonardo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="../_sources/generated/beacon.user_cli.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

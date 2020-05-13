@@ -1,0 +1,665 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Welcome to edu-swp2020-beacons’s documentation! &#8212; edu-swp2020-beacons  documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="beacon.admin_cli" href="generated/beacon.admin_cli.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="welcome-to-edu-swp2020-beacons-s-documentation">
+<h1>Welcome to edu-swp2020-beacons’s documentation!<a class="headerlink" href="#welcome-to-edu-swp2020-beacons-s-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="indices-and-tables">
+<h2>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</div>
+<div class="section" id="modules">
+<h2>Modules<a class="headerlink" href="#modules" title="Permalink to this headline">¶</a></h2>
+<table class="longtable docutils align-default">
+<colgroup>
+<col style="width: 10%" />
+<col style="width: 90%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-beacon.admin_cli" title="beacon.admin_cli"><code class="xref py py-obj docutils literal notranslate"><span class="pre">beacon.admin_cli</span></code></a></p></td>
+<td><p>…to maintain the database</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-beacon.admin_tools" title="beacon.admin_tools"><code class="xref py py-obj docutils literal notranslate"><span class="pre">beacon.admin_tools</span></code></a></p></td>
+<td><p>…that maintain the database</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-beacon.common" title="beacon.common"><code class="xref py py-obj docutils literal notranslate"><span class="pre">beacon.common</span></code></a></p></td>
+<td><p>…prevents variant class for software</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-beacon.database" title="beacon.database"><code class="xref py py-obj docutils literal notranslate"><span class="pre">beacon.database</span></code></a></p></td>
+<td><p>…”communicates” with database</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="generated/beacon.web_ui.html#module-beacon.web_ui" title="beacon.web_ui"><code class="xref py py-obj docutils literal notranslate"><span class="pre">beacon.web_ui</span></code></a></p></td>
+<td><p>…provides the web user interface</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="generated/beacon.rest_api.html#module-beacon.rest_api" title="beacon.rest_api"><code class="xref py py-obj docutils literal notranslate"><span class="pre">beacon.rest_api</span></code></a></p></td>
+<td><p>Provides (flask) server for beacon.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#module-beacon.settings" title="beacon.settings"><code class="xref py py-obj docutils literal notranslate"><span class="pre">beacon.settings</span></code></a></p></td>
+<td><p>…path to database</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#module-beacon.user_cli" title="beacon.user_cli"><code class="xref py py-obj docutils literal notranslate"><span class="pre">beacon.user_cli</span></code></a></p></td>
+<td><p>Provides command line interface for beacon</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="module-beacon.admin_cli">
+<span id="functions"></span><h2>Functions…<a class="headerlink" href="#module-beacon.admin_cli" title="Permalink to this headline">¶</a></h2>
+<p>…to maintain the database</p>
+<dl class="py function">
+<dt id="beacon.admin_cli.main">
+<code class="sig-prename descclassname">beacon.admin_cli.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">argv</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_cli.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maintaining the Database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>argv</strong> – the name to the database.db and the flag which was entered in the command line</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Whether the maintenance of the database was successful</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="beacon.admin_cli.parse_args">
+<code class="sig-prename descclassname">beacon.admin_cli.</code><code class="sig-name descname">parse_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_cli.parse_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the flags.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – the flag which was entered in the command line</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>parser</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="beacon.admin_cli.path">
+<code class="sig-prename descclassname">beacon.admin_cli.</code><code class="sig-name descname">path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_cli.path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asks for a path to the database.db for maintaining the Database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>bool if succeeded, path or error string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-beacon.admin_tools"></span><p>…that maintain the database</p>
+<dl class="py class">
+<dt id="beacon.admin_tools.CreateDbCommand">
+<em class="property">class </em><code class="sig-prename descclassname">beacon.admin_tools.</code><code class="sig-name descname">CreateDbCommand</code><a class="headerlink" href="#beacon.admin_tools.CreateDbCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates variant table in database.</p>
+<dl class="py method">
+<dt id="beacon.admin_tools.CreateDbCommand.create_tables">
+<code class="sig-name descname">create_tables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.CreateDbCommand.create_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates variant table in database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>con</strong> – connection to the database</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="beacon.admin_tools.OperateDatabase">
+<em class="property">class </em><code class="sig-prename descclassname">beacon.admin_tools.</code><code class="sig-name descname">OperateDatabase</code><a class="headerlink" href="#beacon.admin_tools.OperateDatabase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides tools to maintain the database.</p>
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.count_variants">
+<code class="sig-name descname">count_variants</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.count_variants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Counts the existing number of (all) Variants.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>con</strong> – connection to the database</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.delete_data_allel">
+<code class="sig-name descname">delete_data_allel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.delete_data_allel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a row in table allel with given id in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – connection to the database</p></li>
+<li><p><strong>id</strong> – id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>in case error string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.delete_data_phenotype">
+<code class="sig-name descname">delete_data_phenotype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.delete_data_phenotype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a row in table phenotype with given id in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – connection to the database</p></li>
+<li><p><strong>id</strong> – id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>in case error string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.delete_data_populations">
+<code class="sig-name descname">delete_data_populations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.delete_data_populations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a row in table populations with given id in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – connection to the database</p></li>
+<li><p><strong>id</strong> – id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>in case error string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.print_db">
+<code class="sig-name descname">print_db</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.print_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints whole database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>con</strong> – connection to the database</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>database</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.updating_allel">
+<code class="sig-name descname">updating_allel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">allel</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.updating_allel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates a row in the table allel of the database according to given id and input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – connection to the database</p></li>
+<li><p><strong>allel</strong> – (chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, id)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.updating_phenotype">
+<code class="sig-name descname">updating_phenotype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">phenotype</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.updating_phenotype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates a row in the table phenotype of the database according to given id and input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – connection to the database</p></li>
+<li><p><strong>phenotype</strong> – (chr, pos, ref, alt, phenotype, id)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.updating_populations">
+<code class="sig-name descname">updating_populations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">populations</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.updating_populations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates a row in the table populations of the database according to given id and input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – connection to the database</p></li>
+<li><p><strong>populations</strong> – (chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, population, id)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="beacon.admin_tools.UserDB">
+<em class="property">class </em><code class="sig-prename descclassname">beacon.admin_tools.</code><code class="sig-name descname">UserDB</code><a class="headerlink" href="#beacon.admin_tools.UserDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maintenance of the user database</p>
+<dl class="py method">
+<dt id="beacon.admin_tools.UserDB.create_tables_user">
+<code class="sig-name descname">create_tables_user</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.UserDB.create_tables_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates variant table in database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>con</strong> – connection to the database</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.UserDB.delete_ip">
+<code class="sig-name descname">delete_ip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.UserDB.delete_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a row with given id in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – connection to the database</p></li>
+<li><p><strong>id</strong> – id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.UserDB.delete_user">
+<code class="sig-name descname">delete_user</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.UserDB.delete_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a row with given id in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – connection to the database</p></li>
+<li><p><strong>id</strong> – id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.UserDB.find_user_token">
+<code class="sig-name descname">find_user_token</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">username</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.UserDB.find_user_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>finds the token for the associated username</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – connection to the database</p></li>
+<li><p><strong>username</strong> – username</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>token</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.UserDB.insert_user">
+<code class="sig-name descname">insert_user</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">acc</span></em>, <em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.UserDB.insert_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds user to database with a token and authorization number and prevents duplication of usernames.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>acc</strong> – username and authorization-key</p></li>
+<li><p><strong>con</strong> – connection to the database</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.UserDB.print_db_user">
+<code class="sig-name descname">print_db_user</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.UserDB.print_db_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints whole database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>con</strong> – connection to the database</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>database</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.UserDB.print_ip">
+<code class="sig-name descname">print_ip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.UserDB.print_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints whole database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>con</strong> – connection to the database</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>database</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="beacon.admin_tools.parse_vcf">
+<code class="sig-prename descclassname">beacon.admin_tools.</code><code class="sig-name descname">parse_vcf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">infile</span></em>, <em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.admin_tools.parse_vcf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads given files and inserts the data into a database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>infile</strong><strong>[</strong><strong>0</strong><strong>]</strong> – a vcf file for variants</p></li>
+<li><p><strong>infile</strong><strong>[</strong><strong>1</strong><strong>]</strong> – a tsv file for population</p></li>
+<li><p><strong>infile</strong><strong>[</strong><strong>2</strong><strong>]</strong> – a tsv or xslx file for phenotype</p></li>
+<li><p><strong>con</strong> – connection to the database</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-beacon.common"></span><p>…prevents variant class for software</p>
+<dl class="py class">
+<dt id="beacon.common.AnnVar">
+<em class="property">class </em><code class="sig-prename descclassname">beacon.common.</code><code class="sig-name descname">AnnVar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chr</span></em>, <em class="sig-param"><span class="n">pos</span></em>, <em class="sig-param"><span class="n">ref</span></em>, <em class="sig-param"><span class="n">alt</span></em>, <em class="sig-param"><span class="n">occ</span></em>, <em class="sig-param"><span class="n">error</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.common.AnnVar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates AnnVar Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chr</strong> – chr of input variant</p></li>
+<li><p><strong>pos</strong> – pos of input variant</p></li>
+<li><p><strong>ref</strong> – ref of input variant</p></li>
+<li><p><strong>alt</strong> – alt of input variant</p></li>
+<li><p><strong>occ</strong> – occurence of variant in database</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="beacon.common.Info">
+<em class="property">class </em><code class="sig-prename descclassname">beacon.common.</code><code class="sig-name descname">Info</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chr</span></em>, <em class="sig-param"><span class="n">pos</span></em>, <em class="sig-param"><span class="n">ref</span></em>, <em class="sig-param"><span class="n">alt</span></em>, <em class="sig-param"><span class="n">occ</span></em>, <em class="sig-param"><span class="n">error</span></em>, <em class="sig-param"><span class="n">varCount</span></em>, <em class="sig-param"><span class="n">population</span></em>, <em class="sig-param"><span class="n">statistic</span></em>, <em class="sig-param"><span class="n">frequency</span></em>, <em class="sig-param"><span class="n">phenotype</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.common.Info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates Info Object and is subclass of AnnVar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>varCount</strong> – #variants in database for query</p></li>
+<li><p><strong>population</strong> – list of tuple in which population and how often query variant exist</p></li>
+<li><p><strong>statistic</strong> – statistic of output data</p></li>
+<li><p><strong>frequency</strong> – frequency of allels in variant</p></li>
+<li><p><strong>phenotype</strong> – phenotype information</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="beacon.common.Variant">
+<em class="property">class </em><code class="sig-prename descclassname">beacon.common.</code><code class="sig-name descname">Variant</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chr</span></em>, <em class="sig-param"><span class="n">pos</span></em>, <em class="sig-param"><span class="n">ref</span></em>, <em class="sig-param"><span class="n">alt</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.common.Variant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates Variant Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chr</strong> – chr of input variant</p></li>
+<li><p><strong>pos</strong> – pos of input variant</p></li>
+<li><p><strong>ref</strong> – ref of input variant</p></li>
+<li><p><strong>alt</strong> – alt of input variant</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="beacon.common.parse_var">
+<code class="sig-prename descclassname">beacon.common.</code><code class="sig-name descname">parse_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.common.parse_var" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses an input string to a variant object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inp</strong> – variant string</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>variant object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<span class="target" id="module-beacon.database"></span><p>…”communicates” with database</p>
+<dl class="py class">
+<dt id="beacon.database.ConnectDatabase">
+<em class="property">class </em><code class="sig-prename descclassname">beacon.database.</code><code class="sig-name descname">ConnectDatabase</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">database</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.database.ConnectDatabase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates ConnectDatabase Object and connects to database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>database</strong> – path to database</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="beacon.database.ConnectDatabase.handle_request">
+<code class="sig-name descname">handle_request</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">variant</span></em>, <em class="sig-param"><span class="n">authorization</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.database.ConnectDatabase.handle_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets an variant object and parses request to database and gets an AnnVar or Info as an output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>variant</strong> – Variant Object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>AnnVar or Info Object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.database.ConnectDatabase.parse_statement">
+<code class="sig-name descname">parse_statement</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sql_str</span></em>, <em class="sig-param"><span class="n">parameters</span></em>, <em class="sig-param"><span class="n">annV_bool</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.database.ConnectDatabase.parse_statement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates cursor object and requests database and gives “answer” back.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sql_str</strong> – sql command</p></li>
+<li><p><strong>parameters</strong> – input parameters</p></li>
+<li><p><strong>annV_bool</strong> – bool if variant request</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>cursor_ouput or Error</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-beacon.settings"></span><p>…path to database</p>
+<span class="target" id="module-beacon.user_cli"></span><p>Provides command line interface for beacon</p>
+<dl class="py function">
+<dt id="beacon.user_cli.main">
+<code class="sig-prename descclassname">beacon.user_cli.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#beacon.user_cli.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes command line inputs from user, makes request for the variance and prints answer</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="beacon.user_cli.print_results">
+<code class="sig-prename descclassname">beacon.user_cli.</code><code class="sig-name descname">print_results</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">outp_dict</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.user_cli.print_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the output received from the rest_api module</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>outp_dict</strong> – dictionary with the requested output</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="beacon.user_cli.query_request">
+<code class="sig-prename descclassname">beacon.user_cli.</code><code class="sig-name descname">query_request</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp_dict</span></em>, <em class="sig-param"><span class="n">cookie</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.user_cli.query_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends a request with a variant and a token to the rest_api module</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inp_dict</strong> – dictionary of the variant</p></li>
+<li><p><strong>cookie</strong> – the header given bey the user</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tuple with a bool telling wether the request was successful and the output in the form of a dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="beacon.user_cli.string_to_dict">
+<code class="sig-prename descclassname">beacon.user_cli.</code><code class="sig-name descname">string_to_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.user_cli.string_to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a variant string into a dictionary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inp</strong> – string which should be a valid variant</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary with the variants keys and values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="beacon.user_cli.verify_token">
+<code class="sig-prename descclassname">beacon.user_cli.</code><code class="sig-name descname">verify_token</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp</span></em><span class="sig-paren">)</span><a class="headerlink" href="#beacon.user_cli.verify_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks wether the given string is a valid token by sending it to the rest_api module</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inp</strong> – string which should be a valid token</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tuple which tells wether the token is valid and if yes which user it belongs to</p>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">edu-swp2020-beacons</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.admin_cli.html">beacon.admin_cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.admin_tools.html">beacon.admin_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.common.html">beacon.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.database.html">beacon.database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.web_ui.html">beacon.web_ui</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.rest_api.html">beacon.rest_api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.settings.html">beacon.settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.user_cli.html">beacon.user_cli</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+      <li>Next: <a href="generated/beacon.admin_cli.html" title="next chapter">beacon.admin_cli</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Namuun, Leylanur, Julia, Jin Soo, Leonardo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
