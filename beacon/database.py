@@ -10,16 +10,12 @@ from . import common
 
 class ConnectDatabase:
     """
-    includes functions for creating the ConnectDatabase Object and connects to database.
+    Creates ConnectDatabase Object and connects to database.
 
+    :param database: path to database
     """
 
     def __init__(self, database):
-        """
-        Creates ConnectDatabase Object and connects to database.
-
-        :param database: path to database
-        """
         self.connection = sqlite3.connect(database)
 
     def __enter__(self):

@@ -11,6 +11,7 @@ import secrets
 def parse_vcf(infile, con):
     """
     Reads given files and inserts the data into a database.
+
     :param infile[0]: a vcf file for variants
     :param infile[1]: a tsv file for population
     :param infile[2]: a tsv or xslx file for phenotype
@@ -208,6 +209,7 @@ class CreateDbCommand:
     def create_tables(self, con):
         """
         Creates variant table in database.
+
         :param con: connection to the database
         :rtype: bool
         """
@@ -273,6 +275,7 @@ class OperateDatabase:
     def print_db(self, con):
         """
         Prints whole database.
+
         :param con: connection to the database
         :return: database
         """
@@ -299,6 +302,7 @@ class OperateDatabase:
     def count_variants(self, con):
         """
         Counts the existing number of (all) Variants.
+
         :param con: connection to the database
         :rtype: int
         """
@@ -312,8 +316,9 @@ class OperateDatabase:
     def updating_allel(self, con, allel):
         """
         Updates a row in the table allel of the database according to given id and input.
+
         :param con: connection to the database
-        :param allel : (chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, id)
+        :param allel: (chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, id)
         :rtype: bool
         """
         try:
@@ -348,8 +353,9 @@ class OperateDatabase:
     def updating_populations(self, con, populations):
         """
         Updates a row in the table populations of the database according to given id and input.
+
         :param con: connection to the database
-        :param populations : (chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, population, id)
+        :param populations: (chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, population, id)
         :rtype: bool
         """
         try:
@@ -386,8 +392,9 @@ class OperateDatabase:
     def updating_phenotype(self, con, phenotype):
         """
         Updates a row in the table phenotype of the database according to given id and input.
+
         :param con: connection to the database
-        :param phenotype : (chr, pos, ref, alt, phenotype, id)
+        :param phenotype: (chr, pos, ref, alt, phenotype, id)
         :rtype: bool
         """
         try:
@@ -407,6 +414,7 @@ class OperateDatabase:
     def delete_data_allel(self, con, id):
         """
         Deletes a row in table allel with given id in the database.
+
         :param con: connection to the database
         :param id: id
         :rtype: in case error string
@@ -421,6 +429,7 @@ class OperateDatabase:
     def delete_data_populations(self, con, id):
         """
         Deletes a row in table populations with given id in the database.
+
         :param con: connection to the database
         :param id: id
         :rtype: in case error string
@@ -435,6 +444,7 @@ class OperateDatabase:
     def delete_data_phenotype(self, con, id):
         """
         Deletes a row in table phenotype with given id in the database.
+
         :param con: connection to the database
         :param id: id
         :rtype: in case error string
@@ -488,7 +498,7 @@ class UserDB:
         """
         Adds user to database with a token and authorization number and prevents duplication of usernames.
 
-        :param username: username and authorization-key
+        :param acc: username and authorization-key
         :param con: connection to the database
         :rtype: bool
         """
@@ -518,6 +528,7 @@ class UserDB:
         finds the token for the associated username
 
         :param con: connection to the database
+        :param username: username
         :return: token
         """
         try:

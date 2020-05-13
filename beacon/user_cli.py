@@ -60,6 +60,7 @@ def main():
 def verify_token(inp):
     """
     Checks wether the given string is a valid token by sending it to the rest_api module
+
     :param inp: string which should be a valid token
     :return: tuple which tells wether the token is valid and if yes which user it belongs to
     """
@@ -79,6 +80,7 @@ def verify_token(inp):
 def _check_input(var_str):  # maybe better to check each input seperately
     """
     Checks if the input is a valid variant string
+
     :param var_str: string supposed to be in the format 'chr-pos-ref-alt'
     :return: bool which tells wether the input is valid
     """
@@ -98,6 +100,7 @@ def _check_input(var_str):  # maybe better to check each input seperately
 def string_to_dict(inp):
     """
     Converts a variant string into a dictionary
+
     :param inp: string which should be a valid variant
     :return: dictionary with the variants keys and values
     """
@@ -114,6 +117,7 @@ def string_to_dict(inp):
 def query_request(inp_dict, cookie):
     """
     Sends a request with a variant and a token to the rest_api module
+
     :param inp_dict: dictionary of the variant
     :param cookie: the header given bey the user
     :return: tuple with a bool telling wether the request was successful and the output in the form of a dictionary
@@ -138,6 +142,7 @@ def query_request(inp_dict, cookie):
 def print_results(outp_dict):
     """
     Prints the output received from the rest_api module
+    
     :param outp_dict: dictionary with the requested output
     """
     if outp_dict["occ"] is None:
