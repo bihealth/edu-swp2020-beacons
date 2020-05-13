@@ -45,40 +45,130 @@ inputs2 = [
 ]
 
 
-@pytest.mark.parametrize("var,sig,output", inputs2)
+outp1 = []
+outp2 = []
+outp3 = []
+outp4 = []
+outp5 = []
+
+
+dict_ip = {}
+dict_data = {}
+dict_noocc = {}
+dict_auth1 = {}
+dict_auth2 = {}
+dict_auth3 = {}
+
+input_main = [
+    (
+        "No_Token",
+        None,
+        None,
+        "q",
+        None,
+        "Rest_not_started",
+        [
+            "Welcome to our project beacon software!",
+            "",
+            "Hello Unregistered user",
+            "Your input has the wrong format.",
+            "Thank you for using our tool.",
+            "",
+        ],
+    ),
+    (
+        "No_Token",
+        None,
+        "Not_occuring_variant",
+        "q",
+        None,
+        "Rest_started",
+        [
+            "Welcome to our project beacon software!",
+            "",
+            "Hello Unregistered user",
+            "Your input has the wrong format.",
+            "Thank you for using our tool.",
+            "",
+        ],
+    ),
+    (
+        "No_Token",
+        None,
+        "Occuring_variant",
+        "q",
+        None,
+        "Rest_started",
+        [
+            "Welcome to our project beacon software!",
+            "",
+            "Hello Unregistered user",
+            "Thank you for using our tool.",
+            "",
+        ],
+    ),
+    (
+        "Valid_Token",
+        "Login_Data",
+        "Not_occuring_variant",
+        "k",
+        None,
+        "Rest_started",
+        [
+            "Welcome to our project beacon software!",
+            "",
+            "Hello user",
+            "Your input has the wrong format.",
+            "You did not choose an understandible input. Your session is quited now.",
+            "Thank you for using our tool.",
+            "",
+        ],
+    ),
+]
+
+
+@pytest.mark.parametrize("token,login,var,sign,auth,rest,output", input_main)
 @requests_mock.Mocker(kw="mock")
-def test_init(var, sig, output, monkeypatch, capsys, **kwargs):
-    monkeypatch.setattr(user_cli, "_check_input", lambda x: True)
-    monkeypatch.setattr(
-        user_cli, "verify_token",
-    )
-    monkeypatch.settattr(
-        user_cli, "string_to_dict",
-    )
-    monkeypatch.settattr(
-        user_cli, "query_request",
-    )
-    monkeypatch.settattr(
-        user_cli, "print_results",
-    )
+def test_init(
+    token, login, var, sign, auth, rest, output, monkeypatch, capsys, **kwargs
+):
+    def mock_check_input(x):
+        if x == "Occuring_variant":
+            return True
+        else:
+            return False
+
+    monkeypatch.setattr(user_cli, "_check_input", mock_check_input)
+    monkeypatch.setattr(user_cli, "verify_token", lambda x: (True, "user"))
+    monkeypatch.setattr(user_cli, "string_to_dict", lambda x: x)
+
+    def mock_query_request(x, y):
+        if x == "Rest_started":
+            return (True, "valid")
+        else:
+            return (False, None)
+
+    monkeypatch.setattr(user_cli, "query_request", mock_query_request)
+    monkeypatch.setattr(user_cli, "print_results", lambda x: None)
 
     def mock_input(x):
         if (
             x
-            == "Please ebter your secret token or enter nothing to continue as not registered user: "
+            == "Please enter your secret token or enter nothing to continue as not registered user: "
         ):
-            return token
+            if token == "Valid_Token":
+                return token
+            else:
+                return False
         elif x == "Please enter your variant (chr-pos-ref-alt):\n":
             return var
         else:
-            return sig
+            return sign
 
     monkeypatch.setattr("builtins.input", mock_input)
     user_cli.main()
-
     captured = capsys.readouterr().out.split("\n")
-    for i in range(len(output)):
-        assert captured[i] == output[i]
+    assert captured == output
 
 
 input_verify_token = [
