@@ -177,12 +177,12 @@ def demo_db_path(tmpdir):
                     ["neuronal", "epidermis", "muskulär", None][(i + 1) % 4],
                 ),
             )
-        for i in range(3):
+        for i in range(4):
             c.execute(
                 SQL_INSERT_LOG,
                 (
-                    ["Peter", "Lilly", "UndercoverDog"][i],
-                    ["pete", "lil", "doggy"][i],
+                    ["Peter", "Lilly", "UndercoverDog", "JohnDoe"][i],
+                    ["pete", "lil", "doggy", "johnny"][i],
                     i,
                 ),
             )
