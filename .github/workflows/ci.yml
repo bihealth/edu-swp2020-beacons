@@ -26,4 +26,4 @@ jobs:
       - name: Check style with black
         run: pipenv run black --check .
       - name: Check style with flake8
-        run: pipenv flake8 .
+        run: pipenv run flake8 .
