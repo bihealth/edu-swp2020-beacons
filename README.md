@@ -80,6 +80,13 @@ DB Path:*give "login.db" for maintaining the user database*
 ```
 If you want to use a new database or a different one, go to settings.py and change manually the variants PATH_DATABASE and PATH_LOGIN accordingly. 
 
+### Sphinx documentation 
+
+To see the documentation of the source code in HTML-Format, call:
+```
+$ open documentation/_build/html/index.html
+```
+
 ## Authors
 
 * **Namuun**
