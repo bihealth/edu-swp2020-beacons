@@ -6,6 +6,10 @@
     <p style="color: white; border: 5px solid rgb(6, 156, 6); background-color: rgb(6, 156, 6); border-radius: 40px; width: 350px;">Hello {{user}}, nice to see you :)</p>
   {% else %}
   {% endif %}
+  {% if error %}
+    <p style='color:red;text-align: center;'>{{error}}</p>
+  {% else %}
+  {% endif %}  
   <form id="v" enctype='application/json' action = "{{ url_for('handle') }}" method = "POST">
     <input type="hidden" id="token" name="token" value="{{token}}">
     <label for="chr">Chromosom:</label>

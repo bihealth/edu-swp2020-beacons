@@ -6,14 +6,14 @@ import re
 
 def test_home(client):
     rv = client.get("http://localhost:4000/")
-    b_true_chr = re.search(rv.data.decode("utf-8")[909:943], "1")
-    b_true_pos = re.search(rv.data.decode("utf-8")[1072:1075], "1")
-    b_true_ref = re.search(rv.data.decode("utf-8")[1193:1200], "A")
-    b_true_alt = re.search(rv.data.decode("utf-8")[1320:1327], "A")
+    b_true_chr = re.search(rv.data.decode("utf-8")[726:760], "1")
+    b_true_pos = re.search(rv.data.decode("utf-8")[889:892], "1")
+    b_true_ref = re.search(rv.data.decode("utf-8")[1010:1017], "A")
+    b_true_alt = re.search(rv.data.decode("utf-8")[1137:1144], "A")
 
-    b_false_chr = re.search(rv.data.decode("utf-8")[909:943], "Z")
-    b_false_ref = re.search(rv.data.decode("utf-8")[1193:1200], "Z")
-    b_false_alt = re.search(rv.data.decode("utf-8")[1320:1327], "Z")
+    b_false_chr = re.search(rv.data.decode("utf-8")[726:760], "Z")
+    b_false_ref = re.search(rv.data.decode("utf-8")[1010:1017], "Z")
+    b_false_alt = re.search(rv.data.decode("utf-8")[1137:1144], "Z")
 
     assert b_true_chr
     assert b_true_pos

@@ -52,7 +52,6 @@
         {% if res['error'] == None %}
             <p class="pr" >You are not allowed to make more requests from this IP-address.</p>
         {% else %}
-            <p>An Error has occured:</p>
             <p class="pr" >An Error has occured: {{res['error']}}</p>
         {% endif %}
     {% else %}
