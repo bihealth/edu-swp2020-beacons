@@ -1,0 +1,329 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>beacon.admin_cli &#8212; edu-swp2020-beacons 2.0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for beacon.admin_cli</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">...to maintain the database</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">admin_tools</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">database</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">os</span>
+
+
+<div class="viewcode-block" id="path"><a class="viewcode-back" href="../../code.html#beacon.admin_cli.path">[docs]</a><span class="k">def</span> <span class="nf">path</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Asks for a path to the database.db for maintaining the Database.</span>
+
+<span class="sd">    :return: bool if succeeded, path or error string</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">exist</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="n">try_count</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">while</span> <span class="n">exist</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">try_count</span> <span class="o">&gt;</span> <span class="mi">10</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You tried more then ten times. Your session is quitted now.&quot;</span><span class="p">)</span>
+                <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">try_count</span> <span class="o">=</span> <span class="n">try_count</span> <span class="o">+</span> <span class="mi">1</span>
+            <span class="n">db</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;DB Name: &quot;</span><span class="p">)</span>
+            <span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">exists</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">db</span><span class="p">))</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">inp</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span>
+                    <span class="s2">&quot;Given database does not exist. Do you want to create a new one? [y/n]&quot;</span>
+                <span class="p">)</span>
+                <span class="k">if</span> <span class="n">inp</span> <span class="o">==</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="kc">True</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">db</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">inp</span> <span class="o">==</span> <span class="s2">&quot;n&quot;</span><span class="p">:</span>
+                    <span class="n">ex</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Do you want to exit the process? [y/n]&quot;</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">ex</span> <span class="o">==</span> <span class="s2">&quot;y&quot;</span><span class="p">:</span>
+                        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;&quot;</span>
+                    <span class="k">elif</span> <span class="n">ex</span> <span class="o">==</span> <span class="s2">&quot;n&quot;</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The process is starting from the beginning.&quot;</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="nb">print</span><span class="p">(</span>
+                            <span class="s2">&quot;Your input has the wrong format. The process is starting from the beginning.&quot;</span>
+                        <span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="nb">print</span><span class="p">(</span>
+                        <span class="s2">&quot;Your input has the wrong format. The process is starting from the beginning.&quot;</span>
+                    <span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma nocover</span>
+        <span class="k">return</span> <span class="kc">False</span><span class="p">,</span> <span class="n">e</span></div>
+
+
+<div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../code.html#beacon.admin_cli.parse_args">[docs]</a><span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Defines the flags.</span>
+
+<span class="sd">    :param args: the flag which was entered in the command line</span>
+<span class="sd">    :return: parser</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">()</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-ct&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--create_tables&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Creating new tables in database.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-vcf&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--insert_data&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Inserting data from a tsv and vcf file in database&quot;</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-p&quot;</span><span class="p">,</span> <span class="s2">&quot;--print_db&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Printing the database&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-c&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--count_variants&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Counting the variants in database.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-ua&quot;</span><span class="p">,</span> <span class="s2">&quot;--update_allel&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Updating the allel data in database.&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-up&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--update_populations&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Updating the population data in database.&quot;</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="mi">11</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-upt&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--update_phenotype&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Updating the phenotype data in database.&quot;</span><span class="p">,</span>
+        <span class="n">nargs</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-da&quot;</span><span class="p">,</span> <span class="s2">&quot;--delete_allel&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Deleting allel data in database.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-dp&quot;</span><span class="p">,</span> <span class="s2">&quot;--delete_populations&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Deleting population data in database.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-dpt&quot;</span><span class="p">,</span> <span class="s2">&quot;--delete_phenotype&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Deleting phenotype data in database.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-ctu&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--create_tables_user&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Creating two new tables in &#39;user&#39;-database.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-add&quot;</span><span class="p">,</span> <span class="s2">&quot;--insert_user&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Adding an user in the database.&quot;</span><span class="p">,</span> <span class="n">nargs</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-t&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--find_user_token&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Finding the token for the associated username in database.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-pu&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--print_db_user&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Printing the user database.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-du&quot;</span><span class="p">,</span> <span class="s2">&quot;--delete_user&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Deleting the user database.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-pi&quot;</span><span class="p">,</span> <span class="s2">&quot;--print_ip&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Printing the ip database.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;-di&quot;</span><span class="p">,</span> <span class="s2">&quot;--delete_ip&quot;</span><span class="p">,</span> <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Deleting the ip database.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../code.html#beacon.admin_cli.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">argv</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Maintaining the Database.</span>
+
+<span class="sd">    :param argv: the name to the database.db and the flag which was entered in the command line</span>
+<span class="sd">    :return: Whether the maintenance of the database was successful</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pfad_test</span> <span class="o">=</span> <span class="n">path</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">pfad_test</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">pfad</span> <span class="o">=</span> <span class="n">pfad_test</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">pfad_test</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>  <span class="c1"># pragma: nocover</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="n">parse_args</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">database</span><span class="o">.</span><span class="n">ConnectDatabase</span><span class="p">(</span><span class="n">pfad</span><span class="p">)</span> <span class="k">as</span> <span class="n">connect</span><span class="p">:</span>
+            <span class="n">od</span> <span class="o">=</span> <span class="n">admin_tools</span><span class="o">.</span><span class="n">OperateDatabase</span><span class="p">()</span>
+            <span class="n">us</span> <span class="o">=</span> <span class="n">admin_tools</span><span class="o">.</span><span class="n">UserDB</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">create_tables</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;create tables is activated&quot;</span><span class="p">)</span>
+                <span class="n">create</span> <span class="o">=</span> <span class="n">admin_tools</span><span class="o">.</span><span class="n">CreateDbCommand</span><span class="p">()</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">create</span><span class="o">.</span><span class="n">create_tables</span><span class="p">(</span><span class="n">connect</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">insert_data</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;inserting data is activated&quot;</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">admin_tools</span><span class="o">.</span><span class="n">parse_vcf</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">insert_data</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">connect</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">print_db</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;print_db is activated&quot;</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">od</span><span class="o">.</span><span class="n">print_db</span><span class="p">(</span><span class="n">connect</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">count_variants</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;count_variants is activated&quot;</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">od</span><span class="o">.</span><span class="n">count_variants</span><span class="p">(</span><span class="n">connect</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">update_allel</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;update is activated&quot;</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">od</span><span class="o">.</span><span class="n">updating_allel</span><span class="p">(</span><span class="n">connect</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">update_populations</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;update is activated&quot;</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">od</span><span class="o">.</span><span class="n">updating_populations</span><span class="p">(</span><span class="n">connect</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">update_phenotype</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;update is activated&quot;</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">od</span><span class="o">.</span><span class="n">updating_phenotype</span><span class="p">(</span><span class="n">connect</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">update</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">delete_allel</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;delete is activated&quot;</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">od</span><span class="o">.</span><span class="n">delete_allel</span><span class="p">(</span><span class="n">connect</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">delete</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">delete_populations</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;delete is activated&quot;</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">od</span><span class="o">.</span><span class="n">delete_populations</span><span class="p">(</span><span class="n">connect</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">delete</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">delete_phenotype</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;delete is activated&quot;</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">od</span><span class="o">.</span><span class="n">delete_phenotype</span><span class="p">(</span><span class="n">connect</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">delete</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">create_tables_user</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;create user table is activated&quot;</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">us</span><span class="o">.</span><span class="n">create_tables_user</span><span class="p">(</span><span class="n">connect</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">insert_user</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;inserting user data is activated&quot;</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">us</span><span class="o">.</span><span class="n">insert_user</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">insert_user</span><span class="p">,</span> <span class="n">connect</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">find_user_token</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;find_user_token is activated&quot;</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">us</span><span class="o">.</span><span class="n">find_user_token</span><span class="p">(</span><span class="n">connect</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">find_user_token</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">print_db_user</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;print_db_user is activated&quot;</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">us</span><span class="o">.</span><span class="n">print_db_user</span><span class="p">(</span><span class="n">connect</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">delete_user</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;delete_user is activated&quot;</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">us</span><span class="o">.</span><span class="n">delete_user</span><span class="p">(</span><span class="n">connect</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">delete_user</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">print_ip</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;print_ip is activated&quot;</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">us</span><span class="o">.</span><span class="n">print_ip</span><span class="p">(</span><span class="n">connect</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">delete_ip</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;delete_ip is activated&quot;</span><span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">us</span><span class="o">.</span><span class="n">delete_ip</span><span class="p">(</span><span class="n">connect</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">delete_ip</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="s2">&quot;Please enter a flag. To see which flags you can use, use -h or --help&quot;</span>
+        <span class="k">return</span> <span class="n">output</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: nocover</span>
+        <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># pragma: nocover</span>
+    <span class="n">main</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">edu-swp2020-beacons</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">CUBI Education: SWP Bioinformatik Beacons</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code.html">Code documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.settings.html">beacon.settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.common.html">beacon.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.database.html">beacon.database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.admin_tools.html">beacon.admin_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.admin_cli.html">beacon.admin_cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.rest_api.html">beacon.rest_api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.user_cli.html">beacon.user_cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.web_ui.html">beacon.web_ui</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Namuun, Leylanur, Julia, Jin Soo, Leonardo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

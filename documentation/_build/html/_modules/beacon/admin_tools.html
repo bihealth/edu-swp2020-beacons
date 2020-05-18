@@ -1,0 +1,719 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>beacon.admin_tools &#8212; edu-swp2020-beacons 2.0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for beacon.admin_tools</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">...that maintain the database</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">import</span> <span class="nn">sqlite3</span>
+<span class="kn">import</span> <span class="nn">vcf</span>
+<span class="kn">import</span> <span class="nn">csv</span>
+<span class="kn">import</span> <span class="nn">secrets</span>
+
+
+<div class="viewcode-block" id="parse_vcf"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.parse_vcf">[docs]</a><span class="k">def</span> <span class="nf">parse_vcf</span><span class="p">(</span><span class="n">infile</span><span class="p">,</span> <span class="n">con</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Reads given files and inserts the data into a database.</span>
+
+<span class="sd">    :param infile[0]: a vcf file for variants</span>
+<span class="sd">    :param infile[1]: a tsv file for population</span>
+<span class="sd">    :param infile[2]: a tsv or xslx file for phenotype</span>
+<span class="sd">    :param con: connection to the database</span>
+<span class="sd">    :rtype: bool</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># reads tsv file for population and creates for each sample a dict entry with pop and sex</span>
+        <span class="n">populationDict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">infile</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">tsv_file</span><span class="p">:</span>
+
+            <span class="n">tsv_reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">tsv_file</span><span class="p">,</span> <span class="n">dialect</span><span class="o">=</span><span class="s2">&quot;excel-tab&quot;</span><span class="p">)</span>
+            <span class="c1"># count = 0</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">tsv_reader</span><span class="p">:</span>
+                    <span class="n">populationDict</span><span class="p">[</span><span class="n">row</span><span class="p">[</span><span class="s2">&quot;Sample name&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;pop_code&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;Population code&quot;</span><span class="p">],</span>
+                        <span class="s2">&quot;sex&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;Sex&quot;</span><span class="p">],</span>
+                    <span class="p">}</span>
+            <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+                <span class="c1"># count = count + 1</span>
+                <span class="c1"># if count == 8:</span>
+                <span class="c1">#     break</span>
+        <span class="c1"># ------------------------------------------------------------------------------------</span>
+        <span class="c1"># reads file for phenotype and creates for each sample a dict entry with hpo-term-id and hpo-term-name</span>
+        <span class="n">phenotypeDict</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">infile</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">phenotype_file</span><span class="p">:</span>
+            <span class="c1"># count=0</span>
+            <span class="n">key</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="n">phenotype_reader</span> <span class="o">=</span> <span class="n">csv</span><span class="o">.</span><span class="n">DictReader</span><span class="p">(</span><span class="n">phenotype_file</span><span class="p">,</span> <span class="n">dialect</span><span class="o">=</span><span class="s2">&quot;excel-tab&quot;</span><span class="p">)</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">phenotype_reader</span><span class="p">:</span>
+                    <span class="n">phenotypeDict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                        <span class="s2">&quot;HPO-Term-ID&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;HPO-Term-ID&quot;</span><span class="p">],</span>
+                        <span class="s2">&quot;HPO-Term-Name&quot;</span><span class="p">:</span> <span class="n">row</span><span class="p">[</span><span class="s2">&quot;HPO-Term-Name&quot;</span><span class="p">],</span>
+                    <span class="p">}</span>
+                    <span class="c1"># print(row[&#39;HPO-Term-ID&#39;])</span>
+                    <span class="n">key</span> <span class="o">+=</span> <span class="mi">1</span>
+                    <span class="c1"># count += 1</span>
+                    <span class="c1"># if count == 8:</span>
+                    <span class="c1">#     break</span>
+            <span class="k">except</span> <span class="ne">KeyError</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">error</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">error</span><span class="p">)</span>
+    <span class="c1"># ------------------------------------------------------------------------------------</span>
+    <span class="n">pheno_key</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">infile</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="k">as</span> <span class="n">vcf_file</span><span class="p">:</span>
+            <span class="n">vcf_reader</span> <span class="o">=</span> <span class="n">vcf</span><span class="o">.</span><span class="n">Reader</span><span class="p">(</span><span class="n">vcf_file</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">variant</span> <span class="ow">in</span> <span class="n">vcf_reader</span><span class="p">:</span>
+                <span class="nb">chr</span> <span class="o">=</span> <span class="n">variant</span><span class="o">.</span><span class="n">CHROM</span>
+                <span class="n">pos</span> <span class="o">=</span> <span class="n">variant</span><span class="o">.</span><span class="n">POS</span>
+                <span class="n">ref</span> <span class="o">=</span> <span class="n">variant</span><span class="o">.</span><span class="n">REF</span>
+                <span class="n">alt</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span> <span class="ow">or</span> <span class="s2">&quot;&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">variant</span><span class="o">.</span><span class="n">ALT</span><span class="p">)</span>  <span class="c1"># add ,</span>
+
+                <span class="c1"># for allel</span>
+                <span class="n">hemi_alt</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">hemi_ref</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">wildtype</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">alt_hetero</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">alt_homo</span> <span class="o">=</span> <span class="mi">0</span>
+
+                <span class="n">tempDict</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">variant</span><span class="o">.</span><span class="n">samples</span><span class="p">:</span>
+                    <span class="n">sample_id</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">sample</span>
+                    <span class="n">gt</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">gt_type</span>
+
+                    <span class="k">if</span> <span class="n">sample_id</span> <span class="ow">in</span> <span class="n">populationDict</span><span class="p">:</span>
+                        <span class="n">population</span> <span class="o">=</span> <span class="n">populationDict</span><span class="p">[</span><span class="n">sample_id</span><span class="p">][</span><span class="s2">&quot;pop_code&quot;</span><span class="p">]</span>
+
+                        <span class="k">if</span> <span class="n">population</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tempDict</span><span class="p">:</span>
+                            <span class="n">tempDict</span><span class="p">[</span><span class="n">population</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                                <span class="s2">&quot;pop_wildtype&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                                <span class="s2">&quot;pop_alt_hetero&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                                <span class="s2">&quot;pop_alt_homo&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                                <span class="s2">&quot;pop_hemi_ref&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                                <span class="s2">&quot;pop_hemi_alt&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="p">}</span>
+                        <span class="c1"># case autosome</span>
+                        <span class="k">if</span> <span class="nb">chr</span> <span class="o">==</span> <span class="s2">&quot;Y&quot;</span> <span class="ow">or</span> <span class="nb">chr</span> <span class="o">==</span> <span class="s2">&quot;X&quot;</span><span class="p">:</span>
+                            <span class="c1"># case male</span>
+                            <span class="k">if</span> <span class="n">populationDict</span><span class="p">[</span><span class="n">sample_id</span><span class="p">][</span><span class="s2">&quot;sex&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;male&quot;</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">gt</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>  <span class="c1"># 2 =&gt; hom_alt</span>
+                                    <span class="n">hemi_alt</span> <span class="o">+=</span> <span class="mi">1</span>
+                                    <span class="n">tempDict</span><span class="p">[</span><span class="n">population</span><span class="p">][</span><span class="s2">&quot;pop_hemi_alt&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="k">else</span><span class="p">:</span>  <span class="c1"># sample.gt_type == 0 =&gt; hom_ref / wildtype</span>
+                                    <span class="n">hemi_ref</span> <span class="o">+=</span> <span class="mi">1</span>
+                                    <span class="n">tempDict</span><span class="p">[</span><span class="n">population</span><span class="p">][</span><span class="s2">&quot;pop_hemi_ref&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="c1"># case female</span>
+                            <span class="k">else</span><span class="p">:</span>
+                                <span class="k">if</span> <span class="n">gt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                                    <span class="n">wildtype</span> <span class="o">+=</span> <span class="mi">1</span>
+                                    <span class="n">tempDict</span><span class="p">[</span><span class="n">population</span><span class="p">][</span><span class="s2">&quot;pop_wildtype&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="c1"># elif gt == 1:</span>
+                                <span class="c1">#     alt_hetero += 1</span>
+                                <span class="c1">#     tempDict[population][&#39;pop_alt_hetero&#39;] +=1</span>
+                                <span class="k">else</span><span class="p">:</span>  <span class="c1"># gt == 2</span>
+                                    <span class="n">alt_homo</span> <span class="o">+=</span> <span class="mi">1</span>
+                                    <span class="n">tempDict</span><span class="p">[</span><span class="n">population</span><span class="p">][</span><span class="s2">&quot;pop_alt_homo&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="c1"># not autosome</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="k">if</span> <span class="n">gt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                                <span class="n">wildtype</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="n">tempDict</span><span class="p">[</span><span class="n">population</span><span class="p">][</span><span class="s2">&quot;pop_wildtype&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="k">elif</span> <span class="n">gt</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                                <span class="n">alt_hetero</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="n">tempDict</span><span class="p">[</span><span class="n">population</span><span class="p">][</span><span class="s2">&quot;pop_alt_hetero&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="k">else</span><span class="p">:</span>  <span class="c1"># gt == 2</span>
+                                <span class="n">alt_homo</span> <span class="o">+=</span> <span class="mi">1</span>
+                                <span class="n">tempDict</span><span class="p">[</span><span class="n">population</span><span class="p">][</span><span class="s2">&quot;pop_alt_homo&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">population</span> <span class="o">=</span> <span class="kc">None</span>
+                        <span class="k">if</span> <span class="n">population</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">tempDict</span><span class="p">:</span>
+                            <span class="n">tempDict</span><span class="p">[</span><span class="n">population</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                                <span class="s2">&quot;pop_wildtype&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                                <span class="s2">&quot;pop_alt_hetero&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                                <span class="s2">&quot;pop_alt_homo&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                                <span class="s2">&quot;pop_hemi_ref&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                                <span class="s2">&quot;pop_hemi_alt&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">,</span>
+                            <span class="p">}</span>
+                        <span class="k">if</span> <span class="n">gt</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">wildtype</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="n">tempDict</span><span class="p">[</span><span class="n">population</span><span class="p">][</span><span class="s2">&quot;pop_wildtype&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">elif</span> <span class="n">gt</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="n">alt_hetero</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="n">tempDict</span><span class="p">[</span><span class="n">population</span><span class="p">][</span><span class="s2">&quot;pop_alt_hetero&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+                        <span class="k">else</span><span class="p">:</span>  <span class="c1"># gt == 2</span>
+                            <span class="n">alt_homo</span> <span class="o">+=</span> <span class="mi">1</span>
+                            <span class="n">tempDict</span><span class="p">[</span><span class="n">population</span><span class="p">][</span><span class="s2">&quot;pop_alt_homo&quot;</span><span class="p">]</span> <span class="o">+=</span> <span class="mi">1</span>
+
+                <span class="c1"># INSERT   - Duplicates allowed</span>
+                <span class="n">sql_str</span> <span class="o">=</span> <span class="s2">&quot;INSERT INTO allel (chr,pos,ref,alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt) VALUES (?,?,?,?,?,?,?,?,?);&quot;</span>
+                <span class="n">parameters</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="nb">chr</span><span class="p">,</span>
+                    <span class="n">pos</span><span class="p">,</span>
+                    <span class="n">ref</span><span class="p">,</span>
+                    <span class="n">alt</span><span class="p">,</span>
+                    <span class="n">wildtype</span><span class="p">,</span>
+                    <span class="n">alt_hetero</span><span class="p">,</span>
+                    <span class="n">alt_homo</span><span class="p">,</span>
+                    <span class="n">hemi_ref</span><span class="p">,</span>
+                    <span class="n">hemi_alt</span><span class="p">,</span>
+                <span class="p">)</span>
+                <span class="n">output</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_str</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+                <span class="n">sql_str2</span> <span class="o">=</span> <span class="s2">&quot;INSERT INTO phenotype (chr,pos,ref,alt,phenotype) VALUES (?,?,?,?,?);&quot;</span>
+                <span class="n">phenotype</span> <span class="o">=</span> <span class="p">(</span>
+                    <span class="n">phenotypeDict</span><span class="p">[</span><span class="n">pheno_key</span><span class="p">][</span><span class="s2">&quot;HPO-Term-ID&quot;</span><span class="p">]</span>
+                    <span class="o">+</span> <span class="s2">&quot;; &quot;</span>
+                    <span class="o">+</span> <span class="n">phenotypeDict</span><span class="p">[</span><span class="n">pheno_key</span><span class="p">][</span><span class="s2">&quot;HPO-Term-Name&quot;</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="n">pheno_key</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="n">parameters2</span> <span class="o">=</span> <span class="p">(</span><span class="nb">chr</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">alt</span><span class="p">,</span> <span class="n">phenotype</span><span class="p">)</span>
+                <span class="n">output2</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_str2</span><span class="p">,</span> <span class="n">parameters2</span><span class="p">)</span>
+
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="nb">isinstance</span><span class="p">(</span><span class="n">output</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span>
+                    <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output2</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span>
+                <span class="p">):</span>  <span class="c1"># pragma: no cover</span>
+                    <span class="k">raise</span> <span class="n">output</span> <span class="ow">or</span> <span class="n">output2</span>
+
+                <span class="k">for</span> <span class="n">td</span> <span class="ow">in</span> <span class="n">tempDict</span><span class="p">:</span>
+                    <span class="n">sql_str1</span> <span class="o">=</span> <span class="s2">&quot;INSERT INTO populations (chr,pos,ref,alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, population) VALUES (?,?,?,?,?,?,?,?,?,?);&quot;</span>
+                    <span class="n">parameters1</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="nb">chr</span><span class="p">,</span>
+                        <span class="n">pos</span><span class="p">,</span>
+                        <span class="n">ref</span><span class="p">,</span>
+                        <span class="n">alt</span><span class="p">,</span>
+                        <span class="n">tempDict</span><span class="p">[</span><span class="n">td</span><span class="p">][</span><span class="s2">&quot;pop_wildtype&quot;</span><span class="p">],</span>
+                        <span class="n">tempDict</span><span class="p">[</span><span class="n">td</span><span class="p">][</span><span class="s2">&quot;pop_alt_hetero&quot;</span><span class="p">],</span>
+                        <span class="n">tempDict</span><span class="p">[</span><span class="n">td</span><span class="p">][</span><span class="s2">&quot;pop_alt_homo&quot;</span><span class="p">],</span>
+                        <span class="n">tempDict</span><span class="p">[</span><span class="n">td</span><span class="p">][</span><span class="s2">&quot;pop_hemi_ref&quot;</span><span class="p">],</span>
+                        <span class="n">tempDict</span><span class="p">[</span><span class="n">td</span><span class="p">][</span><span class="s2">&quot;pop_hemi_alt&quot;</span><span class="p">],</span>
+                        <span class="n">td</span><span class="p">,</span>
+                    <span class="p">)</span>
+                    <span class="n">output1</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_str1</span><span class="p">,</span> <span class="n">parameters1</span><span class="p">)</span>
+
+                    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">output1</span><span class="p">,</span> <span class="nb">list</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                        <span class="k">raise</span> <span class="n">output1</span>
+            <span class="k">return</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="CreateDbCommand"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.CreateDbCommand">[docs]</a><span class="k">class</span> <span class="nc">CreateDbCommand</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates variant table in database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="CreateDbCommand.create_tables"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.CreateDbCommand.create_tables">[docs]</a>    <span class="k">def</span> <span class="nf">create_tables</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">con</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates variant table in database.</span>
+
+<span class="sd">        :param con: connection to the database</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sql_create_db_table_allel</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            CREATE TABLE IF NOT EXISTS allel (</span>
+<span class="s2">            id integer PRIMARY KEY AUTOINCREMENT,</span>
+<span class="s2">            chr text NOT NULL,</span>
+<span class="s2">            pos integer NOT NULL,</span>
+<span class="s2">            ref text NOT NULL,</span>
+<span class="s2">            alt text NOT NULL,</span>
+<span class="s2">            wildtype integer NOT NULL,</span>
+<span class="s2">            alt_hetero integer NOT NULL,</span>
+<span class="s2">            alt_homo integer NOT NULL,</span>
+<span class="s2">            hemi_ref integer NOT NULL,</span>
+<span class="s2">            hemi_alt integer NOT NULL</span>
+<span class="s2">        );&quot;&quot;&quot;</span>
+        <span class="n">sql_create_db_table_populations</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            CREATE TABLE IF NOT EXISTS populations (</span>
+<span class="s2">            id integer PRIMARY KEY AUTOINCREMENT,</span>
+<span class="s2">            chr text NOT NULL,</span>
+<span class="s2">            pos integer NOT NULL,</span>
+<span class="s2">            ref text NOT NULL,</span>
+<span class="s2">            alt text NOT NULL,</span>
+<span class="s2">            wildtype integer NOT NULL,</span>
+<span class="s2">            alt_hetero integer NOT NULL,</span>
+<span class="s2">            alt_homo integer NOT NULL,</span>
+<span class="s2">            hemi_ref integer NOT NULL,</span>
+<span class="s2">            hemi_alt integer NOT NULL,</span>
+<span class="s2">            population text</span>
+<span class="s2">        );&quot;&quot;&quot;</span>
+        <span class="n">sql_create_db_table_phenotype</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            CREATE TABLE IF NOT EXISTS phenotype (</span>
+<span class="s2">            id integer PRIMARY KEY AUTOINCREMENT,</span>
+<span class="s2">            chr text NOT NULL,</span>
+<span class="s2">            pos integer NOT NULL,</span>
+<span class="s2">            ref text NOT NULL,</span>
+<span class="s2">            alt text NOT NULL,</span>
+<span class="s2">            phenotype text</span>
+<span class="s2">        );&quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_create_db_table_allel</span><span class="p">,</span> <span class="p">())</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_create_db_table_populations</span><span class="p">,</span> <span class="p">())</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_create_db_table_phenotype</span><span class="p">,</span> <span class="p">())</span>
+            <span class="n">sql_idx_allel</span> <span class="o">=</span> <span class="s2">&quot;CREATE INDEX allel_idx ON allel(chr,pos,ref,alt);&quot;</span>
+            <span class="n">sql_idx_population</span> <span class="o">=</span> <span class="s2">&quot;CREATE INDEX pop_idx ON populations(chr,pos,ref,alt);&quot;</span>
+            <span class="n">sql_idx_phenotype</span> <span class="o">=</span> <span class="s2">&quot;CREATE INDEX phe_idx ON phenotype(chr,pos,ref,alt);&quot;</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_idx_allel</span><span class="p">,</span> <span class="p">())</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_idx_population</span><span class="p">,</span> <span class="p">())</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_idx_phenotype</span><span class="p">,</span> <span class="p">())</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="OperateDatabase"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.OperateDatabase">[docs]</a><span class="k">class</span> <span class="nc">OperateDatabase</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Provides tools to maintain the database.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="OperateDatabase.print_db"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.OperateDatabase.print_db">[docs]</a>    <span class="k">def</span> <span class="nf">print_db</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">con</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints whole database.</span>
+
+<span class="sd">        :param con: connection to the database</span>
+<span class="sd">        :return: database</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sql_print_allel</span> <span class="o">=</span> <span class="s2">&quot;SELECT id, chr, pos, ref, alt , wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt FROM allel GROUP BY id, chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt;&quot;</span>
+            <span class="n">output_allel</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_print_allel</span><span class="p">,</span> <span class="p">())</span>
+            <span class="n">sql_print_population</span> <span class="o">=</span> <span class="s2">&quot;SELECT id, chr, pos, ref, alt , wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, population FROM populations GROUP BY id, chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, population;&quot;</span>
+            <span class="n">output_population</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_print_population</span><span class="p">,</span> <span class="p">())</span>
+            <span class="n">sql_print_phenotype</span> <span class="o">=</span> <span class="s2">&quot;SELECT id, chr, pos, ref, alt , phenotype FROM phenotype GROUP BY id, chr, pos, ref, alt, phenotype;&quot;</span>
+            <span class="n">output_phenotype</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_print_phenotype</span><span class="p">,</span> <span class="p">())</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;TABLE allel: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">out</span> <span class="ow">in</span> <span class="n">output_allel</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">TABLE populations: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">out</span> <span class="ow">in</span> <span class="n">output_population</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">TABLE phenotype: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">out</span> <span class="ow">in</span> <span class="n">output_phenotype</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OperateDatabase.count_variants"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.OperateDatabase.count_variants">[docs]</a>    <span class="k">def</span> <span class="nf">count_variants</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">con</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Counts the existing number of (all) Variants.</span>
+
+<span class="sd">        :param con: connection to the database</span>
+<span class="sd">        :rtype: int</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sql_count_var</span> <span class="o">=</span> <span class="s2">&quot;SELECT COUNT(*) FROM allel GROUP BY chr, pos, alt, ref;&quot;</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_count_var</span><span class="p">,</span> <span class="p">())</span>
+            <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">output</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OperateDatabase.updating_allel"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.OperateDatabase.updating_allel">[docs]</a>    <span class="k">def</span> <span class="nf">updating_allel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">con</span><span class="p">,</span> <span class="n">allel</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates a row in the table allel of the database according to given id and input.</span>
+
+<span class="sd">        :param con: connection to the database</span>
+<span class="sd">        :param allel: (chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, id)</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">chr</span> <span class="o">=</span> <span class="n">allel</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">allel</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">ref</span> <span class="o">=</span> <span class="n">allel</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">alt</span> <span class="o">=</span> <span class="n">allel</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">wildtype</span> <span class="o">=</span> <span class="n">allel</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+            <span class="n">alt_hetero</span> <span class="o">=</span> <span class="n">allel</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+            <span class="n">alt_homo</span> <span class="o">=</span> <span class="n">allel</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+            <span class="n">hemi_ref</span> <span class="o">=</span> <span class="n">allel</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+            <span class="n">hemi_alt</span> <span class="o">=</span> <span class="n">allel</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="n">allel</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span>
+            <span class="n">sql_str</span> <span class="o">=</span> <span class="s2">&quot;UPDATE allel SET chr = ?, pos = ?, ref = ?, alt = ?, wildtype = ?, alt_hetero = ?, alt_homo = ?, hemi_ref = ?, hemi_alt = ?  WHERE id = ?;&quot;</span>
+            <span class="n">parameters</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">chr</span><span class="p">,</span>
+                <span class="n">pos</span><span class="p">,</span>
+                <span class="n">ref</span><span class="p">,</span>
+                <span class="n">alt</span><span class="p">,</span>
+                <span class="n">wildtype</span><span class="p">,</span>
+                <span class="n">alt_hetero</span><span class="p">,</span>
+                <span class="n">alt_homo</span><span class="p">,</span>
+                <span class="n">hemi_ref</span><span class="p">,</span>
+                <span class="n">hemi_alt</span><span class="p">,</span>
+                <span class="nb">id</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_str</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;The table allel has been updated. Call -p to see the changes.&quot;</span>
+        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OperateDatabase.updating_populations"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.OperateDatabase.updating_populations">[docs]</a>    <span class="k">def</span> <span class="nf">updating_populations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">con</span><span class="p">,</span> <span class="n">populations</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates a row in the table populations of the database according to given id and input.</span>
+
+<span class="sd">        :param con: connection to the database</span>
+<span class="sd">        :param populations: (chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, population, id)</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">chr</span> <span class="o">=</span> <span class="n">populations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">populations</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">ref</span> <span class="o">=</span> <span class="n">populations</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">alt</span> <span class="o">=</span> <span class="n">populations</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">wildtype</span> <span class="o">=</span> <span class="n">populations</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+            <span class="n">alt_hetero</span> <span class="o">=</span> <span class="n">populations</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+            <span class="n">alt_homo</span> <span class="o">=</span> <span class="n">populations</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span>
+            <span class="n">hemi_ref</span> <span class="o">=</span> <span class="n">populations</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span>
+            <span class="n">hemi_alt</span> <span class="o">=</span> <span class="n">populations</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span>
+            <span class="n">population</span> <span class="o">=</span> <span class="n">populations</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="n">populations</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span>
+            <span class="n">sql_str</span> <span class="o">=</span> <span class="s2">&quot;UPDATE populations SET chr = ?, pos = ?, ref = ?, alt = ?, wildtype = ?, alt_hetero = ?, alt_homo = ?, hemi_ref = ?, hemi_alt = ?, population = ?  WHERE id = ?;&quot;</span>
+            <span class="n">parameters</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">chr</span><span class="p">,</span>
+                <span class="n">pos</span><span class="p">,</span>
+                <span class="n">ref</span><span class="p">,</span>
+                <span class="n">alt</span><span class="p">,</span>
+                <span class="n">wildtype</span><span class="p">,</span>
+                <span class="n">alt_hetero</span><span class="p">,</span>
+                <span class="n">alt_homo</span><span class="p">,</span>
+                <span class="n">hemi_ref</span><span class="p">,</span>
+                <span class="n">hemi_alt</span><span class="p">,</span>
+                <span class="n">population</span><span class="p">,</span>
+                <span class="nb">id</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_str</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;The table populations has been updated. Call -p to see the changes.&quot;</span>
+        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OperateDatabase.updating_phenotype"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.OperateDatabase.updating_phenotype">[docs]</a>    <span class="k">def</span> <span class="nf">updating_phenotype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">con</span><span class="p">,</span> <span class="n">phenotype</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Updates a row in the table phenotype of the database according to given id and input.</span>
+
+<span class="sd">        :param con: connection to the database</span>
+<span class="sd">        :param phenotype: (chr, pos, ref, alt, phenotype, id)</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="nb">chr</span> <span class="o">=</span> <span class="n">phenotype</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">pos</span> <span class="o">=</span> <span class="n">phenotype</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="n">ref</span> <span class="o">=</span> <span class="n">phenotype</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+            <span class="n">alt</span> <span class="o">=</span> <span class="n">phenotype</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+            <span class="n">phenotype</span> <span class="o">=</span> <span class="n">phenotype</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span>
+            <span class="nb">id</span> <span class="o">=</span> <span class="n">phenotype</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span>
+            <span class="n">sql_str</span> <span class="o">=</span> <span class="s2">&quot;UPDATE phenotype SET chr = ?, pos = ?, ref = ?, alt = ?, phenotype = ?  WHERE id = ?;&quot;</span>
+            <span class="n">parameters</span> <span class="o">=</span> <span class="p">(</span><span class="nb">chr</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">alt</span><span class="p">,</span> <span class="n">phenotype</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_str</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;The table phenotype has been updated. Call -p to see the changes.&quot;</span>
+        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OperateDatabase.delete_data_allel"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.OperateDatabase.delete_data_allel">[docs]</a>    <span class="k">def</span> <span class="nf">delete_data_allel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">con</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes a row in table allel with given id in the database.</span>
+
+<span class="sd">        :param con: connection to the database</span>
+<span class="sd">        :param id: id</span>
+<span class="sd">        :rtype: in case error string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sql_str</span> <span class="o">=</span> <span class="s2">&quot;DELETE FROM allel WHERE id= ?;&quot;</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_str</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;call -p to see the changes&quot;</span>
+        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OperateDatabase.delete_data_populations"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.OperateDatabase.delete_data_populations">[docs]</a>    <span class="k">def</span> <span class="nf">delete_data_populations</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">con</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes a row in table populations with given id in the database.</span>
+
+<span class="sd">        :param con: connection to the database</span>
+<span class="sd">        :param id: id</span>
+<span class="sd">        :rtype: in case error string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sql_str</span> <span class="o">=</span> <span class="s2">&quot;DELETE FROM populations WHERE id= ?;&quot;</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_str</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;call -p to see the changes&quot;</span>
+        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="OperateDatabase.delete_data_phenotype"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.OperateDatabase.delete_data_phenotype">[docs]</a>    <span class="k">def</span> <span class="nf">delete_data_phenotype</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">con</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes a row in table phenotype with given id in the database.</span>
+
+<span class="sd">        :param con: connection to the database</span>
+<span class="sd">        :param id: id</span>
+<span class="sd">        :rtype: in case error string</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sql_str</span> <span class="o">=</span> <span class="s2">&quot;DELETE FROM phenotype WHERE id= ?;&quot;</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_str</span><span class="p">,</span> <span class="nb">id</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;call -p to see the changes&quot;</span>
+        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div></div>
+
+
+<div class="viewcode-block" id="UserDB"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.UserDB">[docs]</a><span class="k">class</span> <span class="nc">UserDB</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Maintenance of the user database</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="p">[]</span>
+
+<div class="viewcode-block" id="UserDB.create_tables_user"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.UserDB.create_tables_user">[docs]</a>    <span class="k">def</span> <span class="nf">create_tables_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">con</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates variant table in database.</span>
+
+<span class="sd">        :param con: connection to the database</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">sql_create_login_table</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            CREATE TABLE IF NOT EXISTS login (</span>
+<span class="s2">            id integer PRIMARY KEY,</span>
+<span class="s2">            name text NOT NULL,</span>
+<span class="s2">            token text NOT NULL,</span>
+<span class="s2">            authorization integer NOT NULL</span>
+<span class="s2">        );&quot;&quot;&quot;</span>
+
+        <span class="n">sql_create_ip_table</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">            CREATE TABLE IF NOT EXISTS ip (</span>
+<span class="s2">            id integer PRIMARY KEY,</span>
+<span class="s2">            count_req integer NOT NULL,</span>
+<span class="s2">            ip_addr text NOT NULL</span>
+<span class="s2">        );&quot;&quot;&quot;</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_create_login_table</span><span class="p">,</span> <span class="p">())</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_create_ip_table</span><span class="p">,</span> <span class="p">())</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: nocover</span>
+            <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UserDB.insert_user"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.UserDB.insert_user">[docs]</a>    <span class="k">def</span> <span class="nf">insert_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">acc</span><span class="p">,</span> <span class="n">con</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Adds user to database with a token and authorization number and prevents duplication of usernames.</span>
+
+<span class="sd">        :param acc: username and authorization-key</span>
+<span class="sd">        :param con: connection to the database</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="n">acc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="n">authorization</span> <span class="o">=</span> <span class="n">acc</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">secrets</span><span class="o">.</span><span class="n">token_urlsafe</span><span class="p">()</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sql_find_dup</span> <span class="o">=</span> <span class="s2">&quot;SELECT name FROM login WHERE name = ?&quot;</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_find_dup</span><span class="p">,</span> <span class="p">[</span><span class="n">name</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">output</span> <span class="o">==</span> <span class="p">[]:</span>
+                <span class="k">try</span><span class="p">:</span>
+                    <span class="n">sql_str</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="s2">&quot;INSERT INTO login(name,token,authorization) VAlUES(?,?,?);&quot;</span>
+                    <span class="p">)</span>
+                    <span class="n">parameters</span> <span class="o">=</span> <span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">token</span><span class="p">,</span> <span class="n">authorization</span><span class="p">)</span>
+                    <span class="n">output</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_str</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+                    <span class="k">return</span> <span class="kc">True</span>
+                <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>  <span class="c1"># pragma: nocover</span>
+                    <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="s2">&quot;Username already exists&quot;</span>
+        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UserDB.find_user_token"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.UserDB.find_user_token">[docs]</a>    <span class="k">def</span> <span class="nf">find_user_token</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">con</span><span class="p">,</span> <span class="n">username</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        finds the token for the associated username</span>
+
+<span class="sd">        :param con: connection to the database</span>
+<span class="sd">        :param username: username</span>
+<span class="sd">        :return: token</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sql_find_dup</span> <span class="o">=</span> <span class="s2">&quot;SELECT token FROM login WHERE name = ?&quot;</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_find_dup</span><span class="p">,</span> <span class="p">[</span><span class="n">username</span><span class="p">])</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Token:&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UserDB.print_db_user"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.UserDB.print_db_user">[docs]</a>    <span class="k">def</span> <span class="nf">print_db_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">con</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints whole database.</span>
+
+<span class="sd">        :param con: connection to the database</span>
+<span class="sd">        :return: database</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sql_print_login</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM login&quot;</span>
+            <span class="n">output_login</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_print_login</span><span class="p">,</span> <span class="p">())</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">TABLE login: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">out</span> <span class="ow">in</span> <span class="n">output_login</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UserDB.print_ip"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.UserDB.print_ip">[docs]</a>    <span class="k">def</span> <span class="nf">print_ip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">con</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Prints whole database.</span>
+
+<span class="sd">        :param con: connection to the database</span>
+<span class="sd">        :return: database</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sql_print</span> <span class="o">=</span> <span class="s2">&quot;SELECT * FROM ip&quot;</span>
+            <span class="n">output</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_print</span><span class="p">,</span> <span class="p">())</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;TABLE ip: </span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">out</span> <span class="ow">in</span> <span class="n">output</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">out</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UserDB.delete_user"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.UserDB.delete_user">[docs]</a>    <span class="k">def</span> <span class="nf">delete_user</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">con</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes a row with given id in the database.</span>
+
+<span class="sd">        :param con: connection to the database</span>
+<span class="sd">        :param id: id</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sql_str</span> <span class="o">=</span> <span class="s2">&quot;DELETE FROM login WHERE id= ?;&quot;</span>
+            <span class="n">parameters</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_str</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;call -pu to see the changes&quot;</span>
+        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="UserDB.delete_ip"><a class="viewcode-back" href="../../code.html#beacon.admin_tools.UserDB.delete_ip">[docs]</a>    <span class="k">def</span> <span class="nf">delete_ip</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">con</span><span class="p">,</span> <span class="nb">id</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Deletes a row with given id in the database.</span>
+
+<span class="sd">        :param con: connection to the database</span>
+<span class="sd">        :param id: id</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">sql_str</span> <span class="o">=</span> <span class="s2">&quot;DELETE FROM ip WHERE id= ?;&quot;</span>
+            <span class="n">parameters</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="nb">id</span><span class="p">)</span>
+            <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_str</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+            <span class="k">return</span> <span class="s2">&quot;call -pi to see the changes&quot;</span>
+        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="s2">&quot;An error has occured: &quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span></div></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">edu-swp2020-beacons</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">CUBI Education: SWP Bioinformatik Beacons</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code.html">Code documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.settings.html">beacon.settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.common.html">beacon.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.database.html">beacon.database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.admin_tools.html">beacon.admin_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.admin_cli.html">beacon.admin_cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.rest_api.html">beacon.rest_api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.user_cli.html">beacon.user_cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.web_ui.html">beacon.web_ui</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Namuun, Leylanur, Julia, Jin Soo, Leonardo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

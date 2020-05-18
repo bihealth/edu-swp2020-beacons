@@ -1,0 +1,294 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>beacon.user_cli &#8212; edu-swp2020-beacons 2.0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for beacon.user_cli</h1><div class="highlight"><pre>
+<span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Provides command line interface for beacon</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plot</span>
+<span class="kn">import</span> <span class="nn">matplotlib.image</span> <span class="k">as</span> <span class="nn">mpimg</span>
+<span class="kn">import</span> <span class="nn">io</span>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../code.html#beacon.user_cli.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Takes command line inputs from user, makes request for the variance and prints answer</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Welcome to our project beacon software!</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">ver</span> <span class="o">=</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">while</span> <span class="n">ver</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">True</span><span class="p">:</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span>
+            <span class="s2">&quot;Please enter your secret token or enter nothing to continue as not registered user: &quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">inp</span><span class="p">:</span>
+            <span class="n">ver</span> <span class="o">=</span> <span class="n">verify_token</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">ver</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;There are troubles with the user database.&quot;</span><span class="p">)</span>  <span class="c1"># pragma: nocover</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The occuring error is: &#39;&quot;</span><span class="p">,</span> <span class="n">ver</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">)</span>  <span class="c1"># pragma: nocover</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">inp</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+            <span class="n">ver</span> <span class="o">=</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;Unregistered user&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Hello&quot;</span><span class="p">,</span> <span class="n">ver</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="n">cookie</span> <span class="o">=</span> <span class="n">inp</span>
+
+    <span class="n">cont</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">while</span> <span class="n">cont</span><span class="p">:</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Please enter your variant (chr-pos-ref-alt):</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">_check_input</span><span class="p">(</span><span class="n">inp</span><span class="p">):</span>
+            <span class="n">inp_dict</span> <span class="o">=</span> <span class="n">string_to_dict</span><span class="p">(</span><span class="n">inp</span><span class="p">)</span>
+            <span class="n">out</span> <span class="o">=</span> <span class="n">query_request</span><span class="p">(</span><span class="n">inp_dict</span><span class="p">,</span> <span class="n">cookie</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">out</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                <span class="n">print_results</span><span class="p">(</span><span class="n">out</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>  <span class="c1"># pragma: nocover</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Your input has the wrong format.&quot;</span><span class="p">)</span>
+        <span class="n">inp</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span>
+            <span class="s2">&quot;If you like to continue: Press [c]</span><span class="se">\n</span><span class="s2">If you like to quit: Press [q]</span><span class="se">\n</span><span class="s2">&quot;</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="n">inp</span> <span class="o">==</span> <span class="s2">&quot;c&quot;</span><span class="p">:</span>
+            <span class="n">cont</span> <span class="o">=</span> <span class="kc">True</span>  <span class="c1"># pragma: nocover</span>
+        <span class="k">elif</span> <span class="n">inp</span> <span class="o">==</span> <span class="s2">&quot;q&quot;</span><span class="p">:</span>
+            <span class="n">cont</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;You did not choose an understandible input. Your session is quited now.&quot;</span>
+            <span class="p">)</span>
+            <span class="n">cont</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Thank you for using our tool.&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="verify_token"><a class="viewcode-back" href="../../code.html#beacon.user_cli.verify_token">[docs]</a><span class="k">def</span> <span class="nf">verify_token</span><span class="p">(</span><span class="n">inp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks wether the given string is a valid token by sending it to the rest_api module</span>
+
+<span class="sd">    :param inp: string which should be a valid token</span>
+<span class="sd">    :return: tuple which tells wether the token is valid and if yes which user it belongs to</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="s2">&quot;http://localhost:5000/api/verify&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">inp</span><span class="p">})</span>
+        <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;verified&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;error&quot;</span><span class="p">])</span>
+        <span class="k">elif</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;verified&quot;</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;user&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;This is not a valid token.&quot;</span><span class="p">)</span>
+            <span class="k">return</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># pragma: nocover</span>
+        <span class="k">return</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Connection to server couldn&#39;t be established&quot;</span><span class="p">)</span>  <span class="c1"># pragma: nocover</span></div>
+
+
+<span class="k">def</span> <span class="nf">_check_input</span><span class="p">(</span><span class="n">var_str</span><span class="p">):</span>  <span class="c1"># maybe better to check each input seperately</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Checks if the input is a valid variant string</span>
+
+<span class="sd">    :param var_str: string supposed to be in the format &#39;chr-pos-ref-alt&#39;</span>
+<span class="sd">    :return: bool which tells wether the input is valid</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">pattern</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span>
+        <span class="sa">r</span><span class="sd">&quot;&quot;&quot;([1-9]|[1][0-9]|[2][0-2]|[XY])  # the chromosome</span>
+<span class="sd">                        -(\d+)     # the position</span>
+<span class="sd">                        -[ACGT]+   #RawDescriptionHelpFormatter,</span>
+<span class="sd">                        -[ACGT]+  # alt&quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="n">re</span><span class="o">.</span><span class="n">X</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">re</span><span class="o">.</span><span class="n">fullmatch</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">var_str</span><span class="p">)</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+
+<div class="viewcode-block" id="string_to_dict"><a class="viewcode-back" href="../../code.html#beacon.user_cli.string_to_dict">[docs]</a><span class="k">def</span> <span class="nf">string_to_dict</span><span class="p">(</span><span class="n">inp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Converts a variant string into a dictionary</span>
+
+<span class="sd">    :param inp: string which should be a valid variant</span>
+<span class="sd">    :return: dictionary with the variants keys and values</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">inp_list</span> <span class="o">=</span> <span class="n">inp</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
+    <span class="n">inp_dict</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s2">&quot;chr&quot;</span><span class="p">:</span> <span class="n">inp_list</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+        <span class="s2">&quot;pos&quot;</span><span class="p">:</span> <span class="n">inp_list</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+        <span class="s2">&quot;ref&quot;</span><span class="p">:</span> <span class="n">inp_list</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+        <span class="s2">&quot;alt&quot;</span><span class="p">:</span> <span class="n">inp_list</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">inp_dict</span></div>
+
+
+<div class="viewcode-block" id="query_request"><a class="viewcode-back" href="../../code.html#beacon.user_cli.query_request">[docs]</a><span class="k">def</span> <span class="nf">query_request</span><span class="p">(</span><span class="n">inp_dict</span><span class="p">,</span> <span class="n">cookie</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sends a request with a variant and a token to the rest_api module</span>
+
+<span class="sd">    :param inp_dict: dictionary of the variant</span>
+<span class="sd">    :param cookie: the header given bey the user</span>
+<span class="sd">    :return: tuple with a bool telling wether the request was successful and the output in the form of a dictionary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">connection_established</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">rep</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="s2">&quot;http://localhost:5000/query&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">inp_dict</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">cookie</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">connection_established</span> <span class="o">=</span> <span class="kc">True</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">We have troubles reaching the server, please ask your local administrator.&quot;</span>
+        <span class="p">)</span>
+    <span class="k">if</span> <span class="n">connection_established</span><span class="p">:</span>
+        <span class="n">outp_dict</span> <span class="o">=</span> <span class="n">rep</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">return</span> <span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">outp_dict</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="kc">False</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="print_results"><a class="viewcode-back" href="../../code.html#beacon.user_cli.print_results">[docs]</a><span class="k">def</span> <span class="nf">print_results</span><span class="p">(</span><span class="n">outp_dict</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Prints the output received from the rest_api module</span>
+
+<span class="sd">    :param outp_dict: dictionary with the requested output</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">outp_dict</span><span class="p">[</span><span class="s2">&quot;occ&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">outp_dict</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;You are not allowed to make more requests from this IP-address.&quot;</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;We have troubles with the database, please ask your admin for help.&quot;</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The occuring error is: &#39;&quot;</span><span class="p">,</span> <span class="n">outp_dict</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">],</span> <span class="s2">&quot;&#39;&quot;</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">print_dict</span> <span class="o">=</span> <span class="p">{</span><span class="n">x</span><span class="p">:</span> <span class="n">outp_dict</span><span class="p">[</span><span class="n">x</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">outp_dict</span> <span class="k">if</span> <span class="n">x</span> <span class="o">!=</span> <span class="s2">&quot;statistic&quot;</span><span class="p">}</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;The result of your request is:&quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">print_dict</span><span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;statistic&quot;</span> <span class="ow">in</span> <span class="n">outp_dict</span> <span class="ow">and</span> <span class="n">outp_dict</span><span class="p">[</span><span class="s2">&quot;statistic&quot;</span><span class="p">]:</span>
+            <span class="n">stat_byte</span> <span class="o">=</span> <span class="n">outp_dict</span><span class="p">[</span><span class="s2">&quot;statistic&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)</span>
+            <span class="n">figure</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">stat_byte</span><span class="p">)</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">mpimg</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">figure</span><span class="p">))</span>
+            <span class="n">plot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+            <span class="n">plot</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span>
+                <span class="s2">&quot;stat_population_&quot;</span>
+                <span class="o">+</span> <span class="n">outp_dict</span><span class="p">[</span><span class="s2">&quot;chr&quot;</span><span class="p">]</span>
+                <span class="o">+</span> <span class="s2">&quot;_&quot;</span>
+                <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">outp_dict</span><span class="p">[</span><span class="s2">&quot;pos&quot;</span><span class="p">])</span>
+                <span class="o">+</span> <span class="s2">&quot;_&quot;</span>
+                <span class="o">+</span> <span class="n">outp_dict</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">]</span>
+                <span class="o">+</span> <span class="s2">&quot;_&quot;</span>
+                <span class="o">+</span> <span class="n">outp_dict</span><span class="p">[</span><span class="s2">&quot;alt&quot;</span><span class="p">]</span>
+                <span class="o">+</span> <span class="s2">&quot;.png&quot;</span>
+            <span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">init</span><span class="p">():</span>
+    <span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="n">main</span><span class="p">())</span>  <span class="c1"># pragma: nocover</span>
+
+
+<span class="n">init</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">edu-swp2020-beacons</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">CUBI Education: SWP Bioinformatik Beacons</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code.html">Code documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.settings.html">beacon.settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.common.html">beacon.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.database.html">beacon.database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.admin_tools.html">beacon.admin_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.admin_cli.html">beacon.admin_cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.rest_api.html">beacon.rest_api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.user_cli.html">beacon.user_cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.web_ui.html">beacon.web_ui</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Namuun, Leylanur, Julia, Jin Soo, Leonardo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

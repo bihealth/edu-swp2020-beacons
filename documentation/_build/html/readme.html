@@ -1,0 +1,215 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>CUBI Education: SWP Bioinformatik Beacons &#8212; edu-swp2020-beacons 2.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="beacon.settings" href="generated/beacon.settings.html" />
+    <link rel="prev" title="edu-SWP2020-Beacons" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="cubi-education-swp-bioinformatik-beacons">
+<h1>CUBI Education: SWP Bioinformatik Beacons<a class="headerlink" href="#cubi-education-swp-bioinformatik-beacons" title="Permalink to this headline">¶</a></h1>
+<p>The SWP Beacon Project is a Software which allows users to ask for the existence of given variants thereby it uses the Beacon protocol.</p>
+<div class="section" id="getting-started-for-v-2-0-0">
+<h2>Getting Started for v.2.0.0<a class="headerlink" href="#getting-started-for-v-2-0-0" title="Permalink to this headline">¶</a></h2>
+<p>These instructions will get you a copy of the project  and how to get the system running on your local machine for testing purposes.</p>
+<div class="section" id="prerequisites-and-installing">
+<h3>Prerequisites and Installing<a class="headerlink" href="#prerequisites-and-installing" title="Permalink to this headline">¶</a></h3>
+<p>Please clone the repository edu-swp2020-beacon on git and navigate to the edu-swp2020-beacon file:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone git@github.com:bihealth/edu-swp2020-beacons.git
+$ cd edu-swp2020-beacons
+</pre></div>
+</div>
+<p>The application is running with Python, so a version of installed Python &gt;= 3.6.0 is required. Use pipenv for installing the required packages in the Pipfile:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pipenv --python python3
+$ pipenv shell
+$ pipenv install
+</pre></div>
+</div>
+</div>
+<div class="section" id="running-the-tests">
+<h3>Running the tests<a class="headerlink" href="#running-the-tests" title="Permalink to this headline">¶</a></h3>
+<p>If you like to see if your installation was successfully, run the tests:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pytest .
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="web-interface">
+<h3>Web interface<a class="headerlink" href="#web-interface" title="Permalink to this headline">¶</a></h3>
+<p>start web_ui.py</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -m beacon.web_ui
+</pre></div>
+</div>
+<p>start “rest_api.py” in another terminal</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -m beacon.rest_api
+</pre></div>
+</div>
+<p>fill in variant into the fields of the web interface</p>
+<p>click submit to see the results of the search</p>
+<p>to repeat, click “go Home” button</p>
+</div>
+<div class="section" id="command-line-interface">
+<h3>Command line interface<a class="headerlink" href="#command-line-interface" title="Permalink to this headline">¶</a></h3>
+<p>start “rest_api.py”</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -m beacon.rest_api
+</pre></div>
+</div>
+<p>start “user_cli.py” in another terminal</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python -m beacon.user_cli
+</pre></div>
+</div>
+<p>follow instructions on the command line</p>
+</div>
+<div class="section" id="maintaining-database">
+<h3>Maintaining database<a class="headerlink" href="#maintaining-database" title="Permalink to this headline">¶</a></h3>
+<p>To see which flag you can use, call:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python3 -m beacon.admin_cli -h
+DB Path:*give &quot;data.db&quot; for maintaining the variant database*
+or
+DB Path:*give &quot;login.db&quot; for maintaining the user database*
+</pre></div>
+</div>
+<p>If you want to use a new database or a different one, go to settings.py and change manually the variants PATH_DATABASE and PATH_LOGIN accordingly.</p>
+</div>
+<div class="section" id="sphinx-documentation">
+<h3>Sphinx documentation<a class="headerlink" href="#sphinx-documentation" title="Permalink to this headline">¶</a></h3>
+<p>To see the documentation of the source code in HTML-Format, call:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ open documentation/_build/html/index.html
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="authors">
+<h2>Authors<a class="headerlink" href="#authors" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p><strong>Namuun</strong></p></li>
+<li><p><strong>Leylanur</strong></p></li>
+<li><p><strong>Julia</strong></p></li>
+<li><p><strong>Leonardo</strong></p></li>
+<li><p><strong>Jin Soo</strong></p></li>
+</ul>
+<p>Contributor who participated in this project Holtgrewe, Manuel.</p>
+</div>
+<div class="section" id="acknowledgments">
+<h2>Acknowledgments<a class="headerlink" href="#acknowledgments" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>We are thankful for the inspiration and continuous help of our supervisor Manuel</p></li>
+<li><p>If you have any concerns or you need help with the software contact him</p></li>
+<li><p>Thank you for using our software :))))</p></li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">edu-swp2020-beacons</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CUBI Education: SWP Bioinformatik Beacons</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#getting-started-for-v-2-0-0">Getting Started for v.2.0.0</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#authors">Authors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#acknowledgments">Acknowledgments</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.settings.html">beacon.settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.common.html">beacon.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.database.html">beacon.database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.admin_tools.html">beacon.admin_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.admin_cli.html">beacon.admin_cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.rest_api.html">beacon.rest_api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.user_cli.html">beacon.user_cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.web_ui.html">beacon.web_ui</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">edu-SWP2020-Beacons</a></li>
+      <li>Next: <a href="generated/beacon.settings.html" title="next chapter">beacon.settings</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Namuun, Leylanur, Julia, Jin Soo, Leonardo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/README.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

@@ -1,0 +1,341 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>beacon.database &#8212; edu-swp2020-beacons 2.0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for beacon.database</h1><div class="highlight"><pre>
+<span></span><span class="c1">## module beacon.database</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">...&quot;communicates&quot; with database</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">sqlite3</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">common</span>
+
+
+<div class="viewcode-block" id="ConnectDatabase"><a class="viewcode-back" href="../../code.html#beacon.database.ConnectDatabase">[docs]</a><span class="k">class</span> <span class="nc">ConnectDatabase</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates ConnectDatabase Object and connects to database.</span>
+
+<span class="sd">    :param database: path to database</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">database</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connection</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">database</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__enter__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Returns connection to database as ConnectDatabase Object.</span>
+
+<span class="sd">        :return: ConnectDatabase Object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__exit__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">exc_type</span><span class="p">,</span> <span class="n">exc_value</span><span class="p">,</span> <span class="n">tb</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Closes connection to database of ConnectDatabase Object and raises Exception</span>
+<span class="sd">        if Error occured.</span>
+
+<span class="sd">        :return: True if succeeded</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">exc_type</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">exc_value</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="ConnectDatabase.parse_statement"><a class="viewcode-back" href="../../code.html#beacon.database.ConnectDatabase.parse_statement">[docs]</a>    <span class="k">def</span> <span class="nf">parse_statement</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">sql_str</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="n">annV_bool</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates cursor object and requests database and gives “answer” back.</span>
+
+<span class="sd">        :param sql_str: sql command</span>
+<span class="sd">        :param parameters: input parameters</span>
+<span class="sd">        :param annV_bool: bool if variant request</span>
+<span class="sd">        :return: cursor_ouput or Error</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql_str</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">connection</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">output</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">annV_bool</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">output</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">True</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="kc">False</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">output</span></div>
+
+<div class="viewcode-block" id="ConnectDatabase.handle_request"><a class="viewcode-back" href="../../code.html#beacon.database.ConnectDatabase.handle_request">[docs]</a>    <span class="k">def</span> <span class="nf">handle_request</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">variant</span><span class="p">,</span> <span class="n">authorization</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Gets an variant object and parses request to database and gets an AnnVar or Info as an output.</span>
+
+<span class="sd">        :param variant: Variant Object</span>
+<span class="sd">        :return: AnnVar or Info Object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="c1"># checks if variant exists in database and creates annVar object</span>
+            <span class="n">sql_str</span> <span class="o">=</span> <span class="s2">&quot;SELECT id FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;&quot;</span>
+            <span class="n">parameters</span> <span class="o">=</span> <span class="p">(</span><span class="n">variant</span><span class="o">.</span><span class="n">chr</span><span class="p">,</span> <span class="n">variant</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">variant</span><span class="o">.</span><span class="n">ref</span><span class="p">,</span> <span class="n">variant</span><span class="o">.</span><span class="n">alt</span><span class="p">)</span>
+            <span class="n">occ</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_str</span><span class="p">,</span> <span class="n">parameters</span><span class="p">,</span> <span class="kc">True</span><span class="p">)</span>
+            <span class="n">annVar</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">AnnVar</span><span class="p">(</span>
+                <span class="n">variant</span><span class="o">.</span><span class="n">chr</span><span class="p">,</span> <span class="n">variant</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">variant</span><span class="o">.</span><span class="n">ref</span><span class="p">,</span> <span class="n">variant</span><span class="o">.</span><span class="n">alt</span><span class="p">,</span> <span class="n">occ</span>
+            <span class="p">)</span>
+            <span class="c1"># if authorization is False or no occ (no extra information availible) return Annvar</span>
+            <span class="k">if</span> <span class="n">authorization</span> <span class="o">==</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">annVar</span><span class="o">.</span><span class="n">occ</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">annVar</span>
+            <span class="c1"># else create Info object</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># count allel in database for variant and sum it n VarCount</span>
+                <span class="n">sql_alt_hetero</span> <span class="o">=</span> <span class="s2">&quot;SELECT SUM(alt_hetero) FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;&quot;</span>
+                <span class="n">sql_alt_homo</span> <span class="o">=</span> <span class="s2">&quot;SELECT SUM(alt_homo) FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;&quot;</span>
+                <span class="n">sql_hemi_alt</span> <span class="o">=</span> <span class="s2">&quot;SELECT SUM(hemi_alt) FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;&quot;</span>
+                <span class="n">alt_hetero</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_alt_hetero</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">alt_homo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_alt_homo</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">hemi_alt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_hemi_alt</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">varCount</span> <span class="o">=</span> <span class="n">alt_hetero</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">alt_homo</span> <span class="o">+</span> <span class="n">hemi_alt</span>
+                <span class="c1"># select count of general allel information</span>
+                <span class="n">sql_wildtype</span> <span class="o">=</span> <span class="s2">&quot;SELECT SUM(wildtype) FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;&quot;</span>
+                <span class="n">sql_hemi_ref</span> <span class="o">=</span> <span class="s2">&quot;SELECT SUM(hemi_ref) FROM allel WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;&quot;</span>
+                <span class="n">wildtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_wildtype</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">hemi_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_hemi_ref</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                <span class="c1"># calculate frequency out of it (#variant_allel/#locus_information_allel)</span>
+                <span class="n">frequency</span> <span class="o">=</span> <span class="n">varCount</span> <span class="o">/</span> <span class="p">(</span>
+                    <span class="mi">2</span> <span class="o">*</span> <span class="p">(</span><span class="n">wildtype</span> <span class="o">+</span> <span class="n">alt_hetero</span> <span class="o">+</span> <span class="n">alt_homo</span><span class="p">)</span> <span class="o">+</span> <span class="n">hemi_alt</span> <span class="o">+</span> <span class="n">hemi_ref</span>
+                <span class="p">)</span>
+                <span class="c1"># returns information about varCount and frequency</span>
+                <span class="k">if</span> <span class="n">authorization</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                    <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span>
+                        <span class="n">annVar</span><span class="o">.</span><span class="n">chr</span><span class="p">,</span>
+                        <span class="n">annVar</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span>
+                        <span class="n">annVar</span><span class="o">.</span><span class="n">ref</span><span class="p">,</span>
+                        <span class="n">annVar</span><span class="o">.</span><span class="n">alt</span><span class="p">,</span>
+                        <span class="n">annVar</span><span class="o">.</span><span class="n">occ</span><span class="p">,</span>
+                        <span class="n">annVar</span><span class="o">.</span><span class="n">error</span><span class="p">,</span>
+                        <span class="n">varCount</span><span class="p">,</span>
+                        <span class="kc">None</span><span class="p">,</span>
+                        <span class="kc">None</span><span class="p">,</span>
+                        <span class="n">frequency</span><span class="p">,</span>
+                        <span class="kc">None</span><span class="p">,</span>
+                    <span class="p">)</span>
+                <span class="c1"># select populations of variant and converts them into string list</span>
+                <span class="n">sql_population</span> <span class="o">=</span> <span class="s2">&quot;SELECT population FROM populations WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;&quot;</span>
+                <span class="n">population</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span>
+                    <span class="nb">map</span><span class="p">(</span>
+                        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+                        <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_population</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)),</span>
+                    <span class="p">)</span>
+                <span class="p">)</span>
+                <span class="c1"># create dic for population output</span>
+                <span class="n">pop_dic</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="n">sta_data</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="c1"># for each population count allel = popCount and add to output population dic</span>
+                <span class="k">for</span> <span class="n">p</span> <span class="ow">in</span> <span class="n">population</span><span class="p">:</span>
+                    <span class="n">sql_pop_alt_hetero</span> <span class="o">=</span> <span class="s2">&quot;SELECT SUM(alt_hetero) FROM populations WHERE chr = ? AND pos = ? AND ref = ? AND alt = ? AND population = ?;&quot;</span>
+                    <span class="n">sql_pop_alt_homo</span> <span class="o">=</span> <span class="s2">&quot;SELECT SUM(alt_homo) FROM populations WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ? AND population = ?;&quot;</span>
+                    <span class="n">sql_pop_hemi_alt</span> <span class="o">=</span> <span class="s2">&quot;SELECT SUM(hemi_alt) FROM populations WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ? AND population = ?;&quot;</span>
+                    <span class="n">pop_alt_hetero</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span>
+                        <span class="n">sql_pop_alt_hetero</span><span class="p">,</span>
+                        <span class="p">(</span><span class="n">annVar</span><span class="o">.</span><span class="n">chr</span><span class="p">,</span> <span class="n">annVar</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">annVar</span><span class="o">.</span><span class="n">ref</span><span class="p">,</span> <span class="n">annVar</span><span class="o">.</span><span class="n">alt</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span>
+                    <span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">pop_alt_homo</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span>
+                        <span class="n">sql_pop_alt_homo</span><span class="p">,</span>
+                        <span class="p">(</span><span class="n">annVar</span><span class="o">.</span><span class="n">chr</span><span class="p">,</span> <span class="n">annVar</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">annVar</span><span class="o">.</span><span class="n">ref</span><span class="p">,</span> <span class="n">annVar</span><span class="o">.</span><span class="n">alt</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span>
+                    <span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">pop_hemi_alt</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span>
+                        <span class="n">sql_pop_hemi_alt</span><span class="p">,</span>
+                        <span class="p">(</span><span class="n">annVar</span><span class="o">.</span><span class="n">chr</span><span class="p">,</span> <span class="n">annVar</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">annVar</span><span class="o">.</span><span class="n">ref</span><span class="p">,</span> <span class="n">annVar</span><span class="o">.</span><span class="n">alt</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span>
+                    <span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">popCount</span> <span class="o">=</span> <span class="n">pop_alt_hetero</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">pop_alt_homo</span> <span class="o">+</span> <span class="n">pop_hemi_alt</span>
+                    <span class="n">pop_dic</span><span class="p">[</span><span class="n">p</span><span class="p">]</span> <span class="o">=</span> <span class="n">popCount</span>
+                    <span class="n">sql_pop_wildtype</span> <span class="o">=</span> <span class="s2">&quot;SELECT SUM(wildtype) FROM populations WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ? AND population = ?;&quot;</span>
+                    <span class="n">sql_pop_hemi_ref</span> <span class="o">=</span> <span class="s2">&quot;SELECT SUM(hemi_ref) FROM populations WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ? AND population = ?;&quot;</span>
+                    <span class="n">pop_wildtype</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span>
+                        <span class="n">sql_pop_wildtype</span><span class="p">,</span>
+                        <span class="p">(</span><span class="n">annVar</span><span class="o">.</span><span class="n">chr</span><span class="p">,</span> <span class="n">annVar</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">annVar</span><span class="o">.</span><span class="n">ref</span><span class="p">,</span> <span class="n">annVar</span><span class="o">.</span><span class="n">alt</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span>
+                    <span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">pop_hemi_ref</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span>
+                        <span class="n">sql_pop_hemi_ref</span><span class="p">,</span>
+                        <span class="p">(</span><span class="n">annVar</span><span class="o">.</span><span class="n">chr</span><span class="p">,</span> <span class="n">annVar</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">annVar</span><span class="o">.</span><span class="n">ref</span><span class="p">,</span> <span class="n">annVar</span><span class="o">.</span><span class="n">alt</span><span class="p">,</span> <span class="n">p</span><span class="p">),</span>
+                    <span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+                    <span class="n">sta_data</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                        <span class="p">[</span>
+                            <span class="n">pop_wildtype</span><span class="p">,</span>
+                            <span class="n">pop_alt_hetero</span><span class="p">,</span>
+                            <span class="n">pop_alt_homo</span><span class="p">,</span>
+                            <span class="n">pop_hemi_alt</span><span class="p">,</span>
+                            <span class="n">pop_hemi_ref</span><span class="p">,</span>
+                        <span class="p">]</span>
+                    <span class="p">)</span>
+                <span class="c1"># create statistics</span>
+                <span class="n">statistic</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_create_statistics</span><span class="p">(</span><span class="n">population</span><span class="p">,</span> <span class="n">sta_data</span><span class="p">)</span>
+                <span class="c1"># get list of phenotypes associated with variant</span>
+                <span class="n">sql_phenotype</span> <span class="o">=</span> <span class="s2">&quot;SELECT phenotype FROM phenotype WHERE chr = ? AND pos = ? AND ref = ?  AND alt = ?;&quot;</span>
+                <span class="n">phenotype</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span>
+                    <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">sql_phenotype</span><span class="p">,</span> <span class="n">parameters</span><span class="p">)</span>
+                <span class="p">)</span>
+                <span class="c1"># returns Info object</span>
+                <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">Info</span><span class="p">(</span>
+                    <span class="n">annVar</span><span class="o">.</span><span class="n">chr</span><span class="p">,</span>
+                    <span class="n">annVar</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span>
+                    <span class="n">annVar</span><span class="o">.</span><span class="n">ref</span><span class="p">,</span>
+                    <span class="n">annVar</span><span class="o">.</span><span class="n">alt</span><span class="p">,</span>
+                    <span class="n">annVar</span><span class="o">.</span><span class="n">occ</span><span class="p">,</span>
+                    <span class="n">annVar</span><span class="o">.</span><span class="n">error</span><span class="p">,</span>
+                    <span class="n">varCount</span><span class="p">,</span>
+                    <span class="n">pop_dic</span><span class="p">,</span>
+                    <span class="n">statistic</span><span class="p">,</span>
+                    <span class="n">frequency</span><span class="p">,</span>
+                    <span class="nb">list</span><span class="p">(</span><span class="n">phenotype</span><span class="p">),</span>
+                <span class="p">)</span>
+        <span class="k">except</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">common</span><span class="o">.</span><span class="n">AnnVar</span><span class="p">(</span>
+                <span class="n">variant</span><span class="o">.</span><span class="n">chr</span><span class="p">,</span> <span class="n">variant</span><span class="o">.</span><span class="n">pos</span><span class="p">,</span> <span class="n">variant</span><span class="o">.</span><span class="n">ref</span><span class="p">,</span> <span class="n">variant</span><span class="o">.</span><span class="n">alt</span><span class="p">,</span> <span class="kc">None</span><span class="p">,</span> <span class="n">e</span>
+            <span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_create_statistics</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">populations</span><span class="p">,</span> <span class="n">data</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Creates a barplot showing the genotypes per population.</span>
+
+<span class="sd">        :param populations: a list of the population names</span>
+<span class="sd">        :param data: a list of list where per population the count per wildtype, alt_hetero, alt_homo, alt_hemi and alt_ref</span>
+<span class="sd">        :return: matplolib plot object</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="c1"># calculates proportions and turns rows into columns</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">d</span><span class="p">:</span> <span class="p">[(</span><span class="n">s</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">d</span><span class="p">))</span> <span class="o">*</span> <span class="mi">100</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">d</span><span class="p">],</span> <span class="n">data</span><span class="p">))</span>
+        <span class="n">tdata</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="n">data</span><span class="p">))</span>
+        <span class="c1"># legend and colors</span>
+        <span class="n">legend</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s2">&quot;wildtype&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;alt_heterozygote&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;alt_homozygote&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;alt_hemizygote&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;ref_hemizygote&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">colors</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">cm</span><span class="o">.</span><span class="n">autumn</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">1.1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">legend</span><span class="p">)))</span>
+        <span class="n">width</span> <span class="o">=</span> <span class="mf">0.35</span>  <span class="c1"># the width of the bars</span>
+        <span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">()</span>
+        <span class="c1"># creates barplot</span>
+        <span class="n">y_offset</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">populations</span><span class="p">))</span>
+        <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">5</span><span class="p">):</span>
+            <span class="n">ax</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span>
+                <span class="n">populations</span><span class="p">,</span>
+                <span class="n">tdata</span><span class="p">[</span><span class="n">l</span><span class="p">],</span>
+                <span class="n">width</span><span class="p">,</span>
+                <span class="n">bottom</span><span class="o">=</span><span class="n">y_offset</span><span class="p">,</span>
+                <span class="n">label</span><span class="o">=</span><span class="n">legend</span><span class="p">[</span><span class="n">l</span><span class="p">],</span>
+                <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="n">l</span><span class="p">],</span>
+            <span class="p">)</span>
+            <span class="n">y_offset</span> <span class="o">=</span> <span class="n">y_offset</span> <span class="o">+</span> <span class="n">tdata</span><span class="p">[</span><span class="n">l</span><span class="p">]</span>
+        <span class="c1"># adds legend, label and title</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_ylabel</span><span class="p">(</span><span class="s2">&quot;Proportion in percent&quot;</span><span class="p">)</span>
+        <span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s2">&quot;Genotypes per population&quot;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ax</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">edu-swp2020-beacons</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">CUBI Education: SWP Bioinformatik Beacons</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code.html">Code documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.settings.html">beacon.settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.common.html">beacon.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.database.html">beacon.database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.admin_tools.html">beacon.admin_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.admin_cli.html">beacon.admin_cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.rest_api.html">beacon.rest_api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.user_cli.html">beacon.user_cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.web_ui.html">beacon.web_ui</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Namuun, Leylanur, Julia, Jin Soo, Leonardo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>

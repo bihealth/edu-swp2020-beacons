@@ -1,0 +1,1075 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Code documentation &#8212; edu-swp2020-beacons 2.0.0 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/language_data.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="beacon.settings" href="generated/beacon.settings.html" />
+    <link rel="prev" title="CUBI Education: SWP Bioinformatik Beacons" href="README.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <div class="section" id="code-documentation">
+<h1>Code documentation<a class="headerlink" href="#code-documentation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-beacon.settings">
+<span id="settings"></span><h2>Settings<a class="headerlink" href="#module-beacon.settings" title="Permalink to this headline">¶</a></h2>
+<p>…path to database</p>
+<div class="highlight-python notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre>1
+2
+3
+4
+5
+6
+7</pre></div></td><td class="code"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">os</span>
+
+<span class="n">path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span>
+
+<span class="n">PATH_DATABASE</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;data.db&quot;</span><span class="p">)</span>
+
+<span class="n">PATH_LOGIN</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;login.db&quot;</span><span class="p">)</span>
+</pre></div>
+</td></tr></table></div>
+</div>
+<div class="section" id="module-beacon.common">
+<span id="common"></span><h2>Common<a class="headerlink" href="#module-beacon.common" title="Permalink to this headline">¶</a></h2>
+<p>…prevents variant class for software</p>
+<dl class="py class">
+<dt id="beacon.common.AnnVar">
+<em class="property">class </em><code class="sig-prename descclassname">beacon.common.</code><code class="sig-name descname">AnnVar</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chr</span></em>, <em class="sig-param"><span class="n">pos</span></em>, <em class="sig-param"><span class="n">ref</span></em>, <em class="sig-param"><span class="n">alt</span></em>, <em class="sig-param"><span class="n">occ</span></em>, <em class="sig-param"><span class="n">error</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/common.html#AnnVar"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.common.AnnVar" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates AnnVar Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chr</strong> – chr of input variant</p></li>
+<li><p><strong>pos</strong> – pos of input variant</p></li>
+<li><p><strong>ref</strong> – ref of input variant</p></li>
+<li><p><strong>alt</strong> – alt of input variant</p></li>
+<li><p><strong>occ</strong> – occurence of variant in database</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="beacon.common.Info">
+<em class="property">class </em><code class="sig-prename descclassname">beacon.common.</code><code class="sig-name descname">Info</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chr</span></em>, <em class="sig-param"><span class="n">pos</span></em>, <em class="sig-param"><span class="n">ref</span></em>, <em class="sig-param"><span class="n">alt</span></em>, <em class="sig-param"><span class="n">occ</span></em>, <em class="sig-param"><span class="n">error</span></em>, <em class="sig-param"><span class="n">varCount</span></em>, <em class="sig-param"><span class="n">population</span></em>, <em class="sig-param"><span class="n">statistic</span></em>, <em class="sig-param"><span class="n">frequency</span></em>, <em class="sig-param"><span class="n">phenotype</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/common.html#Info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.common.Info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates Info Object and is subclass of AnnVar.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>varCount</strong> – #variants in database for query</p></li>
+<li><p><strong>population</strong> – list of tuple in which population and how often query variant exist</p></li>
+<li><p><strong>statistic</strong> – statistic of output data</p></li>
+<li><p><strong>frequency</strong> – frequency of allels in variant</p></li>
+<li><p><strong>phenotype</strong> – phenotype information</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py class">
+<dt id="beacon.common.Variant">
+<em class="property">class </em><code class="sig-prename descclassname">beacon.common.</code><code class="sig-name descname">Variant</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">chr</span></em>, <em class="sig-param"><span class="n">pos</span></em>, <em class="sig-param"><span class="n">ref</span></em>, <em class="sig-param"><span class="n">alt</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/common.html#Variant"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.common.Variant" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates Variant Object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>chr</strong> – chr of input variant</p></li>
+<li><p><strong>pos</strong> – pos of input variant</p></li>
+<li><p><strong>ref</strong> – ref of input variant</p></li>
+<li><p><strong>alt</strong> – alt of input variant</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="beacon.common.parse_var">
+<code class="sig-prename descclassname">beacon.common.</code><code class="sig-name descname">parse_var</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/common.html#parse_var"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.common.parse_var" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses an input string to a variant object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inp</strong> – variant string</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>variant object</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-beacon.database">
+<span id="database"></span><h2>Database<a class="headerlink" href="#module-beacon.database" title="Permalink to this headline">¶</a></h2>
+<p>…”communicates” with database</p>
+<dl class="py class">
+<dt id="beacon.database.ConnectDatabase">
+<em class="property">class </em><code class="sig-prename descclassname">beacon.database.</code><code class="sig-name descname">ConnectDatabase</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">database</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/database.html#ConnectDatabase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.database.ConnectDatabase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates ConnectDatabase Object and connects to database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>database</strong> – path to database</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt id="beacon.database.ConnectDatabase.handle_request">
+<code class="sig-name descname">handle_request</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">variant</span></em>, <em class="sig-param"><span class="n">authorization</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/database.html#ConnectDatabase.handle_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.database.ConnectDatabase.handle_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets an variant object and parses request to database and gets an AnnVar or Info as an output.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>variant</strong> – Variant Object</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>AnnVar or Info Object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.database.ConnectDatabase.parse_statement">
+<code class="sig-name descname">parse_statement</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sql_str</span></em>, <em class="sig-param"><span class="n">parameters</span></em>, <em class="sig-param"><span class="n">annV_bool</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/database.html#ConnectDatabase.parse_statement"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.database.ConnectDatabase.parse_statement" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates cursor object and requests database and gives “answer” back.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sql_str</strong> – sql command</p></li>
+<li><p><strong>parameters</strong> – input parameters</p></li>
+<li><p><strong>annV_bool</strong> – bool if variant request</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>cursor_ouput or Error</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-beacon.admin_tools">
+<span id="admin-tools"></span><h2>Admin Tools<a class="headerlink" href="#module-beacon.admin_tools" title="Permalink to this headline">¶</a></h2>
+<p>…that maintain the database</p>
+<dl class="py class">
+<dt id="beacon.admin_tools.CreateDbCommand">
+<em class="property">class </em><code class="sig-prename descclassname">beacon.admin_tools.</code><code class="sig-name descname">CreateDbCommand</code><a class="reference internal" href="_modules/beacon/admin_tools.html#CreateDbCommand"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.CreateDbCommand" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates variant table in database.</p>
+<dl class="py method">
+<dt id="beacon.admin_tools.CreateDbCommand.create_tables">
+<code class="sig-name descname">create_tables</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_tools.html#CreateDbCommand.create_tables"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.CreateDbCommand.create_tables" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates variant table in database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>con</strong> – connection to the database</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="beacon.admin_tools.OperateDatabase">
+<em class="property">class </em><code class="sig-prename descclassname">beacon.admin_tools.</code><code class="sig-name descname">OperateDatabase</code><a class="reference internal" href="_modules/beacon/admin_tools.html#OperateDatabase"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.OperateDatabase" title="Permalink to this definition">¶</a></dt>
+<dd><p>Provides tools to maintain the database.</p>
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.count_variants">
+<code class="sig-name descname">count_variants</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_tools.html#OperateDatabase.count_variants"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.count_variants" title="Permalink to this definition">¶</a></dt>
+<dd><p>Counts the existing number of (all) Variants.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>con</strong> – connection to the database</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>int</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.delete_data_allel">
+<code class="sig-name descname">delete_data_allel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">id</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_tools.html#OperateDatabase.delete_data_allel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.delete_data_allel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a row in table allel with given id in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – connection to the database</p></li>
+<li><p><strong>id</strong> – id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>in case error string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.delete_data_phenotype">
+<code class="sig-name descname">delete_data_phenotype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">id</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_tools.html#OperateDatabase.delete_data_phenotype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.delete_data_phenotype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a row in table phenotype with given id in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – connection to the database</p></li>
+<li><p><strong>id</strong> – id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>in case error string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.delete_data_populations">
+<code class="sig-name descname">delete_data_populations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">id</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_tools.html#OperateDatabase.delete_data_populations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.delete_data_populations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a row in table populations with given id in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – connection to the database</p></li>
+<li><p><strong>id</strong> – id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>in case error string</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.print_db">
+<code class="sig-name descname">print_db</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_tools.html#OperateDatabase.print_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.print_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints whole database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>con</strong> – connection to the database</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>database</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.updating_allel">
+<code class="sig-name descname">updating_allel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">allel</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_tools.html#OperateDatabase.updating_allel"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.updating_allel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates a row in the table allel of the database according to given id and input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – connection to the database</p></li>
+<li><p><strong>allel</strong> – (chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, id)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.updating_phenotype">
+<code class="sig-name descname">updating_phenotype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">phenotype</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_tools.html#OperateDatabase.updating_phenotype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.updating_phenotype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates a row in the table phenotype of the database according to given id and input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – connection to the database</p></li>
+<li><p><strong>phenotype</strong> – (chr, pos, ref, alt, phenotype, id)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.OperateDatabase.updating_populations">
+<code class="sig-name descname">updating_populations</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">populations</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_tools.html#OperateDatabase.updating_populations"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.OperateDatabase.updating_populations" title="Permalink to this definition">¶</a></dt>
+<dd><p>Updates a row in the table populations of the database according to given id and input.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – connection to the database</p></li>
+<li><p><strong>populations</strong> – (chr, pos, ref, alt, wildtype, alt_hetero, alt_homo, hemi_ref, hemi_alt, population, id)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="beacon.admin_tools.UserDB">
+<em class="property">class </em><code class="sig-prename descclassname">beacon.admin_tools.</code><code class="sig-name descname">UserDB</code><a class="reference internal" href="_modules/beacon/admin_tools.html#UserDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.UserDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maintenance of the user database</p>
+<dl class="py method">
+<dt id="beacon.admin_tools.UserDB.create_tables_user">
+<code class="sig-name descname">create_tables_user</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_tools.html#UserDB.create_tables_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.UserDB.create_tables_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates variant table in database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>con</strong> – connection to the database</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.UserDB.delete_ip">
+<code class="sig-name descname">delete_ip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">id</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_tools.html#UserDB.delete_ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.UserDB.delete_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a row with given id in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – connection to the database</p></li>
+<li><p><strong>id</strong> – id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.UserDB.delete_user">
+<code class="sig-name descname">delete_user</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">id</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_tools.html#UserDB.delete_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.UserDB.delete_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Deletes a row with given id in the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – connection to the database</p></li>
+<li><p><strong>id</strong> – id</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.UserDB.find_user_token">
+<code class="sig-name descname">find_user_token</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em>, <em class="sig-param"><span class="n">username</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_tools.html#UserDB.find_user_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.UserDB.find_user_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>finds the token for the associated username</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>con</strong> – connection to the database</p></li>
+<li><p><strong>username</strong> – username</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>token</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.UserDB.insert_user">
+<code class="sig-name descname">insert_user</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">acc</span></em>, <em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_tools.html#UserDB.insert_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.UserDB.insert_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Adds user to database with a token and authorization number and prevents duplication of usernames.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>acc</strong> – username and authorization-key</p></li>
+<li><p><strong>con</strong> – connection to the database</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.UserDB.print_db_user">
+<code class="sig-name descname">print_db_user</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_tools.html#UserDB.print_db_user"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.UserDB.print_db_user" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints whole database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>con</strong> – connection to the database</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>database</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="beacon.admin_tools.UserDB.print_ip">
+<code class="sig-name descname">print_ip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_tools.html#UserDB.print_ip"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.UserDB.print_ip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints whole database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>con</strong> – connection to the database</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>database</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt id="beacon.admin_tools.parse_vcf">
+<code class="sig-prename descclassname">beacon.admin_tools.</code><code class="sig-name descname">parse_vcf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">infile</span></em>, <em class="sig-param"><span class="n">con</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_tools.html#parse_vcf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_tools.parse_vcf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads given files and inserts the data into a database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>infile</strong><strong>[</strong><strong>0</strong><strong>]</strong> – a vcf file for variants</p></li>
+<li><p><strong>infile</strong><strong>[</strong><strong>1</strong><strong>]</strong> – a tsv file for population</p></li>
+<li><p><strong>infile</strong><strong>[</strong><strong>2</strong><strong>]</strong> – a tsv or xslx file for phenotype</p></li>
+<li><p><strong>con</strong> – connection to the database</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>bool</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-beacon.admin_cli">
+<span id="admin-client"></span><h2>Admin Client<a class="headerlink" href="#module-beacon.admin_cli" title="Permalink to this headline">¶</a></h2>
+<p>…to maintain the database</p>
+<dl class="py function">
+<dt id="beacon.admin_cli.main">
+<code class="sig-prename descclassname">beacon.admin_cli.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">argv</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_cli.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_cli.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Maintaining the Database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>argv</strong> – the name to the database.db and the flag which was entered in the command line</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Whether the maintenance of the database was successful</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="beacon.admin_cli.parse_args">
+<code class="sig-prename descclassname">beacon.admin_cli.</code><code class="sig-name descname">parse_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_cli.html#parse_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_cli.parse_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defines the flags.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> – the flag which was entered in the command line</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>parser</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="beacon.admin_cli.path">
+<code class="sig-prename descclassname">beacon.admin_cli.</code><code class="sig-name descname">path</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/admin_cli.html#path"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.admin_cli.path" title="Permalink to this definition">¶</a></dt>
+<dd><p>Asks for a path to the database.db for maintaining the Database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>bool if succeeded, path or error string</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="rest-api">
+<h2>Rest Api<a class="headerlink" href="#rest-api" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="generated/beacon.rest_api.html#module-beacon.rest_api" title="beacon.rest_api"><code class="xref py py-func docutils literal notranslate"><span class="pre">beacon.rest_api()</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Provides (flask) server for beacon.</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">jsonify</span><span class="p">,</span> <span class="n">request</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">common</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">database</span>
+<span class="kn">from</span> <span class="nn">.</span> <span class="kn">import</span> <span class="n">settings</span>
+<span class="kn">from</span> <span class="nn">io</span> <span class="kn">import</span> <span class="n">BytesIO</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">sqlite3</span>
+
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">&quot;Agg&quot;</span><span class="p">)</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/query&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">get_api</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Takes variant string, hands it over to database module and returns the answer.</span>
+
+<span class="sd">    :param: POST request with json input_dict and token</span>
+<span class="sd">    :return: json of variant and occurence</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">token</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;token&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">database</span><span class="o">.</span><span class="n">ConnectDatabase</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">PATH_DATABASE</span><span class="p">)</span> <span class="k">as</span> <span class="n">con</span><span class="p">:</span>
+            <span class="n">auth</span> <span class="o">=</span> <span class="n">request_permission</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">remote_addr</span><span class="p">,</span> <span class="n">token</span><span class="p">)</span>
+            <span class="n">var</span> <span class="o">=</span> <span class="n">common</span><span class="o">.</span><span class="n">parse_var</span><span class="p">(</span>
+                <span class="n">request</span><span class="o">.</span><span class="n">json</span>
+            <span class="p">)</span>  <span class="c1"># need to change common.parse_var to convert from dict to variant object</span>
+            <span class="k">if</span> <span class="n">auth</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">Exception</span><span class="p">(</span><span class="n">auth</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">auth</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">un_ann</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span>
+                <span class="n">un_ann</span><span class="p">[</span><span class="s2">&quot;occ&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="n">un_ann</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+                <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">un_ann</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">ann_var</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">handle_request</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">auth</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                <span class="n">a_dict</span> <span class="o">=</span> <span class="n">ann_var</span><span class="o">.</span><span class="vm">__dict__</span>
+                <span class="k">if</span> <span class="p">(</span>
+                    <span class="n">a_dict</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span>
+                    <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">a_dict</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">6</span>
+                    <span class="ow">and</span> <span class="n">a_dict</span><span class="p">[</span><span class="s2">&quot;statistic&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="p">):</span>
+                    <span class="n">figfile</span> <span class="o">=</span> <span class="n">BytesIO</span><span class="p">()</span>
+                    <span class="n">fig</span> <span class="o">=</span> <span class="n">ann_var</span><span class="o">.</span><span class="n">statistic</span>
+                    <span class="n">fig</span><span class="o">.</span><span class="n">figure</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">figfile</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;png&quot;</span><span class="p">)</span>
+                    <span class="n">figfile</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+                    <span class="n">figdata_png</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64encode</span><span class="p">(</span><span class="n">figfile</span><span class="o">.</span><span class="n">getvalue</span><span class="p">())</span>
+                    <span class="n">a_dict</span><span class="p">[</span><span class="s2">&quot;statistic&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">figdata_png</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">a_dict</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+                    <span class="n">a_dict</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">a_dict</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">a_dict</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">un_ann</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">json</span>
+        <span class="n">un_ann</span><span class="p">[</span><span class="s2">&quot;occ&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">un_ann</span><span class="p">[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">(</span><span class="n">un_ann</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">request_permission</span><span class="p">(</span><span class="n">ip_addr</span><span class="p">,</span> <span class="n">token</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Takes IP address and token of user, counts and checks the number of request and returns it&#39;s authorization level.</span>
+
+<span class="sd">    :param ip_addr: IP address of user</span>
+<span class="sd">    :param token: token from login.db</span>
+<span class="sd">    :return type: tuple</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">database</span><span class="o">.</span><span class="n">ConnectDatabase</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">PATH_LOGIN</span><span class="p">)</span> <span class="k">as</span> <span class="n">con</span><span class="p">:</span>
+            <span class="n">auth</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span>
+                <span class="s2">&quot;SELECT count_req FROM ip WHERE ip_addr = ?&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">ip_addr</span><span class="p">]</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">auth</span><span class="p">:</span>
+                <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span>
+                    <span class="s2">&quot;INSERT INTO ip(count_req, ip_addr) VALUES(1,?)&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">ip_addr</span><span class="p">]</span>
+                <span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">auth</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">20</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span>
+                    <span class="s2">&quot;UPDATE ip SET count_req = count_req + 1 WHERE ip_addr = ?&quot;</span><span class="p">,</span>
+                    <span class="p">[</span><span class="n">ip_addr</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="k">if</span> <span class="n">token</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+                <span class="k">return</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">auth</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span>
+                    <span class="s2">&quot;SELECT authorization FROM login WHERE token = ?&quot;</span><span class="p">,</span> <span class="p">[</span><span class="n">token</span><span class="p">]</span>
+                <span class="p">)</span>
+                <span class="k">return</span> <span class="p">(</span><span class="n">auth</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="p">(</span><span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span><span class="kc">None</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/api/verify&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">verify_user</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Takes the given token of user and checks if the user is verified.</span>
+
+<span class="sd">    :param: POST request with token</span>
+<span class="sd">    :return type: jsonify</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">database</span><span class="o">.</span><span class="n">ConnectDatabase</span><span class="p">(</span><span class="n">settings</span><span class="o">.</span><span class="n">PATH_LOGIN</span><span class="p">)</span> <span class="k">as</span> <span class="n">con</span><span class="p">:</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">&quot;token&quot;</span><span class="p">]</span>
+            <span class="n">exist_query</span> <span class="o">=</span> <span class="s2">&quot;SELECT token,name FROM login WHERE token = ?&quot;</span>
+            <span class="n">exist</span> <span class="o">=</span> <span class="n">con</span><span class="o">.</span><span class="n">parse_statement</span><span class="p">(</span><span class="n">exist_query</span><span class="p">,</span> <span class="p">[</span><span class="n">token</span><span class="p">])</span>
+            <span class="k">if</span> <span class="n">exist</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;verified&quot;</span><span class="p">:</span> <span class="kc">True</span><span class="p">,</span> <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="n">exist</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;verified&quot;</span><span class="p">:</span> <span class="kc">False</span><span class="p">,</span> <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">})</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">sqlite3</span><span class="o">.</span><span class="n">Error</span><span class="p">,</span> <span class="ne">Exception</span><span class="p">)</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">jsonify</span><span class="p">({</span><span class="s2">&quot;verified&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;user&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;error&quot;</span><span class="p">:</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]})</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="module-beacon.user_cli">
+<span id="user-client"></span><h2>User Client<a class="headerlink" href="#module-beacon.user_cli" title="Permalink to this headline">¶</a></h2>
+<p>Provides command line interface for beacon</p>
+<dl class="py function">
+<dt id="beacon.user_cli.main">
+<code class="sig-prename descclassname">beacon.user_cli.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/user_cli.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.user_cli.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>Takes command line inputs from user, makes request for the variance and prints answer</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="beacon.user_cli.print_results">
+<code class="sig-prename descclassname">beacon.user_cli.</code><code class="sig-name descname">print_results</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">outp_dict</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/user_cli.html#print_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.user_cli.print_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints the output received from the rest_api module</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>outp_dict</strong> – dictionary with the requested output</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="beacon.user_cli.query_request">
+<code class="sig-prename descclassname">beacon.user_cli.</code><code class="sig-name descname">query_request</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp_dict</span></em>, <em class="sig-param"><span class="n">cookie</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/user_cli.html#query_request"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.user_cli.query_request" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sends a request with a variant and a token to the rest_api module</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inp_dict</strong> – dictionary of the variant</p></li>
+<li><p><strong>cookie</strong> – the header given bey the user</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tuple with a bool telling wether the request was successful and the output in the form of a dictionary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="beacon.user_cli.string_to_dict">
+<code class="sig-prename descclassname">beacon.user_cli.</code><code class="sig-name descname">string_to_dict</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/user_cli.html#string_to_dict"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.user_cli.string_to_dict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Converts a variant string into a dictionary</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inp</strong> – string which should be a valid variant</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>dictionary with the variants keys and values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="beacon.user_cli.verify_token">
+<code class="sig-prename descclassname">beacon.user_cli.</code><code class="sig-name descname">verify_token</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inp</span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/beacon/user_cli.html#verify_token"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#beacon.user_cli.verify_token" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks wether the given string is a valid token by sending it to the rest_api module</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inp</strong> – string which should be a valid token</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>tuple which tells wether the token is valid and if yes which user it belongs to</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="web-interface">
+<h2>Web Interface<a class="headerlink" href="#web-interface" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference internal" href="generated/beacon.web_ui.html#module-beacon.web_ui" title="beacon.web_ui"><code class="xref py py-func docutils literal notranslate"><span class="pre">beacon.web_ui()</span></code></a>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">...provides the web user interface</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">request</span><span class="p">,</span> <span class="n">render_template</span>
+<span class="kn">import</span> <span class="nn">requests</span>
+<span class="kn">import</span> <span class="nn">webbrowser</span>
+<span class="kn">import</span> <span class="nn">base64</span>
+<span class="kn">import</span> <span class="nn">matplotlib</span>
+<span class="kn">import</span> <span class="nn">matplotlib.image</span> <span class="k">as</span> <span class="nn">mpimg</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plot</span>
+<span class="kn">import</span> <span class="nn">io</span>
+
+<span class="n">matplotlib</span><span class="o">.</span><span class="n">use</span><span class="p">(</span><span class="s2">&quot;Agg&quot;</span><span class="p">)</span>
+
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">home</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Input: /</span>
+<span class="sd">    Output: Home-Page with input fields and submit button</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;home.html&quot;</span><span class="p">)</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/results&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">handle</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Input: request.form Object</span>
+<span class="sd">    Output: HTML-Page with the results</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">token</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;token&quot;</span><span class="p">]</span>
+        <span class="n">jform</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;chr&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;chr&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;pos&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;pos&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;ref&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">],</span>
+            <span class="s2">&quot;alt&quot;</span><span class="p">:</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;alt&quot;</span><span class="p">],</span>
+        <span class="p">}</span>
+        <span class="n">rep</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+            <span class="s2">&quot;http://localhost:5000/query&quot;</span><span class="p">,</span> <span class="n">json</span><span class="o">=</span><span class="n">jform</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">}</span>
+        <span class="p">)</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="n">rep</span><span class="o">.</span><span class="n">json</span><span class="p">()</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">res</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">6</span><span class="p">:</span>
+            <span class="n">atable</span> <span class="o">=</span> <span class="kc">True</span>
+            <span class="k">if</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;statistic&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">static</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">static</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">atable</span> <span class="o">=</span> <span class="kc">False</span>
+            <span class="n">static</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">if</span> <span class="n">static</span><span class="p">:</span>
+            <span class="n">stat_byte</span> <span class="o">=</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;statistic&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">)</span>
+            <span class="n">figure</span> <span class="o">=</span> <span class="n">base64</span><span class="o">.</span><span class="n">b64decode</span><span class="p">(</span><span class="n">stat_byte</span><span class="p">)</span>
+            <span class="n">img</span> <span class="o">=</span> <span class="n">mpimg</span><span class="o">.</span><span class="n">imread</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">BytesIO</span><span class="p">(</span><span class="n">figure</span><span class="p">))</span>
+            <span class="n">imgplot</span> <span class="o">=</span> <span class="n">plot</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">img</span><span class="p">)</span>
+            <span class="n">plot</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span>
+                <span class="s2">&quot;stat_population_&quot;</span>
+                <span class="o">+</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;chr&quot;</span><span class="p">]</span>
+                <span class="o">+</span> <span class="s2">&quot;_&quot;</span>
+                <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;pos&quot;</span><span class="p">])</span>
+                <span class="o">+</span> <span class="s2">&quot;_&quot;</span>
+                <span class="o">+</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">]</span>
+                <span class="o">+</span> <span class="s2">&quot;_&quot;</span>
+                <span class="o">+</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;alt&quot;</span><span class="p">]</span>
+                <span class="o">+</span> <span class="s2">&quot;.png&quot;</span>
+            <span class="p">)</span>
+            <span class="n">st</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="s2">&quot;stat_population_&quot;</span>
+                <span class="o">+</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;chr&quot;</span><span class="p">]</span>
+                <span class="o">+</span> <span class="s2">&quot;_&quot;</span>
+                <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">res</span><span class="p">[</span><span class="s2">&quot;pos&quot;</span><span class="p">])</span>
+                <span class="o">+</span> <span class="s2">&quot;_&quot;</span>
+                <span class="o">+</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">]</span>
+                <span class="o">+</span> <span class="s2">&quot;_&quot;</span>
+                <span class="o">+</span> <span class="n">res</span><span class="p">[</span><span class="s2">&quot;alt&quot;</span><span class="p">]</span>
+                <span class="o">+</span> <span class="s2">&quot;.png&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;output.html&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Results&quot;</span><span class="p">,</span> <span class="o">**</span><span class="nb">locals</span><span class="p">())</span>
+    <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>  <span class="c1"># pragma: no cover</span>
+        <span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;We have troubles reaching the server&quot;</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;home.html&quot;</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="n">error</span><span class="p">)</span>
+
+
+<span class="nd">@app</span><span class="o">.</span><span class="n">route</span><span class="p">(</span><span class="s2">&quot;/login&quot;</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;POST&quot;</span><span class="p">,</span> <span class="s2">&quot;GET&quot;</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">login</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Input: token</span>
+<span class="sd">    Output: Home-Page with input fields and submit button</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s2">&quot;POST&quot;</span><span class="p">:</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">token</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s2">&quot;token&quot;</span><span class="p">]</span>
+            <span class="n">resp</span> <span class="o">=</span> <span class="n">requests</span><span class="o">.</span><span class="n">post</span><span class="p">(</span>
+                <span class="s2">&quot;http://localhost:5000/api/verify&quot;</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;token&quot;</span><span class="p">:</span> <span class="n">token</span><span class="p">}</span>
+            <span class="p">)</span>
+            <span class="k">if</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;verified&quot;</span><span class="p">]:</span>
+                <span class="n">username</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;user&quot;</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;home.html&quot;</span><span class="p">,</span> <span class="n">token</span><span class="o">=</span><span class="n">token</span><span class="p">,</span> <span class="n">user</span><span class="o">=</span><span class="n">username</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;verified&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+                <span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;This is not a valid token&quot;</span>
+                <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;login.html&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Login&quot;</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="n">error</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">error</span> <span class="o">=</span> <span class="n">resp</span><span class="o">.</span><span class="n">json</span><span class="p">()[</span><span class="s2">&quot;error&quot;</span><span class="p">]</span>
+                <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;login.html&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Login&quot;</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="n">error</span><span class="p">)</span>
+        <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
+            <span class="n">error</span> <span class="o">=</span> <span class="s2">&quot;We have troubles reaching the server&quot;</span>
+            <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;login.html&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Login&quot;</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="n">error</span><span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">render_template</span><span class="p">(</span><span class="s2">&quot;login.html&quot;</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Login&quot;</span><span class="p">)</span>
+
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">webbrowser</span><span class="o">.</span><span class="n">open_new</span><span class="p">(</span><span class="s2">&quot;http://localhost:4000/&quot;</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
+    <span class="n">app</span><span class="o">.</span><span class="n">run</span><span class="p">(</span><span class="n">debug</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">port</span><span class="o">=</span><span class="s2">&quot;4000&quot;</span><span class="p">)</span>  <span class="c1"># pragma: no cover</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="web-templates">
+<h2>Web Templates<a class="headerlink" href="#web-templates" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="layout-html">
+<h3>layout.html<a class="headerlink" href="#layout-html" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span><span class="cp">&lt;!DOCTYPE html&gt;</span>
+<span class="p">&lt;</span><span class="nt">html</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">head</span><span class="p">&gt;</span>
+
+        <span class="p">&lt;</span><span class="nt">link</span> <span class="na">rel </span><span class="o">=</span> <span class="s">&quot;stylesheet&quot;</span> <span class="na">type </span><span class="o">=</span> <span class="s">&quot;text/css&quot;</span> <span class="na">href </span><span class="o">=</span> <span class="s">&quot;{{ url_for(&#39;static&#39;, filename = &#39;main.css&#39;) }}&quot;</span><span class="p">&gt;</span>
+        
+        {% if title %} 
+            <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span> SWP - {{ title }} <span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+        {% else %} 
+            <span class="p">&lt;</span><span class="nt">title</span><span class="p">&gt;</span> SWP <span class="p">&lt;/</span><span class="nt">title</span><span class="p">&gt;</span>
+        {% endif %} 
+    <span class="p">&lt;/</span><span class="nt">head</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">body</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;header&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;/&quot;</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;beacon&quot;</span><span class="p">&gt;</span>Beacon<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">div</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;right&quot;</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">a</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;/login&quot;</span><span class="p">&gt;</span>Login<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+                <span class="p">&lt;</span><span class="nt">a</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;home&quot;</span> <span class="na">href</span><span class="o">=</span><span class="s">&quot;/&quot;</span><span class="p">&gt;</span>Logout<span class="p">&lt;/</span><span class="nt">a</span><span class="p">&gt;</span>
+            <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
+        {% block contennt %} {% endblock %} 
+    <span class="p">&lt;/</span><span class="nt">body</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">html</span><span class="p">&gt;</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="home-html">
+<h3>home.html<a class="headerlink" href="#home-html" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>{% extends &quot;layout.html&quot; %} 
+{% block contennt %}
+  <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>SWP<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>Beacon<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+  {% if user %}
+    <span class="p">&lt;</span><span class="nt">p</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;color: white; border: 5px solid rgb(6, 156, 6); background-color: rgb(6, 156, 6); border-radius: 40px; width: 350px;&quot;</span><span class="p">&gt;</span>Hello {{user}}, nice to see you :)<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+  {% else %}
+  {% endif %}
+  {% if error %}
+    <span class="p">&lt;</span><span class="nt">p</span> <span class="na">style</span><span class="o">=</span><span class="s">&#39;color:red;text-align: center;&#39;</span><span class="p">&gt;</span>{{error}}<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+  {% else %}
+  {% endif %}  
+  <span class="p">&lt;</span><span class="nt">form</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;v&quot;</span> <span class="na">enctype</span><span class="o">=</span><span class="s">&#39;application/json&#39;</span> <span class="na">action </span><span class="o">=</span> <span class="s">&quot;{{ url_for(&#39;handle&#39;) }}&quot;</span> <span class="na">method </span><span class="o">=</span> <span class="s">&quot;POST&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;hidden&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;token&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;token&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;{{token}}&quot;</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">label</span> <span class="na">for</span><span class="o">=</span><span class="s">&quot;chr&quot;</span><span class="p">&gt;</span>Chromosom:<span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;chr&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;chr&quot;</span> <span class="na">pattern </span><span class="o">=</span> <span class="s">&quot;[3-9]|([1][0-9]?)|([2][0-2]?)|[XY]&quot;</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;chr&quot;</span> <span class="na">autofocus</span><span class="p">&gt;&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">label</span> <span class="na">for</span><span class="o">=</span><span class="s">&quot;pos&quot;</span> <span class="p">&gt;</span>Position:<span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;pos&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;pos&quot;</span> <span class="na">pattern </span><span class="o">=</span> <span class="s">&quot;\d+&quot;</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;pos&quot;</span><span class="p">&gt;&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">label</span> <span class="na">for</span><span class="o">=</span><span class="s">&quot;ref&quot;</span><span class="p">&gt;</span>Referenz:<span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;ref&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;ref&quot;</span> <span class="na">pattern </span><span class="o">=</span> <span class="s">&quot;[ACGT]+&quot;</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;ref&quot;</span><span class="p">&gt;&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">label</span> <span class="na">for</span><span class="o">=</span><span class="s">&quot;alt&quot;</span><span class="p">&gt;</span>Alternativ:<span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;alt&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;alt&quot;</span> <span class="na">pattern </span><span class="o">=</span> <span class="s">&quot;[ACGT]+&quot;</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;alt&quot;</span><span class="p">&gt;&lt;</span><span class="nt">br</span><span class="p">&gt;</span> 
+    <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;submit&quot;</span><span class="p">&gt;</span>Submit<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+  <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>   
+  <span class="p">&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+  <span class="p">&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+{% endblock %}       
+</pre></div>
+</div>
+</div>
+<div class="section" id="output-html">
+<h3>output.html<a class="headerlink" href="#output-html" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>{% extends &quot;layout.html&quot; %} 
+{% block contennt %}
+    <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>Results<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">style</span><span class="p">&gt;</span>
+
+    {% if res[&#39;occ&#39;] == None %}
+        {% if res[&#39;error&#39;] == None %}
+            <span class="p">&lt;</span><span class="nt">p</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;pr&quot;</span> <span class="p">&gt;</span>You are not allowed to make more requests from this IP-address.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+        {% else %}
+            <span class="p">&lt;</span><span class="nt">p</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;pr&quot;</span> <span class="p">&gt;</span>An Error has occured: {{res[&#39;error&#39;]}}<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+        {% endif %}
+    {% else %}
+        {% if res[&#39;occ&#39;] == True %}
+            <span class="p">&lt;</span><span class="nt">p</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;pg&quot;</span><span class="p">&gt;</span>Your variant {{res[&#39;chr&#39;]}}-{{res[&#39;pos&#39;]}}-{{res[&#39;ref&#39;]}}-{{res[&#39;alt&#39;]}} was found.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+                {% if atable == True %}
+                    <span class="p">&lt;</span><span class="nt">table</span><span class="p">&gt;</span>
+                    <span class="p">&lt;</span><span class="nt">thead</span><span class="p">&gt;</span>
+                        <span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;</span>
+                            <span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>Variant<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+                            <span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>Frequenzy<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+                            <span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>Phenotype<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+                            <span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>Population<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+                            <span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>Variant Count<span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+                        <span class="p">&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+                    <span class="p">&lt;</span><span class="nt">thead</span><span class="p">&gt;</span>
+                    <span class="p">&lt;</span><span class="nt">tbody</span><span class="p">&gt;</span>
+                        <span class="p">&lt;</span><span class="nt">tr</span><span class="p">&gt;</span>
+                            <span class="p">&lt;</span><span class="nt">th</span><span class="p">&gt;</span>{{res[&#39;chr&#39;]}}-{{res[&#39;pos&#39;]}}-{{res[&#39;ref&#39;]}}-{{res[&#39;alt&#39;]}} <span class="p">&lt;/</span><span class="nt">th</span><span class="p">&gt;</span>
+                            <span class="p">&lt;</span><span class="nt">td</span><span class="p">&gt;</span>{{res[&#39;frequency&#39;]}}<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+                            <span class="p">&lt;</span><span class="nt">td</span><span class="p">&gt;</span>{{res[&#39;phenotype&#39;]}}<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+                            <span class="p">&lt;</span><span class="nt">td</span><span class="p">&gt;</span>{{res[&#39;population&#39;]}}<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+                            <span class="p">&lt;</span><span class="nt">td</span><span class="p">&gt;</span>{{res[&#39;varCount&#39;]}}<span class="p">&lt;/</span><span class="nt">td</span><span class="p">&gt;</span>
+                        <span class="p">&lt;/</span><span class="nt">tr</span><span class="p">&gt;</span>
+                    <span class="p">&lt;/</span><span class="nt">tbody</span><span class="p">&gt;</span>
+                    <span class="p">&lt;/</span><span class="nt">table</span><span class="p">&gt;</span>
+                    {% if static == True %}
+                        <span class="p">&lt;</span><span class="nt">img</span> <span class="na">src</span><span class="o">=</span><span class="s">&quot;data:image/png;base64, {{res[&#39;statistic&#39;]}}&quot;</span><span class="p">/&gt;</span>
+                    {% else %}
+                    {% endif %}
+                {% else %}
+                {% endif %}
+        {% else %}
+            <span class="p">&lt;</span><span class="nt">p</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;pr&quot;</span> <span class="p">&gt;</span>Your variant {{res[&#39;chr&#39;]}}-{{res[&#39;pos&#39;]}}-{{res[&#39;ref&#39;]}}-{{res[&#39;alt&#39;]}} was not found.<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+        {% endif %}
+    {% endif %}
+    {% if token == &quot;&quot; %}
+        <span class="p">&lt;</span><span class="nt">button</span> <span class="na">onclick</span><span class="o">=</span><span class="s">&quot;window.location.href=&#39;/&#39;&quot;</span><span class="p">&gt;</span>go Home<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+    {% else %} 
+        <span class="p">&lt;</span><span class="nt">form</span> <span class="na">style</span><span class="o">=</span><span class="s">&quot;border-color: white;&quot;</span> <span class="na">enctype</span><span class="o">=</span><span class="s">&#39;application/json&#39;</span> <span class="na">action </span><span class="o">=</span> <span class="s">&quot;{{ url_for(&#39;login&#39;) }}&quot;</span> <span class="na">method </span><span class="o">=</span> <span class="s">&quot;POST&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;hidden&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;token&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;token&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;{{token}}&quot;</span><span class="p">&gt;</span>
+            <span class="p">&lt;</span><span class="nt">button</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;submit&quot;</span><span class="p">&gt;</span>go Home<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+        <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+    {% endif %}
+{% endblock %}
+</pre></div>
+</div>
+</div>
+<div class="section" id="login-html">
+<h3>login.html<a class="headerlink" href="#login-html" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-html notranslate"><div class="highlight"><pre><span></span>{% extends &quot;layout.html&quot; %} 
+{% block contennt %}
+    <span class="p">&lt;</span><span class="nt">h1</span><span class="p">&gt;</span>SWP<span class="p">&lt;/</span><span class="nt">h1</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">h2</span><span class="p">&gt;</span>Beacon<span class="p">&lt;/</span><span class="nt">h2</span><span class="p">&gt;</span>
+    <span class="p">&lt;</span><span class="nt">form</span> <span class="na">name</span><span class="o">=</span><span class="s">&#39;login&#39;</span> <span class="na">enctype</span><span class="o">=</span><span class="s">&#39;application/json&#39;</span> <span class="na">action </span><span class="o">=</span> <span class="s">&quot;{{ url_for(&#39;login&#39;) }}&quot;</span> <span class="na">method </span><span class="o">=</span> <span class="s">&quot;POST&quot;</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">h3</span><span class="p">&gt;</span>Login<span class="p">&lt;/</span><span class="nt">h3</span><span class="p">&gt;</span>
+        {% if error == None %}
+            <span class="p">&lt;</span><span class="nt">p</span><span class="p">&gt;</span> <span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+        {% else %}
+            <span class="p">&lt;</span><span class="nt">p</span> <span class="na">style</span><span class="o">=</span><span class="s">&#39;color:red;text-align: center;&#39;</span><span class="p">&gt;</span>{{error}}<span class="p">&lt;/</span><span class="nt">p</span><span class="p">&gt;</span>
+        {% endif %}
+        <span class="p">&lt;</span><span class="nt">label</span> <span class="na">for</span><span class="o">=</span><span class="s">&quot;token&quot;</span><span class="p">&gt;</span>Token:<span class="p">&lt;/</span><span class="nt">label</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;text&quot;</span> <span class="na">id</span><span class="o">=</span><span class="s">&quot;token&quot;</span> <span class="na">name</span><span class="o">=</span><span class="s">&quot;token&quot;</span> <span class="na">placeholder</span><span class="o">=</span><span class="s">&quot;Token&quot;</span> <span class="na">required</span> <span class="na">autofocus</span><span class="p">&gt;&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">button</span> <span class="na">class</span><span class="o">=</span> <span class="s">&#39;loginbutton&#39;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;submit&quot;</span><span class="p">&gt;</span>Login<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;reset&quot;</span> <span class="na">value</span><span class="o">=</span><span class="s">&quot;Reset&quot;</span><span class="p">&gt;&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">br</span><span class="p">&gt;</span>
+        <span class="p">&lt;</span><span class="nt">button</span> <span class="na">class</span><span class="o">=</span><span class="s">&quot;cancel&quot;</span> <span class="na">type</span><span class="o">=</span><span class="s">&quot;button&quot;</span> <span class="p">&gt;</span>Cancel<span class="p">&lt;/</span><span class="nt">button</span><span class="p">&gt;</span>
+    <span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span>
+
+{% endblock %}
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">edu-swp2020-beacons</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="README.html">CUBI Education: SWP Bioinformatik Beacons</a></li>
+</ul>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Code documentation</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#module-beacon.settings">Settings</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-beacon.common">Common</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-beacon.database">Database</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-beacon.admin_tools">Admin Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-beacon.admin_cli">Admin Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#rest-api">Rest Api</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#module-beacon.user_cli">User Client</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#web-interface">Web Interface</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#web-templates">Web Templates</a></li>
+</ul>
+</li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.settings.html">beacon.settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.common.html">beacon.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.database.html">beacon.database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.admin_tools.html">beacon.admin_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.admin_cli.html">beacon.admin_cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.rest_api.html">beacon.rest_api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.user_cli.html">beacon.user_cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="generated/beacon.web_ui.html">beacon.web_ui</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="README.html" title="previous chapter">CUBI Education: SWP Bioinformatik Beacons</a></li>
+      <li>Next: <a href="generated/beacon.settings.html" title="next chapter">beacon.settings</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Namuun, Leylanur, Julia, Jin Soo, Leonardo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+      |
+      <a href="_sources/code.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

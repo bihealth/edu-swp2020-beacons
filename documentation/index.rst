@@ -1,49 +1,43 @@
-Welcome to edu-swp2020-beacons's documentation!
-===============================================
+===================
+edu-swp2020-Beacons
+===================
+
+Welcome to our documentation :)
 
 Indices and tables
-------------------
+==================
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
 
-Modules
--------
+README
+======
+.. toctree::
+   :maxdepth: 2
+   
+   README
+
+Code documentation
+==================
+.. toctree::
+   :maxdepth: 2
+
+   code   
+   
+Pythonmodules
+=============
 
 .. autosummary::
    :toctree: generated
    
-   beacon.admin_cli
-   beacon.admin_tools
+   beacon.settings 
    beacon.common
    beacon.database
-   beacon.web_ui
+   beacon.admin_tools
+   beacon.admin_cli
    beacon.rest_api
-   beacon.settings
    beacon.user_cli 
-
-Functions...
-------------
-
-.. automodule:: beacon.admin_cli
-   :members:
-
-.. automodule:: beacon.admin_tools
-   :members:
-
-.. automodule:: beacon.common
-   :members:
-
-.. automodule:: beacon.database
-   :members:
-
-.. automodule:: beacon.settings
-   :members:
-
-.. automodule:: beacon.user_cli
-   :members:
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
+   beacon.web_ui
+   
+   

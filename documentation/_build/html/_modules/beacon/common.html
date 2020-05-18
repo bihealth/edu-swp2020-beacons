@@ -1,0 +1,198 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>beacon.common &#8212; edu-swp2020-beacons 2.0.0 documentation</title>
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <script id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+    <script src="../../_static/jquery.js"></script>
+    <script src="../../_static/underscore.js"></script>
+    <script src="../../_static/doctools.js"></script>
+    <script src="../../_static/language_data.js"></script>
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+   
+  <link rel="stylesheet" href="../../_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          
+
+          <div class="body" role="main">
+            
+  <h1>Source code for beacon.common</h1><div class="highlight"><pre>
+<span></span><span class="c1"># module beacon.common</span>
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">...prevents variant class for software</span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="Variant"><a class="viewcode-back" href="../../code.html#beacon.common.Variant">[docs]</a><span class="k">class</span> <span class="nc">Variant</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates Variant Object.</span>
+
+<span class="sd">    :param chr: chr of input variant</span>
+<span class="sd">    :param pos: pos of input variant</span>
+<span class="sd">    :param ref: ref of input variant</span>
+<span class="sd">    :param alt: alt of input variant</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">chr</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">alt</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chr</span> <span class="o">=</span> <span class="nb">chr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="n">pos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref</span> <span class="o">=</span> <span class="n">ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alt</span> <span class="o">=</span> <span class="n">alt</span></div>
+
+
+<div class="viewcode-block" id="AnnVar"><a class="viewcode-back" href="../../code.html#beacon.common.AnnVar">[docs]</a><span class="k">class</span> <span class="nc">AnnVar</span><span class="p">:</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates AnnVar Object.</span>
+
+<span class="sd">    :param chr: chr of input variant</span>
+<span class="sd">    :param pos: pos of input variant</span>
+<span class="sd">    :param ref: ref of input variant</span>
+<span class="sd">    :param alt: alt of input variant</span>
+<span class="sd">    :param occ: occurence of variant in database</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">chr</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">alt</span><span class="p">,</span> <span class="n">occ</span><span class="p">,</span> <span class="n">error</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">chr</span> <span class="o">=</span> <span class="nb">chr</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">pos</span> <span class="o">=</span> <span class="n">pos</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">ref</span> <span class="o">=</span> <span class="n">ref</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">alt</span> <span class="o">=</span> <span class="n">alt</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">occ</span> <span class="o">=</span> <span class="n">occ</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">error</span> <span class="o">=</span> <span class="n">error</span></div>
+
+
+<div class="viewcode-block" id="Info"><a class="viewcode-back" href="../../code.html#beacon.common.Info">[docs]</a><span class="k">class</span> <span class="nc">Info</span><span class="p">(</span><span class="n">AnnVar</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Creates Info Object and is subclass of AnnVar.</span>
+
+<span class="sd">    :param varCount: #variants in database for query</span>
+<span class="sd">    :param population: list of tuple in which population and how often query variant exist</span>
+<span class="sd">    :param statistic: statistic of output data</span>
+<span class="sd">    :param frequency: frequency of allels in variant</span>
+<span class="sd">    :param phenotype: phenotype information</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="nb">chr</span><span class="p">,</span>
+        <span class="n">pos</span><span class="p">,</span>
+        <span class="n">ref</span><span class="p">,</span>
+        <span class="n">alt</span><span class="p">,</span>
+        <span class="n">occ</span><span class="p">,</span>
+        <span class="n">error</span><span class="p">,</span>
+        <span class="n">varCount</span><span class="p">,</span>
+        <span class="n">population</span><span class="p">,</span>
+        <span class="n">statistic</span><span class="p">,</span>
+        <span class="n">frequency</span><span class="p">,</span>
+        <span class="n">phenotype</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">varCount</span> <span class="o">=</span> <span class="n">varCount</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">population</span> <span class="o">=</span> <span class="n">population</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">statistic</span> <span class="o">=</span> <span class="n">statistic</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">frequency</span> <span class="o">=</span> <span class="n">frequency</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">phenotype</span> <span class="o">=</span> <span class="n">phenotype</span>
+        <span class="n">AnnVar</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="nb">chr</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ref</span><span class="p">,</span> <span class="n">alt</span><span class="p">,</span> <span class="n">occ</span><span class="p">,</span> <span class="n">error</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="parse_var"><a class="viewcode-back" href="../../code.html#beacon.common.parse_var">[docs]</a><span class="k">def</span> <span class="nf">parse_var</span><span class="p">(</span><span class="n">inp</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Parses an input string to a variant object.</span>
+
+<span class="sd">    :param inp: variant string</span>
+<span class="sd">    :return: variant object</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">new_var</span> <span class="o">=</span> <span class="n">Variant</span><span class="p">(</span><span class="n">inp</span><span class="p">[</span><span class="s2">&quot;chr&quot;</span><span class="p">],</span> <span class="n">inp</span><span class="p">[</span><span class="s2">&quot;pos&quot;</span><span class="p">],</span> <span class="n">inp</span><span class="p">[</span><span class="s2">&quot;ref&quot;</span><span class="p">],</span> <span class="n">inp</span><span class="p">[</span><span class="s2">&quot;alt&quot;</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">new_var</span></div>
+</pre></div>
+
+          </div>
+          
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="../../index.html">edu-swp2020-beacons</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../README.html">CUBI Education: SWP Bioinformatik Beacons</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../code.html">Code documentation</a></li>
+</ul>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.settings.html">beacon.settings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.common.html">beacon.common</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.database.html">beacon.database</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.admin_tools.html">beacon.admin_tools</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.admin_cli.html">beacon.admin_cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.rest_api.html">beacon.rest_api</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.user_cli.html">beacon.user_cli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../generated/beacon.web_ui.html">beacon.web_ui</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="../../index.html">Documentation overview</a><ul>
+  <li><a href="../index.html">Module code</a><ul>
+  </ul></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+
+
+
+
+
+
+
+
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2020, Namuun, Leylanur, Julia, Jin Soo, Leonardo.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 3.0.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.12</a>
+      
+    </div>
+
+    
+
+    
+  </body>
+</html>
