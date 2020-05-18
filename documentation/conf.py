@@ -34,8 +34,7 @@ release = version
 # ones.
 extensions = [
     "sphinx.ext.autodoc", 
-    "sphinx.ext.autosummary", 
-    "sphinx.ext.githubpages", 
+    "sphinx.ext.autosummary",  
     "sphinx.ext.viewcode",
 ]
 
