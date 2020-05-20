@@ -168,22 +168,22 @@ def main(argv):
                 output = od.count_variants(connect)
             elif args.update_allel:
                 print("update is activated")
-                output = od.updating_allel(connect, args.update)
+                output = od.updating_allel(connect, args.update_allel)
             elif args.update_populations:
                 print("update is activated")
-                output = od.updating_populations(connect, args.update)
+                output = od.updating_populations(connect, args.update_populations)
             elif args.update_phenotype:
                 print("update is activated")
-                output = od.updating_phenotype(connect, args.update)
+                output = od.updating_phenotype(connect, args.update_phenotype)
             elif args.delete_allel:
                 print("delete is activated")
-                output = od.delete_allel(connect, args.delete)
+                output = od.delete_allel(connect, args.delete_allel)
             elif args.delete_populations:
                 print("delete is activated")
-                output = od.delete_populations(connect, args.delete)
+                output = od.delete_populations(connect, args.delete_populations)
             elif args.delete_phenotype:
                 print("delete is activated")
-                output = od.delete_phenotype(connect, args.delete)
+                output = od.delete_phenotype(connect, args.delete_phenotype)
             elif args.create_tables_user:
                 print("create user table is activated")
                 output = us.create_tables_user(connect)
